@@ -1,0 +1,38 @@
+'use client';
+
+import { SidebarProvider, useSidebar } from '@/features/layout/context/sidebar-context';
+import { AppSidebar } from '@/features/layout/components/app-sidebar';
+import { TopNavbar } from '@/features/layout/components/top-navbar';
+import { useT } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
+
+interface DashboardShellProps {
+  children: React.ReactNode;
+}
+
+function DashboardContent({ children }: { children: React.ReactNode }) {
+  const { collapsed } = useSidebar();
+  const { dir } = useT();
+
+  return (
+    <div className={cn(
+      'flex min-w-0 flex-1 flex-col transition-[margin] duration-200 ease-out',
+      collapsed ? 'ms-0 md:ms-16' : 'ms-0 md:ms-56',
+    )}>
+      <TopNavbar />
+      <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+    </div>
+  );
+}
+
+export function DashboardShell({ children }: DashboardShellProps) {
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-full flex-1">
+        <AppSidebar />
+        <DashboardContent>{children}</DashboardContent>
+      </div>
+    </SidebarProvider>
+  );
+}
+

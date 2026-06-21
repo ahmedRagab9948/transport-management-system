@@ -1,0 +1,3 @@
+module.exports=[42672,a=>{"use strict";var b=a.i(87924);a.i(12284);var c=a.i(13431),d=a.i(89295),e=a.i(39146),f=a.i(50944);a.s(["ModulePlaceholder",0,function({title:a,description:g,icon:h}){let i=(0,f.usePathname)(),j=(0,e.findNavigationItemByPath)(i),k=a??j?.label??"Module",l=h??j?.icon;return(0,b.jsxs)("div",{className:"flex flex-1 flex-col gap-6 p-4 lg:p-6",children:[(0,b.jsx)(c.PageHeader,{title:k,description:g??"This module will be implemented in a future phase. Navigation and permissions are already wired."}),(0,b.jsx)(d.EmptyState,{icon:l,title:`${k} coming soon`,description:"Use the sidebar to explore other areas you have access to."})]})}])}];
+
+//# sourceMappingURL=frontend_src_features_layout_components_module-placeholder_tsx_0io4r~q._.js.map

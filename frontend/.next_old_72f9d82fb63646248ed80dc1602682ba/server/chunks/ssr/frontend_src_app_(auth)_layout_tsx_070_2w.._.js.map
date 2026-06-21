@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../../frontend/src/app/%28auth%29/layout.tsx"],"sourcesContent":["export default function AuthRouteLayout({ children }: { children: React.ReactNode }) {\r\n  return children;\r\n}\r\n"],"names":["AuthRouteLayout","children"],"mappings":"wDAAe,SAASA,AAAgB,UAAEC,CAAQ,CAAiC,EACjF,OAAOA,CACT"}
