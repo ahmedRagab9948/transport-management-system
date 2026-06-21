@@ -1,0 +1,8 @@
+export const DRIVER_ENTITY_TYPE = 'driver';
+
+export enum DriverAuditAction {
+  CREATE = 'DRIVER.CREATE',
+  UPDATE = 'DRIVER.UPDATE',
+  STATUS_CHANGE = 'DRIVER.STATUS_CHANGE',
+  DELETE = 'DRIVER.DELETE',
+}

@@ -1,0 +1,8 @@
+export enum VehicleAuditAction {
+  CREATE = 'VEHICLE_CREATE',
+  UPDATE = 'VEHICLE_UPDATE',
+  STATUS_CHANGE = 'VEHICLE_STATUS_CHANGE',
+  DELETE = 'VEHICLE_DELETE',
+}
+
+export const VEHICLE_ENTITY_TYPE = 'vehicle';

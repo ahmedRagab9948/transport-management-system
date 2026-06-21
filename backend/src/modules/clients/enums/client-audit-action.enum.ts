@@ -1,0 +1,8 @@
+export const CLIENT_ENTITY_TYPE = 'client';
+
+export enum ClientAuditAction {
+  CREATE = 'CLIENT.CREATE',
+  UPDATE = 'CLIENT.UPDATE',
+  DELETE = 'CLIENT.DELETE',
+  STATUS_CHANGE = 'CLIENT.STATUS_CHANGE',
+}

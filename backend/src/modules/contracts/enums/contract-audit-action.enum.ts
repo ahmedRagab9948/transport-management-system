@@ -1,0 +1,8 @@
+export const CONTRACT_ENTITY_TYPE = 'contract';
+
+export enum ContractAuditAction {
+  CREATE = 'CONTRACT.CREATE',
+  UPDATE = 'CONTRACT.UPDATE',
+  DELETE = 'CONTRACT.DELETE',
+  STATUS_CHANGE = 'CONTRACT.STATUS_CHANGE',
+}
