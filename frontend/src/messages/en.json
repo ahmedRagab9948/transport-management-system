@@ -118,7 +118,9 @@
     "changed_by": "by {name}",
     "unread": "Unread",
     "vs_last_month": "vs last month",
-    "additional_information": "Additional Information"
+    "additional_information": "Additional Information",
+    "new_password": "New Password",
+    "error": "Error"
   },
   "auth": {
     "sign_in": "Sign in",
@@ -170,7 +172,8 @@
     "hero_completed_trips": "Completed Trips",
     "hero_fleet_monitoring": "Fleet Monitoring",
     "hero_dual_language": "Dual-Language RTL/LTR",
-    "hero_enterprise_session": "Enterprise Session Mapped"
+    "hero_enterprise_session": "Enterprise Session Mapped",
+    "send_reset_link": "Send Reset Link"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -366,6 +369,7 @@
     "page_description": "Manage fleet units, plate composition, and operational availability.",
     "load_error": "Unable to load vehicles",
     "plate_roles_info": "Plate roles are fixed by vehicle type to match fleet rules.",
+    "vehicle_details": "Vehicle Details",
     "search_placeholder": "Search code, plate, make\u2026",
     "no_vehicles_filtered": "No vehicles match these filters",
     "no_vehicles_filtered_desc": "Reset filters or try a different search term.",
@@ -582,7 +586,9 @@
     "suspended": "Suspended",
     "in_maintenance": "In Maintenance",
     "out_of_service": "Out of Service",
-    "in_trip": "In Trip"
+    "in_trip": "In Trip",
+    "expired": "Expired",
+    "terminated": "Terminated"
   },
   "dispatch_board": {
     "title": "Dispatch Board",
@@ -634,6 +640,7 @@
       "show_details": "Show Details",
       "hide_details": "Hide Details",
       "waiting_duration": "Waiting Duration",
+      "minutes_format": "{count}m",
       "no_vehicle": "No Vehicle",
       "no_driver": "No Driver"
     },
@@ -690,6 +697,8 @@
     "code_6_digits": "Enter the 6-digit code",
     "numbers_only": "Code must contain only numbers",
     "password_min": "Password must be at least 8 characters",
+    "password_min_length": "Password must be at least {min} characters",
+    "passwords_mismatch": "Passwords do not match",
     "plate_unique": "Plate numbers must be unique",
     "trailer_plates": "Trailer vehicles require one truck head plate and one trailer unit plate",
     "jumbo_plates": "Jumbo vehicles require one jumbo plate",
@@ -714,13 +723,16 @@
     "suspended": "Suspended",
     "draft": "Draft",
     "completed": "Completed",
-    "cancelled": "Cancelled"
+    "cancelled": "Cancelled",
+    "expired": "Expired",
+    "terminated": "Terminated"
   },
   "audit_logs": {
     "title": "Audit Logs",
     "description": "Track all system activities and changes.",
     "no_logs": "No audit logs found.",
     "loading_logs": "Loading audit logs...",
+    "no_logs_desc": "No audit logs found for the selected criteria",
     "action": "Action",
     "entity": "Entity",
     "performed_by": "Performed By",
@@ -787,7 +799,9 @@
     "schedule": "Schedule",
     "no_notes": "No additional notes",
     "no_description": "No description provided",
-    "no_plates": "No plates registered"
+    "no_plates": "No plates registered",
+    "financial_information": "Financial Information",
+    "vehicle_specifications": "Vehicle Specifications"
   },
   "notifications": {
     "trip_created_title": "Trip {number} created",
@@ -808,7 +822,8 @@
     "contract_completed_title": "Contract {number} completed",
     "contract_completed_message": "Contract \"{title}\" for {client} has been completed",
     "contract_expiring_title": "Contract \"{number}\" expiring soon",
-    "contract_expiring_message": "Contract \"{title}\" for {client} expires in {days} day(s) ({date})"
+    "contract_expiring_message": "Contract \"{title}\" for {client} expires in {days} day(s) ({date})",
+    "unread_count": "{count} unread notifications"
   },
   "cities": {
     "cairo": "Cairo",
@@ -824,6 +839,9 @@
     "client": "Client",
     "contract": "Contract",
     "user": "User"
+  },
+  "search": {
+    "result_label": "Search results for {query}"
   },
   "pagination": {
     "previous": "Previous",

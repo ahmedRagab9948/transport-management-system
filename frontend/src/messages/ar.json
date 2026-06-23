@@ -118,7 +118,9 @@
     "changed_by": "بواسطة {name}",
     "unread": "غير مقروء",
     "vs_last_month": "مقارنة بالشهر الماضي",
-    "additional_information": "معلومات إضافية"
+    "additional_information": "معلومات إضافية",
+    "new_password": "كلمة المرور الجديدة",
+    "error": "خطأ"
   },
   "auth": {
     "sign_in": "تسجيل الدخول",
@@ -170,7 +172,8 @@
     "hero_completed_trips": "الرحلات المكتملة",
     "hero_fleet_monitoring": "مراقبة الأسطول",
     "hero_dual_language": "ثنائي اللغة",
-    "hero_enterprise_session": "جلسة مؤسسية آمنة"
+    "hero_enterprise_session": "جلسة مؤسسية آمنة",
+    "send_reset_link": "إرسال رابط إعادة التعيين"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -366,6 +369,7 @@
     "page_description": "إدارة وحدات الأسطول وتكوين اللوحات والتوفر التشغيلي.",
     "load_error": "تعذر تحميل المركبات",
     "plate_roles_info": "أدوار اللوحات محددة حسب نوع المركبة لتتوافق مع قواعد الأسطول.",
+    "vehicle_details": "تفاصيل المركبة",
     "search_placeholder": "بحث بالكود، اللوحة، الشركة المصنعة...",
     "no_vehicles_filtered": "لا توجد مركبات تطابق هذه الفلاتر",
     "no_vehicles_filtered_desc": "قم بإعادة تعيين الفلاتر أو حاول مصطلح بحث مختلف.",
@@ -582,7 +586,9 @@
     "suspended": "موقوف",
     "in_maintenance": "قيد الصيانة",
     "out_of_service": "خارج الخدمة",
-    "in_trip": "في رحلة"
+    "in_trip": "في رحلة",
+    "expired": "منتهي",
+    "terminated": "ملغي"
   },
   "dispatch_board": {
     "title": "لوحة التحكم",
@@ -634,6 +640,7 @@
       "show_details": "عرض التفاصيل",
       "hide_details": "إخفاء التفاصيل",
       "waiting_duration": "مدة الانتظار",
+      "minutes_format": "{count} د",
       "no_vehicle": "بدون مركبة",
       "no_driver": "بدون سائق"
     },
@@ -690,6 +697,8 @@
     "code_6_digits": "أدخل الرمز المكون من 6 أرقام",
     "numbers_only": "يجب أن يتكون الرمز من أرقام فقط",
     "password_min": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+    "password_min_length": "يجب أن تتكون كلمة المرور من {min} أحرف على الأقل",
+    "passwords_mismatch": "كلمتا المرور غير متطابقتين",
     "plate_unique": "يجب أن تكون أرقام اللوحات فريدة",
     "trailer_plates": "المركبات المقطورة تتطلب لوحة رأس جرار ولوحة مقطورة",
     "jumbo_plates": "المركبات الجامبو تتطلب لوحة جامبو واحدة",
@@ -714,13 +723,16 @@
     "suspended": "موقوف",
     "draft": "مسودة",
     "completed": "مكتمل",
-    "cancelled": "ملغي"
+    "cancelled": "ملغي",
+    "expired": "منتهي",
+    "terminated": "منتهي"
   },
   "audit_logs": {
     "title": "سجلات التدقيق",
     "description": "تتبع جميع أنشطة النظام والتغييرات.",
     "no_logs": "لا توجد سجلات تدقيق.",
     "loading_logs": "جاري تحميل سجلات التدقيق...",
+    "no_logs_desc": "لم يتم العثور على سجلات تدقيق للمعايير المحددة",
     "action": "الإجراء",
     "entity": "الكيان",
     "performed_by": "تم بواسطة",
@@ -787,7 +799,9 @@
     "schedule": "الجدول الزمني",
     "no_notes": "لا توجد ملاحظات إضافية",
     "no_description": "لا يوجد وصف",
-    "no_plates": "لا توجد لوحات مسجلة"
+    "no_plates": "لا توجد لوحات مسجلة",
+    "financial_information": "معلومات مالية",
+    "vehicle_specifications": "مواصفات المركبة"
   },
   "notifications": {
     "trip_created_title": "تم إنشاء الرحلة {number}",
@@ -808,7 +822,8 @@
     "contract_completed_title": "اكتمل العقد {number}",
     "contract_completed_message": "تم إكمال العقد \"{title}\" لـ {client}",
     "contract_expiring_title": "العقد \"{number}\" على وشك الانتهاء",
-    "contract_expiring_message": "سينتهي العقد \"{title}\" لـ {client} خلال {days} يوم/أيام ({date})"
+    "contract_expiring_message": "سينتهي العقد \"{title}\" لـ {client} خلال {days} يوم/أيام ({date})",
+    "unread_count": "{count} إشعار غير مقروء"
   },
   "cities": {
     "cairo": "القاهرة",
@@ -824,6 +839,9 @@
     "client": "عميل",
     "contract": "عقد",
     "user": "مستخدم"
+  },
+  "search": {
+    "result_label": "نتائج البحث عن {query}"
   },
   "pagination": {
     "previous": "السابق",
