@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { TripStatus } from '@prisma/client';
 
 export class UpdateTripStatusDto {
@@ -13,4 +13,8 @@ export class UpdateTripStatusDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @IsOptional()
+  @IsDateString()
+  actualEndDate?: string;
 }

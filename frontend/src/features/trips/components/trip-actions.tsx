@@ -37,17 +37,22 @@ interface TripActionsProps {
 }
 
 const VALID_TRANSITIONS: Record<TripStatus, TripStatus[]> = {
+  DRAFT: ['PENDING', 'CANCELLED'],
   PENDING: ['ASSIGNED', 'CANCELLED'],
-  ASSIGNED: ['IN_PROGRESS', 'CANCELLED'],
-  IN_PROGRESS: ['COMPLETED', 'CANCELLED'],
+  ASSIGNED: ['DRIVER_CONFIRMED', 'CANCELLED'],
+  DRIVER_CONFIRMED: ['LOADING', 'CANCELLED'],
+  LOADING: ['ON_ROUTE', 'CANCELLED'],
+  ON_ROUTE: ['WAITING', 'UNLOADING', 'CANCELLED'],
+  WAITING: ['ON_ROUTE', 'UNLOADING', 'CANCELLED'],
+  UNLOADING: ['COMPLETED', 'CANCELLED'],
   COMPLETED: [],
   CANCELLED: [],
 };
 
-const CANCEL_STATUSES: TripStatus[] = ['PENDING', 'ASSIGNED', 'IN_PROGRESS'];
+const CANCEL_STATUSES: TripStatus[] = ['DRAFT', 'PENDING', 'ASSIGNED', 'DRIVER_CONFIRMED', 'LOADING', 'ON_ROUTE', 'WAITING', 'UNLOADING'];
 const ASSIGNABLE_STATUSES: TripStatus[] = ['PENDING'];
-const STARTABLE_STATUSES: TripStatus[] = ['ASSIGNED'];
-const COMPLETABLE_STATUSES: TripStatus[] = ['IN_PROGRESS'];
+const STARTABLE_STATUSES: TripStatus[] = ['ASSIGNED', 'DRIVER_CONFIRMED'];
+const COMPLETABLE_STATUSES: TripStatus[] = ['UNLOADING'];
 
 export function TripActions({ trip }: TripActionsProps) {
   const router = useRouter();
@@ -111,7 +116,7 @@ export function TripActions({ trip }: TripActionsProps) {
   function resolvedTargetStatus(): TripStatus {
     switch (dialogType) {
       case 'assign': return 'ASSIGNED';
-      case 'start': return 'IN_PROGRESS';
+      case 'start': return 'DRIVER_CONFIRMED';
       case 'complete': return 'COMPLETED';
       case 'cancel': return 'CANCELLED';
       default: return 'PENDING';
@@ -153,7 +158,7 @@ export function TripActions({ trip }: TripActionsProps) {
                   variant="ghost"
                   size="icon-sm"
                   onClick={() => {
-                    if (trip.status === 'ASSIGNED' || trip.status === 'IN_PROGRESS') {
+                    if (trip.status === 'ASSIGNED' || trip.status === 'DRIVER_CONFIRMED' || trip.status === 'LOADING' || trip.status === 'ON_ROUTE' || trip.status === 'WAITING' || trip.status === 'UNLOADING') {
                       setShowEditConfirm(true);
                     } else {
                       router.push(ROUTES.tripsEdit(trip.id));

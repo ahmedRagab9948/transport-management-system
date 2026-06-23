@@ -16,7 +16,7 @@ export class DashboardService {
         this.prisma.trip.count({
           where: {
             deletedAt: null,
-            status: { in: [TripStatus.PENDING, TripStatus.ASSIGNED, TripStatus.IN_PROGRESS] },
+            status: { in: [TripStatus.PENDING, TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING] },
           },
         }),
         this.prisma.vehicle.count({

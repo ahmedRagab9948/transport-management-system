@@ -19,6 +19,7 @@ import { NotificationsModule } from './modules/notifications';
 import { ClientsModule } from './modules/clients';
 import { ContractsModule } from './modules/contracts';
 import { DashboardModule } from './modules/dashboard';
+import { DispatchBoardModule } from './modules/dispatch-board';
 import { DriversModule } from './modules/drivers';
 import { ReportsModule } from './modules/reports';
 import { TripsModule } from './modules/trips';
@@ -40,6 +41,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ClientsModule,
     ContractsModule,
     DashboardModule,
+    DispatchBoardModule,
     DriversModule,
     ReportsModule,
     TripsModule,

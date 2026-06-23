@@ -1,0 +1,10 @@
+export { DispatchBoardPage } from './components/dispatch-board-page';
+export { DispatchKanban } from './components/dispatch-kanban';
+export { StatusColumn } from './components/status-column';
+export { TripCard } from './components/trip-card';
+export { MobileDispatchView } from './components/mobile-dispatch-view';
+export { AvailableResources } from './components/available-resources';
+export { useDispatchBoardStats, useDispatchBoardTrips, useDispatchBoardTrip, useDispatchResources } from './hooks/use-dispatch-board';
+export { dispatchBoardService } from './services/dispatch-board.service';
+export { COLUMN_GROUPS } from './types/dispatch-board.types';
+export type { DispatchBoardTrip, DispatchBoardStats, DispatchBoardResponse, ColumnGroupId } from './types/dispatch-board.types';

@@ -13,17 +13,27 @@ interface TripStatusChartProps {
 }
 
 const STATUS_BAR_COLORS: Record<string, string> = {
+  DRAFT: 'oklch(0.708 0.02 240)',
   PENDING: 'oklch(0.708 0.02 240)',
   ASSIGNED: 'oklch(0.546 0.245 262.881)',
-  IN_PROGRESS: 'oklch(0.769 0.188 70.08)',
+  DRIVER_CONFIRMED: 'oklch(0.546 0.245 262.881)',
+  LOADING: 'oklch(0.769 0.188 70.08)',
+  ON_ROUTE: 'oklch(0.769 0.188 70.08)',
+  WAITING: 'oklch(0.769 0.188 70.08)',
+  UNLOADING: 'oklch(0.769 0.188 70.08)',
   COMPLETED: 'oklch(0.627 0.194 149.214)',
   CANCELLED: 'oklch(0.577 0.245 27.325)',
 };
 
 const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'common_statuses.draft',
   PENDING: 'common_statuses.pending',
   ASSIGNED: 'common_statuses.assigned',
-  IN_PROGRESS: 'common_statuses.in_progress',
+  DRIVER_CONFIRMED: 'common_statuses.driver_confirmed',
+  LOADING: 'common_statuses.loading',
+  ON_ROUTE: 'common_statuses.on_route',
+  WAITING: 'common_statuses.waiting',
+  UNLOADING: 'common_statuses.unloading',
   COMPLETED: 'common_statuses.completed',
   CANCELLED: 'common_statuses.cancelled',
 };
