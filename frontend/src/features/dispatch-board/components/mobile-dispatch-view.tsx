@@ -69,7 +69,7 @@ export function MobileDispatchView({ groups, onStatusChange }: Props) {
 
       {/* Accordion sections */}
       <ScrollArea className="max-h-[calc(100vh-280px)]">
-        <div className="space-y-2 pr-4">
+        <div className="space-y-2 pe-4">
           {filteredGroups.map((group) => {
             const columnTrips = groups[group.id]?.trips ?? [];
             if (columnTrips.length === 0 && activeTab !== 'all') return null;

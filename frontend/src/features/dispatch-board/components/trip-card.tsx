@@ -23,7 +23,7 @@ export function TripCard({ trip, onStatusChange }: Props) {
   return (
     <div
       className={cn(
-        'group rounded-lg border border-border/60 bg-card p-3 shadow-sm transition-all hover:shadow-md hover:border-border',
+        'group rounded-lg border border-border/60 bg-card p-2.5 shadow-sm transition-all hover:shadow-md hover:border-border',
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -65,7 +65,7 @@ export function TripCard({ trip, onStatusChange }: Props) {
       </div>
 
       {expanded && (
-        <div className="mt-3 pt-3 border-t border-border/40 space-y-2 text-xs">
+        <div className="mt-2 pt-2 border-t border-border/40 space-y-1.5 text-xs">
           {trip.contract && (
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dispatch_board.trip_card.contract')}</span>

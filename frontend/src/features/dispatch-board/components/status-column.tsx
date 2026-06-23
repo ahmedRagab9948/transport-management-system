@@ -36,7 +36,7 @@ export function StatusColumn({ label, trips, columnWidth = 280, onStatusChange }
           {trips.length}
         </span>
       </div>
-      <ScrollArea className="flex-1 p-2" ref={parentRef}>
+      <ScrollArea className="flex-1 p-1.5" ref={parentRef}>
         <div
           style={{
             height: `${virtualizer.getTotalSize()}px`,
@@ -50,7 +50,7 @@ export function StatusColumn({ label, trips, columnWidth = 280, onStatusChange }
               style={{
                 position: 'absolute',
                 top: 0,
-                left: 0,
+                insetInlineStart: 0,
                 width: '100%',
                 height: `${virtualItem.size}px`,
                 transform: `translateY(${virtualItem.start}px)`,
