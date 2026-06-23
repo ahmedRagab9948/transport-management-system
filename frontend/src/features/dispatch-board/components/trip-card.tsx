@@ -35,7 +35,7 @@ export function TripCard({ trip, onStatusChange }: Props) {
             <span className="text-[10px] text-muted-foreground/60">•</span>
             <span className="flex items-center gap-1 text-[11px] text-muted-foreground/70">
               <Clock className="size-3" />
-              {trip.ageMinutes}m
+              {t('dispatch_board.trip_card.minutes_format', { count: trip.ageMinutes })}
             </span>
           </div>
           <p className="flex items-center gap-1 text-xs text-foreground/90 truncate">
@@ -90,7 +90,7 @@ export function TripCard({ trip, onStatusChange }: Props) {
             <div className="flex justify-between">
               <span className="text-muted-foreground">{t('dispatch_board.trip_card.waiting_duration')}</span>
               <Badge variant="outline" className="text-amber-600 bg-amber-500/10 border-0 text-[10px]">
-                {Math.floor((Date.now() - new Date(trip.waitingStartedAt).getTime()) / 60000)}m
+                {t('dispatch_board.trip_card.minutes_format', { count: Math.floor((Date.now() - new Date(trip.waitingStartedAt).getTime()) / 60000) })}
               </Badge>
             </div>
           )}
