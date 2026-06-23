@@ -69,6 +69,7 @@ export const DOMAIN_PERMISSIONS = [
   { key: 'DISPATCH_ASSIGN', description: 'Assign drivers/vehicles to trips from dispatch board' },
   { key: 'DISPATCH_TRANSITION', description: 'Transition trip status from dispatch board' },
   { key: 'DISPATCH_MANAGE', description: 'Manage dispatch board settings and resources' },
+  { key: 'CONFIRM_DRIVER_ON_BEHALF', description: 'Confirm driver status on behalf of the driver' },
 ] as const;
 
 export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS];
@@ -99,6 +100,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'DISPATCH_ASSIGN',
     'DISPATCH_TRANSITION',
     'DISPATCH_MANAGE',
+    'CONFIRM_DRIVER_ON_BEHALF',
   ],
   [ROLES.MANAGER.name]: [
     'VIEW_TRIPS',
@@ -119,6 +121,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_REPORTS',
     'VIEW_DISPATCH_BOARD',
     'VIEW_NOTIFICATIONS',
+    'CONFIRM_DRIVER_ON_BEHALF',
   ],
   [ROLES.VIEWER.name]: [
     'VIEW_TRIPS',

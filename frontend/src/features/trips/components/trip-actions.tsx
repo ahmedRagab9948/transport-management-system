@@ -72,7 +72,8 @@ export function TripActions({ trip }: TripActionsProps) {
   const canDelete = hasPermission(PERMISSIONS.DELETE_TRIP) && trip.status === 'PENDING';
 
   const canAssign = canEdit && ASSIGNABLE_STATUSES.includes(trip.status);
-  const canStart = canEdit && STARTABLE_STATUSES.includes(trip.status);
+  const canConfirmDriver = hasPermission(PERMISSIONS.CONFIRM_DRIVER_ON_BEHALF);
+  const canStart = canEdit && canConfirmDriver && trip.status === 'ASSIGNED';
   const canComplete = canEdit && COMPLETABLE_STATUSES.includes(trip.status);
   const canCancel = canEdit && CANCEL_STATUSES.includes(trip.status);
 

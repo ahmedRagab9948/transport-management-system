@@ -365,6 +365,10 @@ export class TripsService {
 
     validateTransition(existing.status, dto.status);
 
+    if (dto.status === TripStatus.DRIVER_CONFIRMED && !user.permissions.includes('CONFIRM_DRIVER_ON_BEHALF')) {
+      throw new ForbiddenException('Only authorized personnel can confirm driver status');
+    }
+
     const reasonCode = dto.reasonCode ?? this.defaultReasonCode(existing.status, dto.status);
     const claimsResources = ([TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING] as TripStatus[]).includes(dto.status);
 
