@@ -41,6 +41,9 @@ export function useCreateClient() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -54,6 +57,9 @@ export function useUpdateClient(id: string) {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.detail(id) });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -66,6 +72,9 @@ export function useDeleteClient() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -79,6 +88,9 @@ export function useUpdateClientStatus() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }

@@ -42,6 +42,8 @@ export function useCreateContract() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -55,6 +57,8 @@ export function useUpdateContract(id: string) {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.detail(id) });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -67,6 +71,8 @@ export function useDeleteContract() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }
@@ -80,6 +86,8 @@ export function useUpdateContractStatus() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
 }

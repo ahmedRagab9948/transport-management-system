@@ -71,6 +71,7 @@ export function useCreateTrip() {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
     },
     retry: false,
   });
@@ -86,6 +87,7 @@ export function useUpdateTrip(id: string) {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.detail(id) });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
     },
     retry: false,
   });
@@ -100,6 +102,7 @@ export function useDeleteTrip() {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
     },
     retry: false,
   });
@@ -133,6 +136,7 @@ export function useUpdateTripStatus() {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       await queryClient.invalidateQueries({ queryKey: ['notifications'] });
+      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
     },
     retry: false,
   });

@@ -39,6 +39,8 @@ export function useCreateVehicle() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
     },
   });
 }
@@ -53,6 +55,8 @@ export function useUpdateVehicle(id: string) {
         queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all }),
         queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.detail(id) }),
         queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
+        queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] }),
       ]);
     },
   });
@@ -66,6 +70,8 @@ export function useDeleteVehicle() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
     },
   });
 }
@@ -79,6 +85,8 @@ export function useUpdateVehicleStatus() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
     },
   });
 }
