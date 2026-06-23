@@ -32,11 +32,11 @@ function ResourceIndicator({ available }: { available: boolean }) {
 }
 
 export function AvailableResources({ open, onOpenChange, vehicles, drivers, isLoading }: Props) {
-  const { t } = useT();
+  const { t, isRTL } = useT();
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-80 sm:max-w-sm">
+      <SheetContent side={isRTL ? 'left' : 'right'} className="w-80 sm:max-w-sm">
         <SheetHeader>
           <SheetTitle>{t('dispatch_board.resources.title')}</SheetTitle>
           <SheetDescription />

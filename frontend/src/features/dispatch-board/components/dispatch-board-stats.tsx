@@ -16,37 +16,37 @@ export function DispatchBoardStats({ stats, isLoading }: Props) {
     {
       label: t('dispatch_board.stats.total'),
       value: stats.draft + stats.pending + stats.assigned + stats.driver_confirmed + stats.loading + stats.on_route + stats.waiting + stats.unloading,
-      accentClass: 'border-l-4 border-l-primary',
+      accentClass: 'border-s-4 border-s-primary',
       isLoading,
     },
     {
       label: t('dispatch_board.stats.waiting'),
       value: stats.waiting ?? 0,
-      accentClass: 'border-l-4 border-l-amber-400',
+      accentClass: 'border-s-4 border-s-amber-400',
       isLoading,
     },
     {
       label: t('dispatch_board.stats.waiting_over_30'),
       value: stats.waitingOver30min ?? 0,
-      accentClass: 'border-l-4 border-l-orange-400',
+      accentClass: 'border-s-4 border-s-orange-400',
       isLoading,
     },
     {
       label: t('dispatch_board.stats.waiting_over_60'),
       value: stats.waitingOver60min ?? 0,
-      accentClass: 'border-l-4 border-l-rose-400',
+      accentClass: 'border-s-4 border-s-rose-400',
       isLoading,
     },
     {
       label: t('dispatch_board.stats.available_vehicles'),
       value: stats.availableVehicles ?? 0,
-      accentClass: 'border-l-4 border-l-emerald-400',
+      accentClass: 'border-s-4 border-s-emerald-400',
       isLoading,
     },
     {
       label: t('dispatch_board.stats.available_drivers'),
       value: stats.availableDrivers ?? 0,
-      accentClass: 'border-l-4 border-l-emerald-400',
+      accentClass: 'border-s-4 border-s-emerald-400',
       isLoading,
     },
   ];
