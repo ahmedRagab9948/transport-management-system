@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircle, Pencil, UserCheck, Play, CheckCircle2, XCircle } from 'lucide-react';
+import { AlertCircle, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -13,6 +13,8 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { getAvailableActions, LIFECYCLE_ACTIONS } from '../constants/trip-lifecycle';
+import type { TripActionType } from '../constants/trip-lifecycle';
 import { useTrip } from '../hooks/use-trips';
 import { useUpdateTripStatus } from '../hooks/use-trips';
 import type { TripStatus } from '../types/trip.types';
@@ -22,28 +24,25 @@ import { StartTripDialog } from './start-trip-dialog';
 import { CompleteTripDialog } from './complete-trip-dialog';
 import { CancelTripDialog } from './cancel-trip-dialog';
 import { ConflictWarningDialog } from './conflict-warning-dialog';
+import * as Icons from 'lucide-react';
 
 interface TripDetailsPageProps {
   tripId: string;
 }
 
-const VALID_TRANSITIONS: Record<TripStatus, TripStatus[]> = {
-  DRAFT: ['PENDING', 'CANCELLED'],
-  PENDING: ['ASSIGNED', 'CANCELLED'],
-  ASSIGNED: ['DRIVER_CONFIRMED', 'CANCELLED'],
-  DRIVER_CONFIRMED: ['LOADING', 'CANCELLED'],
-  LOADING: ['ON_ROUTE', 'CANCELLED'],
-  ON_ROUTE: ['WAITING', 'UNLOADING', 'CANCELLED'],
-  WAITING: ['ON_ROUTE', 'UNLOADING', 'CANCELLED'],
-  UNLOADING: ['COMPLETED', 'CANCELLED'],
-  COMPLETED: [],
-  CANCELLED: [],
-};
-
-const CANCEL_STATUSES: TripStatus[] = ['DRAFT', 'PENDING', 'ASSIGNED', 'DRIVER_CONFIRMED', 'LOADING', 'ON_ROUTE', 'WAITING', 'UNLOADING'];
-const ASSIGNABLE_STATUSES: TripStatus[] = ['PENDING'];
-const STARTABLE_STATUSES: TripStatus[] = ['ASSIGNED', 'DRIVER_CONFIRMED'];
-const COMPLETABLE_STATUSES: TripStatus[] = ['UNLOADING'];
+const VALID_TRANSITIONS: Record<TripStatus, TripStatus[]> = LIFECYCLE_ACTIONS.reduce(
+  (map, action) => {
+    for (const from of action.fromStatuses) {
+      if (!map[from]) map[from] = [];
+      const to = action.resolveTarget(from);
+      if (!map[from].includes(to)) map[from].push(to);
+    }
+    return map;
+  },
+  {} as Record<TripStatus, TripStatus[]>,
+);
+VALID_TRANSITIONS['COMPLETED'] = [];
+VALID_TRANSITIONS['CANCELLED'] = [];
 
 export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
   const router = useRouter();
@@ -64,14 +63,16 @@ export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
   const canEdit = hasPermission(PERMISSIONS.UPDATE_TRIP);
   const canDelete = hasPermission(PERMISSIONS.DELETE_TRIP);
 
-  const [dialogType, setDialogType] = useState<'assign' | 'start' | 'complete' | 'cancel' | null>(null);
+  const [dialogType, setDialogType] = useState<TripActionType | null>(null);
   const [showEditConfirm, setShowEditConfirm] = useState(false);
   const [conflictWarnings, setConflictWarnings] = useState<any[]>([]);
 
+  const availableActions = trip ? getAvailableActions(trip.status, canEdit, hasPermission) : [];
+
   async function handleStatusChange(data: { notes?: string; reasonCode?: string; actualEndDate?: string }) {
     if (!trip) return;
-    const statusMap: Record<string, TripStatus> = { assign: 'ASSIGNED', start: 'DRIVER_CONFIRMED', complete: 'COMPLETED', cancel: 'CANCELLED' };
-    const newStatus = statusMap[dialogType!];
+    const def = dialogType ? LIFECYCLE_ACTIONS.find((a) => a.type === dialogType) : undefined;
+    const newStatus = def ? def.resolveTarget(trip.status) : 'ASSIGNED';
     const allowed = VALID_TRANSITIONS[trip.status];
     if (!allowed.includes(newStatus)) return;
 
@@ -121,65 +122,37 @@ export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
   );
   }
 
-  const canAssign = canEdit && ASSIGNABLE_STATUSES.includes(trip.status);
-  const canStart = canEdit && STARTABLE_STATUSES.includes(trip.status);
-  const canComplete = canEdit && COMPLETABLE_STATUSES.includes(trip.status);
-  const canCancel = canEdit && CANCEL_STATUSES.includes(trip.status);
-
   const statusActionButtons = (
     <>
-      {canAssign ? (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button type="button" variant="outline" size="sm" onClick={() => setDialogType('assign')} aria-label={t('trips.assign')}>
-                <UserCheck className="size-3.5" />
-                {t('trips.assign')}
-              </Button>
-            }
-          />
-          <TooltipContent>{t('trips.assign_description')}</TooltipContent>
-        </Tooltip>
-      ) : null}
-      {canStart ? (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button type="button" variant="outline" size="sm" onClick={() => setDialogType('start')} aria-label={t('trips.start')}>
-                <Play className="size-3.5" />
-                {t('trips.start')}
-              </Button>
-            }
-          />
-          <TooltipContent>{t('trips.start_tooltip')}</TooltipContent>
-        </Tooltip>
-      ) : null}
-      {canComplete ? (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button type="button" variant="outline" size="sm" onClick={() => setDialogType('complete')} aria-label={t('trips.complete')}>
-                <CheckCircle2 className="size-3.5" />
-                {t('trips.complete')}
-              </Button>
-            }
-          />
-          <TooltipContent>{t('trips.complete_tooltip')}</TooltipContent>
-        </Tooltip>
-      ) : null}
-      {canCancel ? (
-        <Tooltip>
-          <TooltipTrigger
-            render={
-              <Button type="button" variant="danger" size="sm" onClick={() => setDialogType('cancel')} aria-label={t('trips.cancel_title')}>
-                <XCircle className="size-3.5" />
-                {t('common.cancel')}
-              </Button>
-            }
-          />
-          <TooltipContent>{t('trips.cancel_tooltip')}</TooltipContent>
-        </Tooltip>
-      ) : null}
+      {availableActions.map((action) => {
+        const IconComp = (Icons as any)[action.icon];
+        const isCancel = action.type === 'cancel';
+        return (
+          <Tooltip key={action.type}>
+            <TooltipTrigger
+              render={
+                <Button
+                  type="button"
+                  variant={isCancel ? 'danger' : 'outline'}
+                  size="sm"
+                  onClick={() => setDialogType(action.type)}
+                  aria-label={t(`${action.i18nKey}`)}
+                >
+                  {IconComp ? <IconComp className="size-3.5" /> : null}
+                  {t(`${action.i18nKey}`)}
+                </Button>
+              }
+            />
+            <TooltipContent>
+              {(() => {
+                const tooltipKey = `${action.i18nKey}_tooltip`;
+                const tt = t(tooltipKey);
+                return tt !== tooltipKey ? tt : t(`${action.i18nKey}_description`);
+              })()}
+            </TooltipContent>
+          </Tooltip>
+        );
+      })}
       {canEdit ? (
         <Tooltip>
           <TooltipTrigger
@@ -189,7 +162,8 @@ export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  if (trip.status === 'ASSIGNED' || trip.status === 'DRIVER_CONFIRMED' || trip.status === 'LOADING' || trip.status === 'ON_ROUTE' || trip.status === 'WAITING' || trip.status === 'UNLOADING') {
+                  const activeStatuses: TripStatus[] = ['ASSIGNED', 'DRIVER_CONFIRMED', 'LOADING', 'ON_ROUTE', 'WAITING', 'UNLOADING'];
+                  if (activeStatuses.includes(trip.status)) {
                     setShowEditConfirm(true);
                   } else {
                     router.push(ROUTES.tripsEdit(tripId));
@@ -249,32 +223,48 @@ export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
         </div>
       </DetailSection>
 
-      <AssignTripDialog
-        open={dialogType === 'assign'}
-        onOpenChange={(v) => { if (!v) setDialogType(null); }}
-        onConfirm={(notes) => handleStatusChange({ notes })}
-        isLoading={statusMutation.isPending}
-      />
-      <StartTripDialog
-        open={dialogType === 'start'}
-        onOpenChange={(v) => { if (!v) setDialogType(null); }}
-        onConfirm={(notes) => handleStatusChange({ notes })}
-        isLoading={statusMutation.isPending}
-        vehicleCode={trip.vehicle?.vehicleCode}
-        driverName={trip.driver?.fullName}
-      />
-      <CompleteTripDialog
-        open={dialogType === 'complete'}
-        onOpenChange={(v) => { if (!v) setDialogType(null); }}
-        onConfirm={(data) => handleStatusChange(data)}
-        isLoading={statusMutation.isPending}
-      />
-      <CancelTripDialog
-        open={dialogType === 'cancel'}
-        onOpenChange={(v) => { if (!v) setDialogType(null); }}
-        onConfirm={(data) => handleStatusChange(data)}
-        isLoading={statusMutation.isPending}
-      />
+      {dialogType === 'assign' ? (
+        <AssignTripDialog
+          open
+          onOpenChange={(v) => { if (!v) setDialogType(null); }}
+          onConfirm={(notes) => handleStatusChange({ notes })}
+          isLoading={statusMutation.isPending}
+        />
+      ) : null}
+      {dialogType === 'complete' ? (
+        <CompleteTripDialog
+          open
+          onOpenChange={(v) => { if (!v) setDialogType(null); }}
+          onConfirm={(data) => handleStatusChange(data)}
+          isLoading={statusMutation.isPending}
+        />
+      ) : null}
+      {dialogType === 'cancel' ? (
+        <CancelTripDialog
+          open
+          onOpenChange={(v) => { if (!v) setDialogType(null); }}
+          onConfirm={(data) => handleStatusChange(data)}
+          isLoading={statusMutation.isPending}
+        />
+      ) : null}
+      {dialogType && dialogType !== 'assign' && dialogType !== 'complete' && dialogType !== 'cancel' ? (
+        (() => {
+          const def = LIFECYCLE_ACTIONS.find((a) => a.type === dialogType);
+          if (!def) return null;
+          return (
+            <StartTripDialog
+              open
+              onOpenChange={(v) => { if (!v) setDialogType(null); }}
+              onConfirm={(notes) => handleStatusChange({ notes })}
+              isLoading={statusMutation.isPending}
+              vehicleCode={trip.vehicle?.vehicleCode}
+              driverName={trip.driver?.fullName}
+              i18nPrefix={def.i18nKey}
+              confirmLabel={t('common.confirm')}
+            />
+          );
+        })()
+      ) : null}
       <ConfirmDialog
         open={showEditConfirm}
         onOpenChange={setShowEditConfirm}

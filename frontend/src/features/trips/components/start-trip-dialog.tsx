@@ -22,9 +22,13 @@ interface StartTripDialogProps {
   isLoading?: boolean;
   vehicleCode?: string;
   driverName?: string;
+  /** i18n key prefix for dialog copy (e.g. 'trips.start_loading') */
+  i18nPrefix: string;
+  /** Optional override for confirm button label */
+  confirmLabel?: string;
 }
 
-export function StartTripDialog({ open, onOpenChange, onConfirm, isLoading, vehicleCode, driverName }: StartTripDialogProps) {
+export function StartTripDialog({ open, onOpenChange, onConfirm, isLoading, vehicleCode, driverName, i18nPrefix, confirmLabel }: StartTripDialogProps) {
   const { t } = useT();
   const [notes, setNotes] = useState('');
 
@@ -37,8 +41,8 @@ export function StartTripDialog({ open, onOpenChange, onConfirm, isLoading, vehi
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('trips.start_title')}</DialogTitle>
-          <DialogDescription>{t('trips.start_description')}</DialogDescription>
+          <DialogTitle>{t(`${i18nPrefix}_title`)}</DialogTitle>
+          <DialogDescription>{t(`${i18nPrefix}_description`)}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="rounded-lg border bg-muted/30 p-3">
@@ -54,8 +58,8 @@ export function StartTripDialog({ open, onOpenChange, onConfirm, isLoading, vehi
             </div>
           </div>
           <div className="grid gap-1.5">
-            <label htmlFor="start-notes" className="text-sm font-medium">{t('common.notes')} ({t('common.optional')})</label>
-            <Textarea id="start-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t('trips.start_notes_placeholder')} className="resize-none" rows={3} />
+            <label htmlFor="dialog-notes" className="text-sm font-medium">{t('common.notes')} ({t('common.optional')})</label>
+            <Textarea id="dialog-notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder={t(`${i18nPrefix}_notes_placeholder`)} className="resize-none" rows={3} />
           </div>
         </div>
         <DialogFooter>
@@ -64,7 +68,7 @@ export function StartTripDialog({ open, onOpenChange, onConfirm, isLoading, vehi
           </DialogClose>
           <Button disabled={isLoading} onClick={() => onConfirm(notes)}>
             {isLoading ? <Loader2 className="size-4 animate-spin" /> : null}
-            {t('trips.start_confirm')}
+            {confirmLabel ?? t('common.confirm')}
           </Button>
         </DialogFooter>
       </DialogContent>
