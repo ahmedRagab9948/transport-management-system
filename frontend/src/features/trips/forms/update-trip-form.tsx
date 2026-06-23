@@ -112,9 +112,14 @@ export function UpdateTripForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
+              <option value="DRAFT">{t('common_statuses.draft')}</option>
               <option value="PENDING">{t('common_statuses.pending')}</option>
               <option value="ASSIGNED">{t('common_statuses.assigned')}</option>
-              <option value="IN_PROGRESS">{t('common_statuses.in_progress')}</option>
+              <option value="DRIVER_CONFIRMED">{t('common_statuses.driver_confirmed')}</option>
+              <option value="LOADING">{t('common_statuses.loading')}</option>
+              <option value="ON_ROUTE">{t('common_statuses.on_route')}</option>
+              <option value="WAITING">{t('common_statuses.waiting')}</option>
+              <option value="UNLOADING">{t('common_statuses.unloading')}</option>
               <option value="COMPLETED">{t('common_statuses.completed')}</option>
               <option value="CANCELLED">{t('common_statuses.cancelled')}</option>
             </select>

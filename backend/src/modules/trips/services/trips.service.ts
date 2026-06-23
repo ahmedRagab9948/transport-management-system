@@ -94,8 +94,8 @@ export class TripsService {
     dto: CreateTripDto,
     user: AuthenticatedUser,
   ): Promise<TripWithRelations> {
-    const targetStatus = dto.status ?? TripStatus.PENDING;
-    const needsResourceLock = targetStatus === TripStatus.ASSIGNED || targetStatus === TripStatus.IN_PROGRESS;
+    const targetStatus = dto.status ?? TripStatus.DRAFT;
+    const needsResourceLock = ([TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING] as TripStatus[]).includes(targetStatus);
 
     if (dto.startDate && dto.endDate && new Date(dto.endDate) < new Date(dto.startDate)) {
       throw new BadRequestException('End date must be after or equal to start date');
@@ -284,7 +284,7 @@ export class TripsService {
         if (dto.status) {
           validateTransition(existing.status, dto.status);
 
-          if (dto.status === TripStatus.IN_PROGRESS) {
+          if (dto.status === TripStatus.ON_ROUTE) {
             await tx.trip.update({
               where: { id },
               data: { actualStartDate: new Date() },
@@ -366,7 +366,7 @@ export class TripsService {
     validateTransition(existing.status, dto.status);
 
     const reasonCode = dto.reasonCode ?? this.defaultReasonCode(existing.status, dto.status);
-    const claimsResources = dto.status === TripStatus.ASSIGNED || dto.status === TripStatus.IN_PROGRESS;
+    const claimsResources = ([TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING] as TripStatus[]).includes(dto.status);
 
     let warnings: AvailabilityWarning[] = [];
     if (claimsResources) {
@@ -385,8 +385,17 @@ export class TripsService {
     const updated = await this.prisma.$transaction(async (tx) => {
       const updateData: any = { status: dto.status };
 
-      if (dto.status === TripStatus.IN_PROGRESS) {
+      if (dto.status === TripStatus.ON_ROUTE) {
         updateData.actualStartDate = new Date();
+      }
+      if (dto.status === TripStatus.COMPLETED) {
+        updateData.actualEndDate = dto.actualEndDate ? new Date(dto.actualEndDate) : new Date();
+      }
+      if (dto.status === TripStatus.WAITING) {
+        updateData.waitingStartedAt = new Date();
+      }
+      if ((dto.status === TripStatus.ON_ROUTE || dto.status === TripStatus.UNLOADING) && existing.status === TripStatus.WAITING) {
+        updateData.waitingEndedAt = new Date();
       }
 
       await tx.trip.update({
@@ -515,8 +524,8 @@ export class TripsService {
       );
     }
 
-    const hardStatuses: TripStatus[] = [TripStatus.ASSIGNED, TripStatus.IN_PROGRESS];
-    const softStatuses: TripStatus[] = [TripStatus.PENDING];
+    const hardStatuses: TripStatus[] = [TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING];
+    const softStatuses: TripStatus[] = [TripStatus.DRAFT, TripStatus.PENDING];
 
     const excludeFilter = options?.excludeTripId
       ? { id: { not: options.excludeTripId } }
@@ -543,7 +552,7 @@ export class TripsService {
         select: { id: true, tripNumber: true, status: true, startDate: true, endDate: true },
         orderBy: { createdAt: 'desc' },
       }),
-      options?.targetStatus === TripStatus.ASSIGNED || options?.targetStatus === TripStatus.IN_PROGRESS
+      options?.targetStatus && hardStatuses.includes(options.targetStatus)
         ? this.prisma.trip.findMany({
             where: {
               vehicleId,
@@ -554,7 +563,7 @@ export class TripsService {
             select: { id: true, tripNumber: true, status: true, startDate: true, endDate: true },
           })
         : Promise.resolve([]),
-      options?.targetStatus === TripStatus.ASSIGNED || options?.targetStatus === TripStatus.IN_PROGRESS
+      options?.targetStatus && hardStatuses.includes(options.targetStatus)
         ? this.prisma.trip.findMany({
             where: {
               driverId,
@@ -621,7 +630,7 @@ export class TripsService {
 
     if (query.activeOnly) {
       where.status = {
-        in: [TripStatus.PENDING, TripStatus.ASSIGNED, TripStatus.IN_PROGRESS],
+        in: [TripStatus.PENDING, TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING],
       };
     } else if (query.status) {
       where.status = query.status;
@@ -710,10 +719,15 @@ export class TripsService {
 
   private defaultReasonCode(from: TripStatus, to: TripStatus): string {
     if (to === TripStatus.ASSIGNED) return STATUS_REASON_CODES.DISPATCHER_ASSIGNED;
-    if (to === TripStatus.IN_PROGRESS && from === TripStatus.PENDING) return STATUS_REASON_CODES.IMMEDIATE_DISPATCH;
-    if (to === TripStatus.IN_PROGRESS) return STATUS_REASON_CODES.TRIP_STARTED;
+    if (to === TripStatus.DRIVER_CONFIRMED) return STATUS_REASON_CODES.DRIVER_CONFIRMED;
+    if (to === TripStatus.LOADING) return STATUS_REASON_CODES.LOADING_STARTED;
+    if (to === TripStatus.ON_ROUTE && from === TripStatus.WAITING) return STATUS_REASON_CODES.WAITING_RESUMED;
+    if (to === TripStatus.ON_ROUTE) return STATUS_REASON_CODES.TRIP_STARTED;
+    if (to === TripStatus.WAITING) return STATUS_REASON_CODES.WAITING_STARTED;
+    if (to === TripStatus.UNLOADING) return STATUS_REASON_CODES.UNLOADING_STARTED;
     if (to === TripStatus.COMPLETED) return STATUS_REASON_CODES.TRIP_COMPLETED;
     if (to === TripStatus.CANCELLED) return STATUS_REASON_CODES.DISPATCHER_CANCELLED;
+    if (to === TripStatus.PENDING && from === TripStatus.DRAFT) return STATUS_REASON_CODES.DRAFT_SUBMITTED;
     return STATUS_REASON_CODES.STATUS_EDIT;
   }
 

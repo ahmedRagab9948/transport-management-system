@@ -8,9 +8,14 @@ import { cn } from '@/lib/utils';
 import type { TripStatusHistory, TripStatus } from '../types/trip.types';
 
 const STATUS_COLORS: Record<string, string> = {
+  DRAFT: 'bg-gray-400',
   PENDING: 'bg-gray-400',
   ASSIGNED: 'bg-blue-500',
-  IN_PROGRESS: 'bg-amber-500',
+  DRIVER_CONFIRMED: 'bg-blue-500',
+  LOADING: 'bg-amber-500',
+  ON_ROUTE: 'bg-amber-500',
+  WAITING: 'bg-amber-500',
+  UNLOADING: 'bg-amber-500',
   COMPLETED: 'bg-emerald-500',
   CANCELLED: 'bg-red-500',
 };

@@ -10,6 +10,7 @@ import {
   Users,
   BarChart3,
   Contact,
+  Monitor,
 } from 'lucide-react';
 import type { PermissionKey } from './permissions';
 import { PERMISSIONS } from './permissions';
@@ -56,6 +57,13 @@ export const NAVIGATION_REGISTRY: NavigationSection[] = [
     id: 'operations',
     label: 'Operations',
     items: [
+      {
+        id: 'dispatch-board',
+        label: 'Dispatch Board',
+        href: ROUTES.dispatchBoard,
+        icon: Monitor,
+        permission: PERMISSIONS.VIEW_DISPATCH_BOARD,
+      },
       {
         id: 'trips',
         label: 'Trips',

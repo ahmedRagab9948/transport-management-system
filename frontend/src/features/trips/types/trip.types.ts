@@ -1,4 +1,4 @@
-export type TripStatus = 'PENDING' | 'ASSIGNED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type TripStatus = 'DRAFT' | 'PENDING' | 'ASSIGNED' | 'DRIVER_CONFIRMED' | 'LOADING' | 'ON_ROUTE' | 'WAITING' | 'UNLOADING' | 'COMPLETED' | 'CANCELLED';
 
 export interface TripStatusHistory {
   id: string;

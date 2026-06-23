@@ -65,6 +65,10 @@ export const DOMAIN_PERMISSIONS = [
   { key: 'UPDATE_CONTRACT', description: 'Update contracts' },
   { key: 'DELETE_CONTRACT', description: 'Soft-delete contracts' },
   { key: 'VIEW_REPORTS', description: 'View reports and analytics' },
+  { key: 'VIEW_DISPATCH_BOARD', description: 'View dispatch board and real-time trip statuses' },
+  { key: 'DISPATCH_ASSIGN', description: 'Assign drivers/vehicles to trips from dispatch board' },
+  { key: 'DISPATCH_TRANSITION', description: 'Transition trip status from dispatch board' },
+  { key: 'DISPATCH_MANAGE', description: 'Manage dispatch board settings and resources' },
 ] as const;
 
 export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS];
@@ -76,6 +80,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_TRIPS',
     'CREATE_TRIP',
     'UPDATE_TRIP',
+    'VIEW_NOTIFICATIONS',
     'VIEW_VEHICLES',
     'CREATE_VEHICLE',
     'UPDATE_VEHICLE',
@@ -90,6 +95,10 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_CONTRACTS',
     'CREATE_CONTRACT',
     'UPDATE_CONTRACT',
+    'VIEW_DISPATCH_BOARD',
+    'DISPATCH_ASSIGN',
+    'DISPATCH_TRANSITION',
+    'DISPATCH_MANAGE',
   ],
   [ROLES.MANAGER.name]: [
     'VIEW_TRIPS',
@@ -108,6 +117,8 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'CREATE_CONTRACT',
     'UPDATE_CONTRACT',
     'VIEW_REPORTS',
+    'VIEW_DISPATCH_BOARD',
+    'VIEW_NOTIFICATIONS',
   ],
   [ROLES.VIEWER.name]: [
     'VIEW_TRIPS',

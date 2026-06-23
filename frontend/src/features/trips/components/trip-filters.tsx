@@ -52,9 +52,14 @@ export function TripFilters({
   const { data: clients = [] } = useTripClients();
 
   const statuses: Array<{ value: TripStatus; label: string }> = [
+    { value: 'DRAFT', label: t('common_statuses.draft') },
     { value: 'PENDING', label: t('common_statuses.pending') },
     { value: 'ASSIGNED', label: t('common_statuses.assigned') },
-    { value: 'IN_PROGRESS', label: t('common_statuses.in_progress') },
+    { value: 'DRIVER_CONFIRMED', label: t('common_statuses.driver_confirmed') },
+    { value: 'LOADING', label: t('common_statuses.loading') },
+    { value: 'ON_ROUTE', label: t('common_statuses.on_route') },
+    { value: 'WAITING', label: t('common_statuses.waiting') },
+    { value: 'UNLOADING', label: t('common_statuses.unloading') },
     { value: 'COMPLETED', label: t('common_statuses.completed') },
     { value: 'CANCELLED', label: t('common_statuses.cancelled') },
   ];

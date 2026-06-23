@@ -5,9 +5,14 @@
 export type StatusTone = 'neutral' | 'info' | 'warning' | 'success' | 'danger';
 
 export const TRIP_STATUS_TONES: Record<string, StatusTone> = {
+  DRAFT: 'neutral',
   PENDING: 'neutral',
   ASSIGNED: 'info',
-  IN_PROGRESS: 'warning',
+  DRIVER_CONFIRMED: 'info',
+  LOADING: 'warning',
+  ON_ROUTE: 'warning',
+  WAITING: 'warning',
+  UNLOADING: 'warning',
   COMPLETED: 'success',
   CANCELLED: 'danger',
 };

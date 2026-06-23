@@ -39,6 +39,8 @@ export function useCreateDriver() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
     },
   });
 }
@@ -53,6 +55,8 @@ export function useUpdateDriver(id: string) {
         queryClient.invalidateQueries({ queryKey: driversQueryKeys.all }),
         queryClient.invalidateQueries({ queryKey: driversQueryKeys.detail(id) }),
         queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
+        queryClient.invalidateQueries({ queryKey: ['drivers-summary'] }),
+        queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] }),
       ]);
     },
   });
@@ -66,6 +70,8 @@ export function useDeleteDriver() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
     },
   });
 }
@@ -79,6 +85,8 @@ export function useUpdateDriverStatus() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
+      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
     },
   });
 }

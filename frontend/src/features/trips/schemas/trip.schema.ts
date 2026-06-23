@@ -1,9 +1,14 @@
 import { z } from 'zod';
 
 export const tripStatusSchema = z.enum([
+  'DRAFT',
   'PENDING',
   'ASSIGNED',
-  'IN_PROGRESS',
+  'DRIVER_CONFIRMED',
+  'LOADING',
+  'ON_ROUTE',
+  'WAITING',
+  'UNLOADING',
   'COMPLETED',
   'CANCELLED',
 ]);

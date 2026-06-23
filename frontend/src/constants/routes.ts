@@ -22,6 +22,7 @@ export const ROUTES = {
   contractsDetail: (id: string) => `/contracts/${id}`,
   contractsEdit: (id: string) => `/contracts/${id}/edit`,
   reports: '/reports',
+  dispatchBoard: '/dispatch-board',
   auditLogs: '/audit-logs',
   users: '/users',
   settings: '/settings',
