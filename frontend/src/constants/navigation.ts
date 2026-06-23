@@ -58,6 +58,20 @@ export const NAVIGATION_REGISTRY: NavigationSection[] = [
     label: 'Operations',
     items: [
       {
+        id: 'clients',
+        label: 'Clients',
+        href: ROUTES.clients,
+        icon: Contact,
+        permission: PERMISSIONS.VIEW_CLIENTS,
+      },
+      {
+        id: 'contracts',
+        label: 'Contracts',
+        href: ROUTES.contracts,
+        icon: FileText,
+        permission: PERMISSIONS.VIEW_CONTRACTS,
+      },
+      {
         id: 'dispatch-board',
         label: 'Dispatch Board',
         href: ROUTES.dispatchBoard,
@@ -84,20 +98,6 @@ export const NAVIGATION_REGISTRY: NavigationSection[] = [
         href: ROUTES.drivers,
         icon: UserCircle,
         permission: PERMISSIONS.VIEW_DRIVERS,
-      },
-      {
-        id: 'clients',
-        label: 'Clients',
-        href: ROUTES.clients,
-        icon: Contact,
-        permission: PERMISSIONS.VIEW_CLIENTS,
-      },
-      {
-        id: 'contracts',
-        label: 'Contracts',
-        href: ROUTES.contracts,
-        icon: FileText,
-        permission: PERMISSIONS.VIEW_CONTRACTS,
       },
     ],
   },
