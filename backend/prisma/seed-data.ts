@@ -72,7 +72,19 @@ export const DOMAIN_PERMISSIONS = [
   { key: 'CONFIRM_DRIVER_ON_BEHALF', description: 'Confirm driver status on behalf of the driver' },
 ] as const;
 
-export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS];
+export const SECTOR_PERMISSIONS = [
+  { key: 'VIEW_SECTORS', description: 'View sectors and sub-sectors' },
+  { key: 'CREATE_SECTOR', description: 'Create new sectors' },
+  { key: 'UPDATE_SECTOR', description: 'Update sector details' },
+  { key: 'DELETE_SECTOR', description: 'Deactivate/reactivate sectors' },
+  { key: 'MANAGE_SUB_SECTORS', description: 'Manage sub-sectors within sectors' },
+  { key: 'VIEW_VEHICLE_ASSIGNMENTS', description: 'View vehicle assignments and history' },
+  { key: 'ASSIGN_VEHICLE', description: 'Assign vehicles to sub-sectors' },
+  { key: 'TRANSFER_VEHICLE', description: 'Transfer vehicles between sub-sectors' },
+  { key: 'UNASSIGN_VEHICLE', description: 'Unassign vehicles from sub-sectors' },
+] as const;
+
+export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS, ...SECTOR_PERMISSIONS];
 
 /** Role → permission keys matrix */
 export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
@@ -101,6 +113,12 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'DISPATCH_TRANSITION',
     'DISPATCH_MANAGE',
     'CONFIRM_DRIVER_ON_BEHALF',
+    'VIEW_SECTORS',
+    'MANAGE_SUB_SECTORS',
+    'VIEW_VEHICLE_ASSIGNMENTS',
+    'ASSIGN_VEHICLE',
+    'TRANSFER_VEHICLE',
+    'UNASSIGN_VEHICLE',
   ],
   [ROLES.MANAGER.name]: [
     'VIEW_TRIPS',
@@ -122,6 +140,8 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_DISPATCH_BOARD',
     'VIEW_NOTIFICATIONS',
     'CONFIRM_DRIVER_ON_BEHALF',
+    'VIEW_SECTORS',
+    'VIEW_VEHICLE_ASSIGNMENTS',
   ],
   [ROLES.VIEWER.name]: [
     'VIEW_TRIPS',
@@ -130,5 +150,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_CLIENTS',
     'VIEW_CONTRACTS',
     'VIEW_REPORTS',
+    'VIEW_SECTORS',
+    'VIEW_VEHICLE_ASSIGNMENTS',
   ],
 };

@@ -22,6 +22,7 @@ import { DashboardModule } from './modules/dashboard';
 import { DispatchBoardModule } from './modules/dispatch-board';
 import { DriversModule } from './modules/drivers';
 import { ReportsModule } from './modules/reports';
+import { SectorsModule } from './modules/sectors';
 import { TripsModule } from './modules/trips';
 import { VehiclesModule } from './modules/vehicles';
 import { PrismaModule } from './prisma/prisma.module';
@@ -44,6 +45,7 @@ import { PrismaModule } from './prisma/prisma.module';
     DispatchBoardModule,
     DriversModule,
     ReportsModule,
+    SectorsModule,
     TripsModule,
     VehiclesModule,
   ],

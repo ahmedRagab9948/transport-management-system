@@ -333,6 +333,57 @@ async function seedDemoDrivers(prisma: PrismaClient) {
   }
 }
 
+async function seedSectors(prisma: PrismaClient) {
+  const existingCount = await prisma.sector.count();
+  if (existingCount > 0) {
+    console.log('  ∼ Sectors already exist — skipping seed');
+    return;
+  }
+
+  const sectors = [
+    {
+      name: 'فراداني',
+      code: 'FRD',
+      subSectors: [{ name: 'فراداني', code: 'FRD-DEF' }],
+    },
+    {
+      name: 'فرش',
+      code: 'FRS',
+      subSectors: [
+        { name: 'الميناء', code: 'FRS-MINA' },
+        { name: 'الخضري', code: 'FRS-KHUD' },
+        { name: 'كوكاكولا', code: 'FRS-KOKA' },
+        { name: 'فرش متنوعة', code: 'FRS-MISC' },
+      ],
+    },
+    {
+      name: 'صندوق',
+      code: 'SND',
+      subSectors: [
+        { name: 'شهر 1', code: 'SND-M01' },
+        { name: 'شهر 2', code: 'SND-M02' },
+        { name: 'صندوق متنوعة', code: 'SND-MISC' },
+      ],
+    },
+  ];
+
+  for (const s of sectors) {
+    const sector = await prisma.sector.create({
+      data: {
+        name: s.name,
+        code: s.code,
+        subSectors: {
+          create: s.subSectors.map((ss) => ({
+            name: ss.name,
+            code: ss.code,
+          })),
+        },
+      },
+    });
+    console.log(`  ✓ Sector "${s.name}" — ${s.subSectors.length} sub-sectors`);
+  }
+}
+
 function printCredentials(prisma: PrismaClient) {
   console.log('\n═══════════════════════════════════════════════════════');
   console.log('              SEEDED ACCOUNTS');
@@ -379,6 +430,9 @@ async function main() {
 
     console.log('\n── Demo Drivers ──');
     await seedDemoDrivers(prisma);
+
+    console.log('\n── Sectors ──');
+    await seedSectors(prisma);
 
     printCredentials(prisma);
   } finally {
