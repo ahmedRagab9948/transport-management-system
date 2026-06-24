@@ -8,4 +8,13 @@ export const SECTOR_ERRORS = {
   SUB_SECTOR_CODE_EXISTS: 'A sub-sector with this code already exists in this sector',
   SUB_SECTOR_HAS_ASSIGNMENTS: 'Cannot deactivate sub-sector with active vehicle assignments. Transfer or unassign all vehicles first.',
   LAST_ACTIVE_SUB_SECTOR: 'Cannot deactivate the last active sub-sector in this sector. Deactivate the sector instead.',
+
+  VEHICLE_NOT_FOUND: 'Vehicle not found',
+  VEHICLE_ALREADY_ASSIGNED: 'Vehicle already has an active assignment',
+  VEHICLE_IN_MAINTENANCE: 'Cannot assign vehicle in maintenance',
+  VEHICLE_OUT_OF_SERVICE: 'Cannot assign vehicle that is out of service',
+  SUB_SECTOR_INACTIVE: 'Cannot assign to inactive sub-sector',
+  NO_ACTIVE_ASSIGNMENT: 'Vehicle does not have an active assignment',
+  VEHICLE_HAS_ACTIVE_TRIP: 'Vehicle has an active trip. Cannot change assignment while in transit.',
+  SAME_SUB_SECTOR: 'Vehicle is already assigned to this sub-sector',
 } as const;

@@ -7,7 +7,7 @@ import { SubSectorsService } from './sub-sectors.service';
 
 describe('SubSectorsService', () => {
   let service: SubSectorsService;
-  let prisma: jest.Mocked<PrismaService>;
+  let prisma: any;
   let auditService: jest.Mocked<AuditService>;
 
   const mockPrisma = {
@@ -25,7 +25,7 @@ describe('SubSectorsService', () => {
       count: jest.fn(),
     },
     $transaction: jest.fn().mockImplementation((fn: (tx: any) => any) => fn(mockPrisma)),
-  } as unknown as jest.Mocked<PrismaService>;
+  };
 
   const mockAuditService = {
     log: jest.fn(),

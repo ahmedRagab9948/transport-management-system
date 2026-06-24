@@ -190,7 +190,7 @@ model VehicleAssignmentHistory {
   vehicleId               String           @map("vehicle_id") @db.Uuid
   subSectorId             String?          @map("sub_sector_id") @db.Uuid
   assignedAt              DateTime         @map("assigned_at")
-  unassignedAt            DateTime         @map("unassigned_at")
+  unassignedAt            DateTime?        @map("unassigned_at")
   transferredFromSubSectorId String?       @map("transferred_from_sub_sector_id") @db.Uuid
   reason                  AssignmentReason
   notes                   String?          @db.Text
