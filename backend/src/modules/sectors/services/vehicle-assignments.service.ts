@@ -18,11 +18,20 @@ export class VehicleAssignmentsService {
     private readonly auditService: AuditService,
   ) {}
 
+  async getAssignment(vehicleId: string) {
+    const assignment = await this.prisma.vehicleAssignment.findFirst({
+      where: { vehicleId, unassignedAt: null },
+      include: { subSector: { include: { sector: true } } },
+    });
+    return assignment;
+  }
+
   async assign(vehicleId: string, dto: AssignVehicleDto, userId: string) {
     const vehicle = await this.prisma.vehicle.findUnique({ where: { id: vehicleId } });
     if (!vehicle) throw new NotFoundException(SECTOR_ERRORS.VEHICLE_NOT_FOUND);
     if (vehicle.status === VehicleStatus.IN_MAINTENANCE) throw new BadRequestException(SECTOR_ERRORS.VEHICLE_IN_MAINTENANCE);
     if (vehicle.status === VehicleStatus.OUT_OF_SERVICE) throw new BadRequestException(SECTOR_ERRORS.VEHICLE_OUT_OF_SERVICE);
+    if (vehicle.status === VehicleStatus.IN_TRIP) throw new BadRequestException(SECTOR_ERRORS.VEHICLE_HAS_ACTIVE_TRIP);
 
     const existingAssignment = await this.prisma.vehicleAssignment.findFirst({
       where: { vehicleId, unassignedAt: null },
@@ -145,10 +154,11 @@ export class VehicleAssignmentsService {
 
     const now = new Date();
 
-    await this.prisma.$transaction(async (tx) => {
-      await tx.vehicleAssignment.update({
+    const updated = await this.prisma.$transaction(async (tx) => {
+      const updatedAssignment = await tx.vehicleAssignment.update({
         where: { id: currentAssignment.id },
         data: { unassignedAt: now },
+        include: { subSector: { include: { sector: true } } },
       });
 
       await tx.vehicleAssignmentHistory.create({
@@ -170,6 +180,10 @@ export class VehicleAssignmentsService {
         entityId: currentAssignment.id,
         oldValues: { subSectorId: currentAssignment.subSectorId },
       });
+
+      return updatedAssignment;
     });
+
+    return updated;
   }
 }

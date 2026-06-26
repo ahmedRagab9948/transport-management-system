@@ -111,6 +111,12 @@ describe('VehicleAssignmentsService', () => {
       await expect(service.assign('vehicle-1', dto, 'user-1')).rejects.toThrow(BadRequestException);
     });
 
+    it('FAIL: should throw BadRequestException when vehicle is in transit (IN_TRIP)', async () => {
+      mockPrisma.vehicle.findUnique.mockResolvedValue({ ...mockVehicle, status: VehicleStatus.IN_TRIP });
+
+      await expect(service.assign('vehicle-1', dto, 'user-1')).rejects.toThrow(BadRequestException);
+    });
+
     it('FAIL: should throw ConflictException when vehicle already has active assignment', async () => {
       mockPrisma.vehicle.findUnique.mockResolvedValue(mockVehicle);
       mockPrisma.vehicleAssignment.findFirst.mockResolvedValue({ id: 'existing', unassignedAt: null });

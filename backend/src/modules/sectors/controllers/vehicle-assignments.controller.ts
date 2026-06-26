@@ -1,4 +1,4 @@
-import { Body, Controller, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestjs/common';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
@@ -10,6 +10,12 @@ import { VehicleAssignmentsService } from '../services/vehicle-assignments.servi
 @Controller('vehicles')
 export class VehicleAssignmentsController {
   constructor(private readonly vehicleAssignmentsService: VehicleAssignmentsService) {}
+
+  @Get(':vehicleId/assignment')
+  @RequirePermissions('VIEW_VEHICLE_ASSIGNMENTS')
+  getAssignment(@Param('vehicleId', ParseUUIDPipe) vehicleId: string) {
+    return this.vehicleAssignmentsService.getAssignment(vehicleId);
+  }
 
   @Post(':vehicleId/assign')
   @RequirePermissions('ASSIGN_VEHICLE')
