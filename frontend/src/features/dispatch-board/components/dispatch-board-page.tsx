@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useT } from '@/lib/i18n';
 import { PageHeader } from '@/components/shared/page-header';
-import { DataFetchShell } from '@/components/shared/data-fetch-shell';
+import { DataFetchShell, PageSection } from '@/components/shared';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -61,7 +61,7 @@ export function DispatchBoardPage() {
     : undefined;
 
   return (
-    <div className="space-y-6">
+    <PageSection variant="wrapper">
       <PageHeader
         title={t('dispatch_board.title')}
         description={t('dispatch_board.summary')}
@@ -143,6 +143,6 @@ export function DispatchBoardPage() {
           isLoading={resourcesLoading}
         />
       )}
-    </div>
+    </PageSection>
   );
 }
