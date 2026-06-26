@@ -46,9 +46,14 @@ export const CONTRACT_STATUS_TONES: Record<string, StatusTone> = {
   TERMINATED: 'danger',
 };
 
+export const SECTOR_STATUS_TONES: Record<string, StatusTone> = {
+  ACTIVE: 'success',
+  INACTIVE: 'neutral',
+};
+
 export function resolveStatusTone(
   status: string,
-  domain: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract' = 'trip',
+  domain: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract' | 'sector' = 'trip',
 ): StatusTone {
   const normalized = status.toUpperCase().replace(/\s+/g, '_');
   const map =
@@ -60,7 +65,9 @@ export function resolveStatusTone(
           ? CLIENT_STATUS_TONES
           : domain === 'contract'
             ? CONTRACT_STATUS_TONES
-            : TRIP_STATUS_TONES;
+            : domain === 'sector'
+              ? SECTOR_STATUS_TONES
+              : TRIP_STATUS_TONES;
 
   return map[normalized] ?? 'neutral';
 }

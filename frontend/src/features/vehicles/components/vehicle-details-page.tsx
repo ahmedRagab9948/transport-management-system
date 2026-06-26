@@ -10,6 +10,7 @@ import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { useVehicle } from '../hooks/use-vehicles';
+import { VehicleAssignmentSection } from '@/features/sectors/components/vehicle-assignment-section';
 import type { VehiclePlateRole } from '../types/vehicle.types';
 
 interface VehicleDetailsPageProps {
@@ -120,6 +121,8 @@ export function VehicleDetailsPage({ vehicleId }: VehicleDetailsPageProps) {
           <DetailField label={t('vehicles.plates')} value={t('details.no_plates')} />
         )}
       </DetailSection>
+
+      <VehicleAssignmentSection vehicleId={vehicleId} />
 
       {vehicle.notes ? (
         <DetailSection title={t('common.notes')}>

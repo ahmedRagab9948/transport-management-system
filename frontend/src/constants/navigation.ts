@@ -72,6 +72,13 @@ export const NAVIGATION_REGISTRY: NavigationSection[] = [
         permission: PERMISSIONS.VIEW_CONTRACTS,
       },
       {
+        id: 'sectors',
+        label: 'Sectors',
+        href: ROUTES.sectors,
+        icon: Route,
+        permission: PERMISSIONS.VIEW_SECTORS,
+      },
+      {
         id: 'dispatch-board',
         label: 'Dispatch Board',
         href: ROUTES.dispatchBoard,
