@@ -24,7 +24,7 @@ interface EntityActionsProps {
   editRoute?: string;
   viewRoute?: string;
   status?: string;
-  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract';
+  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract' | 'sector';
   statusOptions?: Array<{ value: string; label: string; tone: StatusTone }>;
   onDelete?: () => Promise<void>;
   onStatusChange?: (newStatus: string) => Promise<void>;

@@ -32,12 +32,12 @@ function SectorActionsCell({ row }: SectorActionsCellProps) {
       viewRoute={ROUTES.sectorsDetail(row.id)}
       editRoute={ROUTES.sectorsEdit(row.id)}
       status={row.status}
-      domain="client"
+      domain="sector"
       statusOptions={STATUS_OPTIONS}
       permissions={{
         viewPermission: PERMISSIONS.VIEW_SECTORS,
         editPermission: PERMISSIONS.UPDATE_SECTOR,
-        statusPermission: PERMISSIONS.CHANGE_SECTOR_STATUS,
+        statusPermission: PERMISSIONS.DELETE_SECTOR,
       }}
       onStatusChange={async (newStatus) => {
         await statusMutation.mutateAsync({ id: row.id, status: newStatus });

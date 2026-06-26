@@ -30,7 +30,7 @@ interface StatusChangeDialogProps {
   description: string;
   currentStatus: string;
   statusOptions: StatusOption[];
-  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract';
+  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract' | 'sector';
   isLoading?: boolean;
   onConfirm: (newStatus: string) => void;
 }

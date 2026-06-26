@@ -23,7 +23,7 @@ const toneVariants = cva('border-0', {
 
 export interface StatusBadgeProps extends VariantProps<typeof toneVariants> {
   status: string;
-  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract';
+  domain?: 'trip' | 'vehicle' | 'driver' | 'client' | 'contract' | 'sector';
   label?: string;
   className?: string;
 }
