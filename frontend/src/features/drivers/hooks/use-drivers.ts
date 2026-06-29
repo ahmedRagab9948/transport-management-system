@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { driversService } from '../services/drivers.service';
 import type {
   CreateDriverPayload,
@@ -19,6 +19,7 @@ export function useDrivers(params: DriversQueryParams) {
     queryFn: () => driversService.getDrivers(params),
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

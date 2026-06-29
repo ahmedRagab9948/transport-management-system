@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { clientsService } from '../services/clients.service';
 import type {
   ClientsQueryParams,
@@ -21,6 +21,7 @@ export function useClients(params: ClientsQueryParams) {
     queryFn: () => clientsService.getClients(params),
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

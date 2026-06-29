@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Eye,
@@ -55,7 +55,7 @@ const VALID_TRANSITIONS: Record<TripStatus, TripStatus[]> = LIFECYCLE_ACTIONS.re
 VALID_TRANSITIONS['COMPLETED'] = [];
 VALID_TRANSITIONS['CANCELLED'] = [];
 
-export function TripActions({ trip }: TripActionsProps) {
+export const TripActions = memo(function TripActions({ trip }: TripActionsProps) {
   const router = useRouter();
   const { t } = useT();
   const { hasPermission } = usePermissions();
@@ -316,4 +316,4 @@ export function TripActions({ trip }: TripActionsProps) {
       />
     </>
   );
-}
+});

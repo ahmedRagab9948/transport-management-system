@@ -1,7 +1,7 @@
 'use client';
 
 import { PieChart as PieChartIcon } from 'lucide-react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { GlassCard, SectionHeader } from '@/components/shared';
 import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
@@ -58,7 +58,7 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
     color: getColor(d.status),
   }));
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (chartData.length > 0 && chartRef.current) {
       const { width, height } = chartRef.current.getBoundingClientRect();
       if (width > 0 && height > 0) setShowChart(true);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BarChart2 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { GlassCard, SectionHeader } from '@/components/shared';
@@ -49,7 +49,7 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
     fill: STATUS_BAR_COLORS[d.status] ?? 'hsl(var(--primary))',
   }));
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (chartData.length > 0 && chartRef.current) {
       const { width, height } = chartRef.current.getBoundingClientRect();
       if (width > 0 && height > 0) setShowChart(true);

@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 import { ArrowDown, ArrowUp } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -40,8 +40,12 @@ function AnimatedValue({ value }: { value: number }) {
   const motionValue = useMotionValue(0);
   const spring = useSpring(motionValue, { duration: 1500, bounce: 0 });
   const displayValue = useTransform(spring, (latest) => Math.round(latest).toLocaleString());
+  const prevValue = useRef<number | null>(null);
 
-  motionValue.set(value);
+  if (prevValue.current !== value) {
+    prevValue.current = value;
+    motionValue.set(value);
+  }
 
   return <motion.span>{displayValue}</motion.span>;
 }

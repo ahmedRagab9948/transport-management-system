@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { vehiclesService } from '../services/vehicles.service';
 import type {
   CreateVehiclePayload,
@@ -19,6 +19,7 @@ export function useVehicles(params: VehiclesQueryParams) {
     queryFn: () => vehiclesService.getVehicles(params),
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

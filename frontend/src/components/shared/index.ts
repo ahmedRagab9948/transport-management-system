@@ -40,8 +40,6 @@ export { EmptyState, type EmptyStateProps } from './empty-state';
 export { ExportDropdown } from './export-dropdown';
 export { FilterChips, type FilterChip } from './filter-chips';
 export { GlobalSearch } from './global-search';
-export { LocaleArrow } from './locale-arrow';
-export { LocalizedCity } from './localized-city';
 export { LoadingSkeleton, type LoadingSkeletonProps } from './loading-skeleton';
 export { FormCard } from './form-card';
 export { FormSection } from './form-section';

@@ -3,8 +3,8 @@
 import { useMemo } from 'react';
 import { DollarSign, Target, Truck, Users, XCircle } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { ChartCard } from '@/components/shared/charts';
 
+const ChartCard = dynamic(() => import('@/components/shared/charts').then(m => m.ChartCard), { ssr: false, loading: () => null });
 const BarChartWidget = dynamic(() => import('@/components/shared/charts').then(m => m.BarChartWidget), { ssr: false, loading: () => null });
 const LineChartWidget = dynamic(() => import('@/components/shared/charts').then(m => m.LineChartWidget), { ssr: false, loading: () => null });
 const PieChartWidget = dynamic(() => import('@/components/shared/charts').then(m => m.PieChartWidget), { ssr: false, loading: () => null });

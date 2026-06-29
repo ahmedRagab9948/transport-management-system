@@ -1,5 +1,5 @@
 import { QUERY_KEYS, TRIP_PREFIX } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { tripsService } from '../services/trips.service';
 import type {
   CreateTripPayload,
@@ -50,6 +50,7 @@ export function useTrips(params: TripsQueryParams) {
     },
     staleTime: STALE_TIMES.list,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

@@ -1,5 +1,5 @@
 import { QUERY_KEYS } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { sectorsService } from '../services/sectors.service';
 import { sectorKeys } from '../constants/sector-query-keys';
 import type {
@@ -14,6 +14,7 @@ export function useSectors(params: SectorsQueryParams) {
     queryFn: () => sectorsService.getSectors(params),
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 

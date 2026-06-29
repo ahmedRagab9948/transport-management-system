@@ -1,7 +1,7 @@
 'use client';
 
 import { Activity } from 'lucide-react';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -26,7 +26,7 @@ export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [showChart, setShowChart] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (data && data.length > 0 && chartRef.current) {
       const { width, height } = chartRef.current.getBoundingClientRect();
       if (width > 0 && height > 0) setShowChart(true);

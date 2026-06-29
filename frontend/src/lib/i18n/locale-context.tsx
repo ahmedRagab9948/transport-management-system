@@ -1,8 +1,7 @@
 'use client';
 
-import { createContext, useContext, useCallback, useLayoutEffect, useMemo, useReducer, useSyncExternalStore } from 'react';
+import { createContext, useContext, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useSyncExternalStore } from 'react';
 import en from '@/messages/en.json';
-import ar from '@/messages/ar.json';
 
 export type Locale = 'en' | 'ar';
 
@@ -18,7 +17,7 @@ interface LocaleContextValue {
 const LOCALE_STORAGE_KEY = 'tms_locale';
 const LOCALE_COOKIE_NAME = 'tms_locale';
 
-const messages: Record<Locale, Record<string, unknown>> = { en, ar };
+let messages: Record<string, Record<string, unknown>> = { en };
 
 // ---- Module-level state + subscriptions (bypasses React context for t()) ----
 let _locale: Locale = 'en';
@@ -95,6 +94,20 @@ export function LocaleProvider({ children, initialLocale = 'en' }: { children: R
   }, []);
 
   const locale: Locale = useSyncExternalStore(_subscribe, _getSnapshot, () => initialLocale);
+
+  useEffect(() => {
+    async function loadArabic() {
+      if (!messages.ar) {
+        const mod = await import('@/messages/ar.json');
+        messages = { ...messages, ar: (mod.default ?? mod) as Record<string, unknown> };
+        _emit();
+        setLocaleVersion();
+      }
+    }
+    if (locale === 'ar') {
+      loadArabic();
+    }
+  }, [locale, localeVersion]);
 
   const dir: 'ltr' | 'rtl' = locale === 'ar' ? 'rtl' : 'ltr';
   const isRTL = locale === 'ar';

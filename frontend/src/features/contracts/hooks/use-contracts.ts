@@ -1,5 +1,5 @@
 import { DEFAULT_PAGE, MAX_PAGE_SIZE, QUERY_KEYS } from '@tms/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { contractsService } from '../services/contracts.service';
 import type {
   ContractsQueryParams,
@@ -22,6 +22,7 @@ export function useContracts(params: ContractsQueryParams) {
     queryFn: () => contractsService.getContracts(params),
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
 }
 
