@@ -8,6 +8,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import { useQuery } from '@tanstack/react-query';
@@ -51,7 +52,7 @@ export function SectorsListPage() {
   const summaryQuery = useQuery({
     queryKey: ['sectors-summary'],
     queryFn: async () => {
-      const res = await sectorsService.getSectors({ page: 1, limit: 99999 });
+      const res = await sectorsService.getSectors({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 5 * 60 * 1000,
@@ -66,7 +67,7 @@ export function SectorsListPage() {
   const sectorColumns = useSectorColumns();
 
   async function exportToCsv() {
-    const response = await sectorsService.getSectors({ page: 1, limit: 99999 });
+    const response = await sectorsService.getSectors({ page: 1, limit: MAX_PAGE_SIZE });
     const allSectors = response.items;
     const headers = ['name', 'code', 'subSectors', 'status', 'createdAt'];
     const rows = allSectors.map((s) => [

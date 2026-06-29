@@ -1,4 +1,4 @@
-import { DEFAULT_PAGE, QUERY_KEYS } from '@tms/shared';
+import { DEFAULT_PAGE, MAX_PAGE_SIZE, QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { contractsService } from '../services/contracts.service';
 import type {
@@ -96,7 +96,7 @@ export function useUpdateContractStatus() {
 export function useClientContracts(clientId: string) {
   return useQuery({
     queryKey: [...CONTRACTS_ROOT, 'by-client', clientId] as const,
-    queryFn: () => contractsService.getContracts({ page: DEFAULT_PAGE, limit: 99999, clientId }),
+    queryFn: () => contractsService.getContracts({ page: DEFAULT_PAGE, limit: MAX_PAGE_SIZE, clientId }),
     enabled: !!clientId,
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,

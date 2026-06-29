@@ -8,6 +8,7 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
@@ -53,7 +54,7 @@ export function DriversListPage() {
   const summaryQuery = useQuery({
     queryKey: ['drivers-summary'],
     queryFn: async () => {
-      const res = await driversService.getDrivers({ page: 1, limit: 99999 });
+      const res = await driversService.getDrivers({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 5 * 60 * 1000,
@@ -69,7 +70,7 @@ export function DriversListPage() {
   const driverColumns = useDriverColumns();
 
   async function exportToCsv() {
-    const response = await driversService.getDrivers({ page: 1, limit: 99999 });
+    const response = await driversService.getDrivers({ page: 1, limit: MAX_PAGE_SIZE });
     const allDrivers = response.items;
     const headers = ['driverCode', 'fullName', 'phone', 'nationalId', 'licenseNumber', 'status'];
     const rows = allDrivers.map((d) => [

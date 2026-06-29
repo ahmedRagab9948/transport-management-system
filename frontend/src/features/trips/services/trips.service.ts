@@ -1,4 +1,4 @@
-import { DEFAULT_PAGE } from '@tms/shared';
+import { DEFAULT_PAGE, MAX_PAGE_SIZE } from '@tms/shared';
 import { apiClient } from '@/services/api-client';
 import { unwrapApiResponse } from '@/lib/api/unwrap';
 
@@ -80,7 +80,7 @@ export const tripsService = {
 
   async getVehicles(): Promise<Array<{ id: string; vehicleCode: string }>> {
     const response = await apiClient.get('/vehicles', {
-      params: { page: DEFAULT_PAGE, limit: 99999 },
+      params: { page: DEFAULT_PAGE, limit: MAX_PAGE_SIZE },
     });
     const data = unwrapApiResponse<{ items: Array<{ id: string; vehicleCode: string }> }>(response);
     return data.items;
@@ -88,7 +88,7 @@ export const tripsService = {
 
   async getDrivers(): Promise<Array<{ id: string; fullName: string; driverCode?: string }>> {
     const response = await apiClient.get('/drivers', {
-      params: { page: DEFAULT_PAGE, limit: 99999 },
+      params: { page: DEFAULT_PAGE, limit: MAX_PAGE_SIZE },
     });
     const data = unwrapApiResponse<{ items: Array<{ id: string; fullName: string; driverCode?: string }> }>(response);
     return data.items;
@@ -96,7 +96,7 @@ export const tripsService = {
 
   async getClients(): Promise<Array<{ id: string; companyName: string }>> {
     const response = await apiClient.get('/clients', {
-      params: { page: DEFAULT_PAGE, limit: 99999 },
+      params: { page: DEFAULT_PAGE, limit: MAX_PAGE_SIZE },
     });
     const data = unwrapApiResponse<{ items: Array<{ id: string; companyName: string }> }>(response);
     return data.items;

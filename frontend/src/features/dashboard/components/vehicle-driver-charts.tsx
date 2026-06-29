@@ -1,6 +1,7 @@
 'use client';
 
 import { PieChart as PieChartIcon } from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import { GlassCard, SectionHeader } from '@/components/shared';
 import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
@@ -49,11 +50,22 @@ interface DonutChartProps {
 
 function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
   const { t } = useT();
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [showChart, setShowChart] = useState(false);
   const chartData = (data ?? []).map((d) => ({
     name: t(getStatusTranslationKey(d.status)),
     value: d.count,
     color: getColor(d.status),
   }));
+
+  useLayoutEffect(() => {
+    if (chartData.length > 0 && chartRef.current) {
+      const { width, height } = chartRef.current.getBoundingClientRect();
+      if (width > 0 && height > 0) setShowChart(true);
+    } else {
+      setShowChart(false);
+    }
+  }, [chartData]);
 
   return (
     <GlassCard variant="surface" className="flex-1">
@@ -72,8 +84,8 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 sm:flex-row">
-            <div className="h-[200px] sm:h-[224px] lg:h-[260px] w-full max-w-[200px] sm:max-w-xs">
-            <ResponsiveContainer width="100%" height="100%">
+            <div ref={chartRef} className="h-[200px] sm:h-[224px] lg:h-[260px] w-full max-w-[200px] sm:max-w-xs">
+            {showChart && <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData}
@@ -101,7 +113,7 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
                   wrapperStyle={{ backdropFilter: 'blur(8px)' }}
                 />
               </PieChart>
-            </ResponsiveContainer>
+            </ResponsiveContainer>}
             </div>
             <div className="flex flex-col gap-1.5 text-sm">
               {chartData.map((entry) => (

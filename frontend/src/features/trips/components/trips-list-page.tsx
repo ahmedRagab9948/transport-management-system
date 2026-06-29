@@ -9,6 +9,7 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
@@ -72,7 +73,7 @@ export function TripsListPage() {
   const summaryQuery = useQuery({
     queryKey: tripsQueryKeys.summary,
     queryFn: async () => {
-      const res = await tripsService.getTrips({ page: 1, limit: 99999 });
+      const res = await tripsService.getTrips({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 30 * 1000,
@@ -89,7 +90,7 @@ export function TripsListPage() {
   const tripColumns = useTripColumns();
 
   async function exportToCsv() {
-    const response = await tripsService.getTrips({ page: 1, limit: 99999 });
+    const response = await tripsService.getTrips({ page: 1, limit: MAX_PAGE_SIZE });
     const allTrips = response.items;
     const headers = ['tripNumber', 'clientId', 'startDate', 'driver', 'plate', 'toLocation', 'status'];
     const rows = allTrips.map((trip) => [

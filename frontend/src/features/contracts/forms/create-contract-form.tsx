@@ -16,7 +16,7 @@ import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes
 import { useScrollToError } from '@/components/shared/hooks/use-scroll-to-error';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
-import { CONTRACT_STATUS } from '@tms/shared';
+import { CONTRACT_STATUS, MAX_PAGE_SIZE } from '@tms/shared';
 import { useContractClients } from '../hooks/use-contracts';
 import { useVehicles } from '../../vehicles/hooks/use-vehicles';
 import { useDrivers } from '../../drivers/hooks/use-drivers';
@@ -42,8 +42,8 @@ export function CreateContractForm({
 }: CreateContractFormProps) {
   const { t } = useT();
   const { data: clients = [], isLoading: clientsLoading } = useContractClients();
-  const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles({ page: 1, limit: 99999 });
-  const { data: driversData, isLoading: driversLoading } = useDrivers({ page: 1, limit: 99999 });
+  const { data: vehiclesData, isLoading: vehiclesLoading } = useVehicles({ page: 1, limit: MAX_PAGE_SIZE });
+  const { data: driversData, isLoading: driversLoading } = useDrivers({ page: 1, limit: MAX_PAGE_SIZE });
 
   const vehicles = vehiclesData?.items ?? [];
   const drivers = driversData?.items ?? [];

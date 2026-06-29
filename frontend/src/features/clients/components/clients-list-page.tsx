@@ -8,6 +8,7 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
@@ -51,7 +52,7 @@ export function ClientsListPage() {
   const summaryQuery = useQuery({
     queryKey: ['clients-summary'],
     queryFn: async () => {
-      const res = await clientsService.getClients({ page: 1, limit: 99999 });
+      const res = await clientsService.getClients({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 5 * 60 * 1000,
@@ -66,7 +67,7 @@ export function ClientsListPage() {
   const clientColumns = useClientColumns();
 
   async function exportToCsv() {
-    const response = await clientsService.getClients({ page: 1, limit: 99999 });
+    const response = await clientsService.getClients({ page: 1, limit: MAX_PAGE_SIZE });
     const allClients = response.items;
     const headers = ['companyName', 'contactPerson', 'email', 'phone', 'status'];
     const rows = allClients.map((c) => [

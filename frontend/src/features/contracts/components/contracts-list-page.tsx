@@ -8,6 +8,7 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import { CONTRACT_STATUS } from '@tms/shared';
 import Link from 'next/link';
@@ -52,7 +53,7 @@ export function ContractsListPage() {
   const summaryQuery = useQuery({
     queryKey: ['contracts-summary'],
     queryFn: async () => {
-      const res = await contractsService.getContracts({ page: 1, limit: 99999 });
+      const res = await contractsService.getContracts({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 5 * 60 * 1000,
@@ -68,7 +69,7 @@ export function ContractsListPage() {
   const contractColumns = useContractColumns();
 
   async function exportToCsv() {
-    const response = await contractsService.getContracts({ page: 1, limit: 99999 });
+    const response = await contractsService.getContracts({ page: 1, limit: MAX_PAGE_SIZE });
     const allContracts = response.items;
     const headers = ['contractNumber', 'client', 'startDate', 'endDate', 'price', 'status'];
     const rows = allContracts.map((c) => [

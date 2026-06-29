@@ -1,5 +1,6 @@
 'use client';
 
+import { useLayoutEffect, useRef, useState } from 'react';
 import { BarChart2 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { GlassCard, SectionHeader } from '@/components/shared';
@@ -40,11 +41,22 @@ const STATUS_LABELS: Record<string, string> = {
 
 export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
   const { t } = useT();
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [showChart, setShowChart] = useState(false);
   const chartData = (data ?? []).map((d) => ({
     name: t(STATUS_LABELS[d.status] ?? d.status),
     count: d.count,
     fill: STATUS_BAR_COLORS[d.status] ?? 'hsl(var(--primary))',
   }));
+
+  useLayoutEffect(() => {
+    if (chartData.length > 0 && chartRef.current) {
+      const { width, height } = chartRef.current.getBoundingClientRect();
+      if (width > 0 && height > 0) setShowChart(true);
+    } else {
+      setShowChart(false);
+    }
+  }, [chartData]);
 
   return (
     <GlassCard variant="surface">
@@ -62,8 +74,8 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
             <p className="text-sm font-medium text-muted-foreground">{t('dashboard.no_trip_data')}</p>
           </div>
         ) : (
-          <div className="h-[200px] sm:h-[256px] lg:h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
+          {showChart && <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" strokeOpacity={0.5} />
               <XAxis
@@ -97,7 +109,7 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
                 ))}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
+          </ResponsiveContainer>}
           </div>
         )}
       </div>

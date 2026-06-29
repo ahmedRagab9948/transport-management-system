@@ -1,6 +1,7 @@
 'use client';
 
 import { Activity } from 'lucide-react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -22,6 +23,18 @@ interface MonthlyTripsChartProps {
 
 export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
   const { t } = useT();
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [showChart, setShowChart] = useState(false);
+
+  useLayoutEffect(() => {
+    if (data && data.length > 0 && chartRef.current) {
+      const { width, height } = chartRef.current.getBoundingClientRect();
+      if (width > 0 && height > 0) setShowChart(true);
+    } else {
+      setShowChart(false);
+    }
+  }, [data]);
+
   return (
     <GlassCard variant="surface">
       <SectionHeader title={t('dashboard.monthly_trips')} />
@@ -38,8 +51,8 @@ export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
             <p className="text-sm font-medium text-muted-foreground">{t('dashboard.no_monthly_data')}</p>
           </div>
         ) : (
-          <div className="h-[200px] sm:h-[256px] lg:h-[320px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
+          {showChart && <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
               <defs>
                 <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
@@ -83,7 +96,7 @@ export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
                 activeDot={{ r: 5, stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
             </AreaChart>
-          </ResponsiveContainer>
+          </ResponsiveContainer>}
           </div>
         )}
       </div>

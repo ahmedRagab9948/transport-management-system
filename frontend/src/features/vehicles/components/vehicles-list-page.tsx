@@ -8,6 +8,7 @@ import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
+import { MAX_PAGE_SIZE } from '@tms/shared';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
@@ -55,7 +56,7 @@ export function VehiclesListPage() {
   const summaryQuery = useQuery({
     queryKey: ['vehicles-summary'],
     queryFn: async () => {
-      const res = await vehiclesService.getVehicles({ page: 1, limit: 99999 });
+      const res = await vehiclesService.getVehicles({ page: 1, limit: MAX_PAGE_SIZE });
       return res.items;
     },
     staleTime: 5 * 60 * 1000,
@@ -71,7 +72,7 @@ export function VehiclesListPage() {
   const vehicleColumns = useVehicleColumns();
 
   async function exportToCsv() {
-    const response = await vehiclesService.getVehicles({ page: 1, limit: 99999 });
+    const response = await vehiclesService.getVehicles({ page: 1, limit: MAX_PAGE_SIZE });
     const allVehicles = response.items;
     const headers = ['vehicleCode', 'manufacturer', 'model', 'productionYear', 'plateNumber', 'status'];
     const rows = allVehicles.map((v) => [
