@@ -1,4 +1,6 @@
-export const CONTRACT_ENTITY_TYPE = 'contract';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const CONTRACT_ENTITY_TYPE = ENTITY_TYPES.CONTRACT;
 
 export enum ContractAuditAction {
   CREATE = 'CONTRACT.CREATE',

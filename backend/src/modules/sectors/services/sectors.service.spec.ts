@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@tms/shared';
 import { ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RecordStatus } from '@prisma/client';
@@ -99,7 +100,7 @@ describe('SectorsService', () => {
 
       expect(result).toEqual({
         items: [{ id: 'sector-1', name: 'Test' }],
-        meta: { page: 1, limit: 20, total: 1, totalPages: 1 },
+        meta: { page: DEFAULT_PAGE, limit: DEFAULT_PAGE_SIZE, total: 1, totalPages: 1 },
       });
     });
 

@@ -1,23 +1,16 @@
 import { z } from 'zod';
+import { DRIVER_STATUS, VALIDATION, REGEX } from '@tms/shared';
+import { optionalTrimmedText } from '@/lib/forms';
 
-export const driverStatusSchema = z.enum(['ACTIVE', 'IN_TRIP', 'INACTIVE', 'SUSPENDED']);
-
-const optionalTrimmedText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => (value ? value : undefined));
-
-const phoneRegex = /^(\+[1-9]\d{1,14}|01[0125]\d{8})$/;
-const nationalIdRegex = /^[2-3]\d{13}$/;
+export const driverStatusSchema = z.nativeEnum(DRIVER_STATUS);
 
 export function createDriverSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    driverCode: z.string().trim().min(1, t('validation.required', { field: t('drivers.driver_code') })).max(100),
-    fullName: z.string().trim().min(1, t('validation.required', { field: t('drivers.full_name') })).max(255),
-    phone: z.string().trim().regex(phoneRegex, t('validation.invalid_phone')),
-    nationalId: z.string().trim().regex(nationalIdRegex, t('validation.invalid_national_id')),
-    licenseNumber: z.string().trim().min(1, t('validation.required', { field: t('drivers.license_number') })).max(100),
+    driverCode: z.string().trim().min(1, t('validation.required', { field: t('drivers.driver_code') })).max(VALIDATION.CODE_MAX_LENGTH),
+    fullName: z.string().trim().min(1, t('validation.required', { field: t('drivers.full_name') })).max(VALIDATION.NAME_MAX_LENGTH),
+    phone: z.string().trim().regex(REGEX.PHONE, t('validation.invalid_phone')),
+    nationalId: z.string().trim().regex(REGEX.NATIONAL_ID, t('validation.invalid_national_id')),
+    licenseNumber: z.string().trim().min(1, t('validation.required', { field: t('drivers.license_number') })).max(VALIDATION.CODE_MAX_LENGTH),
     licenseExpiry: z.string().min(1, t('validation.required', { field: t('drivers.license_expiry') })).refine(
       (val) => new Date(val) > new Date(),
       t('validation.date_must_be_future')
@@ -29,11 +22,11 @@ export function createDriverSchema(t: (key: string, params?: Record<string, stri
 
 export function createUpdateDriverSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    driverCode: z.string().trim().min(1, t('validation.required', { field: t('drivers.driver_code') })).max(100).optional(),
-    fullName: z.string().trim().min(1, t('validation.required', { field: t('drivers.full_name') })).max(255).optional(),
-    phone: z.string().trim().regex(phoneRegex, t('validation.invalid_phone')).optional(),
-    nationalId: z.string().trim().regex(nationalIdRegex, t('validation.invalid_national_id')).optional(),
-    licenseNumber: z.string().trim().min(1, t('validation.required', { field: t('drivers.license_number') })).max(100).optional(),
+    driverCode: z.string().trim().min(1, t('validation.required', { field: t('drivers.driver_code') })).max(VALIDATION.CODE_MAX_LENGTH).optional(),
+    fullName: z.string().trim().min(1, t('validation.required', { field: t('drivers.full_name') })).max(VALIDATION.NAME_MAX_LENGTH).optional(),
+    phone: z.string().trim().regex(REGEX.PHONE, t('validation.invalid_phone')).optional(),
+    nationalId: z.string().trim().regex(REGEX.NATIONAL_ID, t('validation.invalid_national_id')).optional(),
+    licenseNumber: z.string().trim().min(1, t('validation.required', { field: t('drivers.license_number') })).max(VALIDATION.CODE_MAX_LENGTH).optional(),
     licenseExpiry: z.string().min(1, t('validation.required', { field: t('drivers.license_expiry') })).optional().refine(
       (val) => {
         if (!val) return true;

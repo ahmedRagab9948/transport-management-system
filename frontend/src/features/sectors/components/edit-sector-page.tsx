@@ -12,7 +12,7 @@ import { useT } from '@/lib/i18n';
 import { getApiErrorMessage } from '@/lib/api/unwrap';
 import { useSector, useUpdateSector } from '../hooks/use-sectors';
 import type { UpdateSectorPayload } from '../types/sector.types';
-import { SectorForm } from './sector-form';
+import { SectorForm } from '../forms/sector-form';
 
 interface EditSectorPageProps {
   sectorId: string;

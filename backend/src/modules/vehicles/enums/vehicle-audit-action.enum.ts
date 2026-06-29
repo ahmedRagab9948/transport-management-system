@@ -5,4 +5,6 @@ export enum VehicleAuditAction {
   DELETE = 'VEHICLE_DELETE',
 }
 
-export const VEHICLE_ENTITY_TYPE = 'vehicle';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const VEHICLE_ENTITY_TYPE = ENTITY_TYPES.VEHICLE;

@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { clientsService } from '../services/clients.service';
 import type {
@@ -6,7 +7,7 @@ import type {
   UpdateClientPayload,
 } from '../types/client.types';
 
-const CLIENTS_ROOT = ['clients'] as const;
+const CLIENTS_ROOT = [QUERY_KEYS.CLIENTS] as const;
 
 export const clientsQueryKeys = {
   all: CLIENTS_ROOT,
@@ -40,9 +41,9 @@ export function useCreateClient() {
     mutationFn: (payload: CreateClientPayload) => clientsService.createClient(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.CLIENTS] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
@@ -56,9 +57,9 @@ export function useUpdateClient(id: string) {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.detail(id) });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.CLIENTS] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
@@ -71,9 +72,9 @@ export function useDeleteClient() {
     mutationFn: (id: string) => clientsService.deleteClient(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.CLIENTS] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });
@@ -87,9 +88,9 @@ export function useUpdateClientStatus() {
       clientsService.updateClientStatus(id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: clientsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['clients-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'clients'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.CLIENTS] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
   });

@@ -9,12 +9,14 @@ import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { useEntityFilters } from '@/components/shared/hooks/use-entity-filters';
+import { CONTRACT_STATUS } from '@tms/shared';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { useContracts } from '../hooks/use-contracts';
 import { contractsService } from '../services/contracts.service';
 import type { ContractStatus } from '../types/contract.types';
 import { useContractColumns } from './contract-table-columns';
+import { downloadCsv } from '@/lib/csv-export';
 
 const DEFAULT_FILTERS = {
   search: undefined as string | undefined,
@@ -77,17 +79,7 @@ export function ContractsListPage() {
       c.price ?? '-',
       c.status,
     ]);
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
-    ].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `contracts-export-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCsv(headers, rows, `contracts-export-${new Date().toISOString().split('T')[0]}.csv`);
   }
 
   return (
@@ -117,12 +109,12 @@ export function ContractsListPage() {
         showSearchButton
         fields={[
           { type: 'search', key: 'search', label: t('filters.search'), placeholder: t('contracts.search_placeholder') },
-          { type: 'select', key: 'status', label: t('common.status'), options: [
-            { value: 'DRAFT', label: t('filters.draft') },
-            { value: 'ACTIVE', label: t('filters.active') },
-            { value: 'COMPLETED', label: t('filters.completed') },
-            { value: 'CANCELLED', label: t('filters.cancelled') },
-          ], placeholder: t('filters.all_statuses') },
+          { type: 'select', key: 'status', label: t('common.status'), options:
+            Object.values(CONTRACT_STATUS).map((value) => ({
+              value,
+              label: t(`common_statuses.${value.toLowerCase()}`),
+            })),
+          placeholder: t('filters.all_statuses') },
         ]}
         values={filters as Record<string, string | boolean | undefined>}
         onChange={(key, value) => setFilter(key as keyof typeof DEFAULT_FILTERS, value as any)}

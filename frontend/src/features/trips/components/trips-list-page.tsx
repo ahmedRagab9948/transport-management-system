@@ -4,6 +4,7 @@ import { Plus, Truck, Play, CheckCircle2, XCircle } from 'lucide-react';
 import { AppBreadcrumbs } from '@/features/layout/components/app-breadcrumbs';
 import { AdvancedFilters, DataTableWrapper, PageHeader, PageHeaderActions, PageSection, SummaryCards } from '@/components/shared';
 import { buttonVariants } from '@/components/ui/button';
+import { TRIP_STATUS } from '@tms/shared';
 import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
 import { useT } from '@/lib/i18n';
@@ -15,6 +16,7 @@ import { tripsQueryKeys, useTripVehicles, useTripDrivers, useTripClients, useTri
 import { tripsService } from '../services/trips.service';
 import type { TripStatus } from '../types/trip.types';
 import { useTripColumns } from './trip-table-columns';
+import { downloadCsv } from '@/lib/csv-export';
 
 const DEFAULT_FILTERS = {
   search: undefined as string | undefined,
@@ -60,18 +62,10 @@ export function TripsListPage() {
   const { data: drivers = [] } = useTripDrivers();
   const { data: clients = [] } = useTripClients();
 
-  const STATUSES: Array<{ value: TripStatus; label: string }> = [
-    { value: 'DRAFT', label: t('common_statuses.draft') },
-    { value: 'PENDING', label: t('common_statuses.pending') },
-    { value: 'ASSIGNED', label: t('common_statuses.assigned') },
-    { value: 'DRIVER_CONFIRMED', label: t('common_statuses.driver_confirmed') },
-    { value: 'LOADING', label: t('common_statuses.loading') },
-    { value: 'ON_ROUTE', label: t('common_statuses.on_route') },
-    { value: 'WAITING', label: t('common_statuses.waiting') },
-    { value: 'UNLOADING', label: t('common_statuses.unloading') },
-    { value: 'COMPLETED', label: t('common_statuses.completed') },
-    { value: 'CANCELLED', label: t('common_statuses.cancelled') },
-  ];
+  const STATUSES: Array<{ value: TripStatus; label: string }> = Object.values(TRIP_STATUS).map((value) => ({
+    value: value as TripStatus,
+    label: t(`common_statuses.${value.toLowerCase()}`),
+  }));
 
   const tripsQuery = useTrips(queryParams);
 
@@ -107,17 +101,7 @@ export function TripsListPage() {
       trip.toLocation,
       trip.status,
     ]);
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
-    ].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `trips-export-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCsv(headers, rows, `trips-export-${new Date().toISOString().split('T')[0]}.csv`);
   }
 
   return (

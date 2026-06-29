@@ -7,6 +7,9 @@ import {
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { NotificationType, Prisma, TripStatus } from '@prisma/client';
+import { ACTIVE_TRIP_STATUSES as SHARED_ACTIVE_TRIP_STATUSES } from '@tms/shared';
+
+const ACTIVE_TRIP_STATUSES = SHARED_ACTIVE_TRIP_STATUSES as unknown as TripStatus[];
 import { AuditService } from '../../../common/services/audit.service';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
@@ -467,10 +470,6 @@ export class TripsService {
     id: string,
     user: AuthenticatedUser,
   ): Promise<{ message: string }> {
-    if (user.roleName !== 'admin') {
-      throw new ForbiddenException('Only admins can delete trips');
-    }
-
     const existing = await this.findOne(id);
     const deletedAt = new Date();
 
@@ -528,7 +527,6 @@ export class TripsService {
       );
     }
 
-    const hardStatuses: TripStatus[] = [TripStatus.ASSIGNED, TripStatus.DRIVER_CONFIRMED, TripStatus.LOADING, TripStatus.ON_ROUTE, TripStatus.WAITING, TripStatus.UNLOADING];
     const softStatuses: TripStatus[] = [TripStatus.DRAFT, TripStatus.PENDING];
 
     const excludeFilter = options?.excludeTripId
@@ -539,7 +537,7 @@ export class TripsService {
       this.prisma.trip.findFirst({
         where: {
           vehicleId,
-          status: { in: hardStatuses },
+          status: { in: ACTIVE_TRIP_STATUSES },
           deletedAt: null,
           ...excludeFilter,
         },
@@ -549,14 +547,14 @@ export class TripsService {
       this.prisma.trip.findFirst({
         where: {
           driverId,
-          status: { in: hardStatuses },
+          status: { in: ACTIVE_TRIP_STATUSES },
           deletedAt: null,
           ...excludeFilter,
         },
         select: { id: true, tripNumber: true, status: true, startDate: true, endDate: true },
         orderBy: { createdAt: 'desc' },
       }),
-      options?.targetStatus && hardStatuses.includes(options.targetStatus)
+      options?.targetStatus && ACTIVE_TRIP_STATUSES.includes(options.targetStatus)
         ? this.prisma.trip.findMany({
             where: {
               vehicleId,
@@ -567,7 +565,7 @@ export class TripsService {
             select: { id: true, tripNumber: true, status: true, startDate: true, endDate: true },
           })
         : Promise.resolve([]),
-      options?.targetStatus && hardStatuses.includes(options.targetStatus)
+      options?.targetStatus && ACTIVE_TRIP_STATUSES.includes(options.targetStatus)
         ? this.prisma.trip.findMany({
             where: {
               driverId,

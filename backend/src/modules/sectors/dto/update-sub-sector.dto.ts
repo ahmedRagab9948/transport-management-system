@@ -1,14 +1,15 @@
 import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 
 export class UpdateSubSectorDto {
   @IsOptional()
   @IsString()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   name?: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(VALIDATION.SECTOR_CODE_MAX_LENGTH)
   code?: string;
 
   @IsOptional()

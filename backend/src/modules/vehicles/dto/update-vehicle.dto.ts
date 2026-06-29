@@ -12,13 +12,14 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 import { VehicleType } from '@prisma/client';
 import { VehiclePlateDto } from './vehicle-plate.dto';
 
 export class UpdateVehicleDto {
   @IsOptional()
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   vehicleCode?: string;
 
   @IsOptional()
@@ -27,23 +28,23 @@ export class UpdateVehicleDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   manufacturer?: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   model?: string;
 
   @IsOptional()
   @IsInt()
-  @Min(1900)
-  @Max(2100)
+  @Min(VALIDATION.PRODUCTION_YEAR_MIN)
+  @Max(VALIDATION.PRODUCTION_YEAR_MAX)
   productionYear?: number;
 
   @IsOptional()
   @IsInt()
-  @Min(0)
+  @Min(VALIDATION.CAPACITY_MIN)
   capacityKg?: number;
 
   @IsOptional()
@@ -56,8 +57,8 @@ export class UpdateVehicleDto {
 
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(2)
+  @ArrayMinSize(VALIDATION.PLATES_MIN_SIZE)
+  @ArrayMaxSize(VALIDATION.PLATES_MAX_SIZE)
   @ValidateNested({ each: true })
   @Type(() => VehiclePlateDto)
   plates?: VehiclePlateDto[];

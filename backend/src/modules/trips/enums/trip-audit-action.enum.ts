@@ -1,4 +1,6 @@
-export const TRIP_ENTITY_TYPE = 'trip';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const TRIP_ENTITY_TYPE = ENTITY_TYPES.TRIP;
 
 export enum TripAuditAction {
   CREATE = 'TRIP.CREATE',

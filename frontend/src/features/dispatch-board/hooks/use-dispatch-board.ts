@@ -1,9 +1,10 @@
 'use client';
 
+import { QUERY_KEYS } from '@tms/shared';
 import { useQuery } from '@tanstack/react-query';
 import { dispatchBoardService } from '../services/dispatch-board.service';
 
-const DISPATCH_ROOT = ['dispatch-board'] as const;
+const DISPATCH_ROOT = [QUERY_KEYS.DISPATCH_BOARD] as const;
 
 export const dispatchQueryKeys = {
   all: DISPATCH_ROOT,

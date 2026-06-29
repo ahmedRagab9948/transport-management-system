@@ -2,28 +2,18 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useFormAutoFocus } from '@/lib/forms';
+import { useScrollToError } from '@/components/shared/hooks/use-scroll-to-error';
+import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import { FormSection } from '@/components/shared';
 import { useT } from '@/lib/i18n';
+import { createSectorSchema, createUpdateSectorSchema, type SectorFormValues } from '../schemas/sector.schema';
 import type { CreateSectorPayload, UpdateSectorPayload, Sector } from '../types/sector.types';
-
-const createSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  code: z.string().min(1, 'Code is required').max(20),
-  description: z.string().optional(),
-});
-
-const updateSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  code: z.string().min(1, 'Code is required').max(20),
-  description: z.string().optional(),
-});
-
-type FormValues = z.infer<typeof createSchema>;
 
 interface SectorFormProps {
   sector?: Sector;
@@ -37,65 +27,71 @@ export function SectorForm({ sector, isSubmitting, errorMessage, onSubmit: onSub
   const { t } = useT();
   const isEdit = !!sector;
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(isEdit ? updateSchema : createSchema),
+  const schema = isEdit ? createUpdateSectorSchema(t) : createSectorSchema(t);
+  const form = useForm<SectorFormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       name: sector?.name ?? '',
       code: sector?.code ?? '',
       description: sector?.description ?? '',
     },
   });
+  useFormAutoFocus(form);
+  const { scrollToError } = useScrollToError<SectorFormValues>();
+  const { confirmNavigation } = useUnsavedChanges(form.formState.isDirty);
 
-  function onFormSubmit(data: FormValues) {
+  const errors = form.formState.errors;
+
+  function onFormSubmit(data: SectorFormValues) {
     onSubmitProp(data);
   }
 
+  const submit = form.handleSubmit(
+    onFormSubmit,
+    () => {
+      setTimeout(() => scrollToError(form.formState.errors), 100);
+    },
+  );
+
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+    <form onSubmit={submit} className="space-y-6">
       <FormSection title={t('sectors.sector_information')}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium">
-              {t('sectors.sector_name')} <span className="text-destructive">*</span>
-            </label>
+          <Field data-invalid={!!errors.name}>
+            <FieldLabel htmlFor="name" required>{t('sectors.sector_name')}</FieldLabel>
             <Input
               id="name"
               placeholder={t('sectors.name_placeholder')}
-              {...register('name')}
+              disabled={isSubmitting}
               aria-invalid={!!errors.name}
+              {...form.register('name')}
             />
-            {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
-          </div>
+            <FieldError errors={[errors.name]} />
+          </Field>
 
-          <div className="space-y-2">
-            <label htmlFor="code" className="text-sm font-medium">
-              {t('sectors.sector_code')} <span className="text-destructive">*</span>
-            </label>
+          <Field data-invalid={!!errors.code}>
+            <FieldLabel htmlFor="code" required>{t('sectors.sector_code')}</FieldLabel>
             <Input
               id="code"
               placeholder={t('sectors.code_placeholder')}
-              {...register('code')}
+              disabled={isSubmitting}
               aria-invalid={!!errors.code}
+              {...form.register('code')}
             />
-            {errors.code && <p className="text-xs text-destructive">{errors.code.message}</p>}
-          </div>
+            <FieldError errors={[errors.code]} />
+          </Field>
         </div>
 
-        <div className="space-y-2">
-          <label htmlFor="description" className="text-sm font-medium">
-            {t('sectors.description')}
-          </label>
+        <Field>
+          <FieldLabel htmlFor="description">{t('sectors.description')}</FieldLabel>
           <Textarea
             id="description"
             placeholder={t('sectors.description_placeholder')}
             rows={3}
-            {...register('description')}
+            disabled={isSubmitting}
+            {...form.register('description')}
           />
-        </div>
+        </Field>
 
         {!isEdit && (
           <p className="text-xs text-muted-foreground">{t('sectors.default_sub_sector_hint')}</p>
@@ -109,11 +105,11 @@ export function SectorForm({ sector, isSubmitting, errorMessage, onSubmit: onSub
       )}
 
       <div className="flex items-center justify-end gap-3">
-        <Button type="button" variant="outline" disabled={isSubmitting} onClick={onCancel}>
+        <Button type="button" variant="outline" disabled={isSubmitting} onClick={() => { if (confirmNavigation()) onCancel(); }}>
           {t('common.cancel')}
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : null}
+        <Button type="submit" loading={isSubmitting}>
+          {!isSubmitting ? <Loader2 className="size-4 animate-spin" /> : null}
           {t(isEdit ? 'sectors.update_sector' : 'sectors.create_sector')}
         </Button>
       </div>

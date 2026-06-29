@@ -2,6 +2,7 @@
 
 import type { ColumnDef } from '@tanstack/react-table';
 import { EntityActions, StatusBadge } from '@/components/shared';
+import { RECORD_STATUS } from '@tms/shared';
 import { SECTOR_STATUS_TONES } from '@/constants/statuses';
 import type { StatusTone } from '@/constants/statuses';
 import { PERMISSIONS } from '@/constants/permissions';
@@ -18,12 +19,12 @@ function SectorActionsCell({ row }: SectorActionsCellProps) {
   const { t } = useT();
   const statusMutation = useUpdateSectorStatus();
 
-  const STATUS_OPTIONS = Object.entries(SECTOR_STATUS_TONES)
-    .filter(([key]) => key !== row.status)
-    .map(([value, tone]) => ({
+  const STATUS_OPTIONS = Object.values(RECORD_STATUS)
+    .filter((key) => key !== row.status)
+    .map((value) => ({
       value,
       label: t(`common_statuses.${value.toLowerCase()}`),
-      tone: tone as StatusTone,
+      tone: SECTOR_STATUS_TONES[value] as StatusTone,
     }));
 
   return (

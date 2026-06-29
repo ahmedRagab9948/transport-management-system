@@ -1,24 +1,15 @@
 import { z } from 'zod';
+import { VEHICLE_STATUS, VALIDATION } from '@tms/shared';
+import { optionalTrimmedText } from '@/lib/forms';
 
 export const vehicleTypeSchema = z.enum(['TRAILER', 'JUMBO']);
-export const vehicleStatusSchema = z.enum([
-  'ACTIVE',
-  'IN_TRIP',
-  'IN_MAINTENANCE',
-  'OUT_OF_SERVICE',
-]);
+export const vehicleStatusSchema = z.nativeEnum(VEHICLE_STATUS);
 export const vehiclePlateRoleSchema = z.enum(['TRUCK_HEAD', 'TRAILER_UNIT', 'JUMBO']);
-
-const optionalTrimmedText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => (value ? value : undefined));
 
 export function createVehicleSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z
     .object({
-      vehicleCode: z.string().trim().min(1, t('validation.required', { field: t('vehicles.vehicle_code') })).max(100),
+      vehicleCode: z.string().trim().min(1, t('validation.required', { field: t('vehicles.vehicle_code') })).max(VALIDATION.CODE_MAX_LENGTH),
       type: vehicleTypeSchema,
       status: vehicleStatusSchema.default('ACTIVE'),
       manufacturer: optionalTrimmedText,
@@ -26,21 +17,21 @@ export function createVehicleSchema(t: (key: string, params?: Record<string, str
       productionYear: z.coerce
         .number()
         .int()
-        .min(1900)
-        .max(2100)
+        .min(VALIDATION.PRODUCTION_YEAR_MIN)
+        .max(VALIDATION.PRODUCTION_YEAR_MAX)
         .optional()
         .or(z.literal('').transform(() => undefined)),
       capacityKg: z.coerce
         .number()
         .int()
-        .min(0)
+        .min(VALIDATION.CAPACITY_MIN)
         .optional()
         .or(z.literal('').transform(() => undefined)),
       notes: optionalTrimmedText,
       plates: z.array(
         z.object({
           role: vehiclePlateRoleSchema,
-          plateNumber: z.string().trim().min(1, t('validation.required', { field: t('vehicles.plate_number') })).max(50),
+            plateNumber: z.string().trim().min(1, t('validation.required', { field: t('vehicles.plate_number') })).max(VALIDATION.PLATE_MAX_LENGTH),
         }),
       ),
     })
@@ -86,7 +77,7 @@ export function createVehicleSchema(t: (key: string, params?: Record<string, str
 export function createUpdateVehicleSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z
     .object({
-      vehicleCode: z.string().trim().min(1, t('validation.required', { field: t('vehicles.vehicle_code') })).max(100).optional(),
+      vehicleCode: z.string().trim().min(1, t('validation.required', { field: t('vehicles.vehicle_code') })).max(VALIDATION.CODE_MAX_LENGTH).optional(),
       type: vehicleTypeSchema.optional(),
       status: vehicleStatusSchema.optional(),
       manufacturer: optionalTrimmedText,
@@ -94,14 +85,14 @@ export function createUpdateVehicleSchema(t: (key: string, params?: Record<strin
       productionYear: z.coerce
         .number()
         .int()
-        .min(1900)
-        .max(2100)
+        .min(VALIDATION.PRODUCTION_YEAR_MIN)
+        .max(VALIDATION.PRODUCTION_YEAR_MAX)
         .optional()
         .or(z.literal('').transform(() => undefined)),
       capacityKg: z.coerce
         .number()
         .int()
-        .min(0)
+        .min(VALIDATION.CAPACITY_MIN)
         .optional()
         .or(z.literal('').transform(() => undefined)),
       notes: optionalTrimmedText,
@@ -109,7 +100,7 @@ export function createUpdateVehicleSchema(t: (key: string, params?: Record<strin
         .array(
           z.object({
             role: vehiclePlateRoleSchema,
-            plateNumber: z.string().trim().min(1, t('validation.required', { field: t('vehicles.plate_number') })).max(50),
+plateNumber: z.string().trim().min(1, t('validation.required', { field: t('vehicles.plate_number') })).max(VALIDATION.PLATE_MAX_LENGTH),
           }),
         )
         .optional(),

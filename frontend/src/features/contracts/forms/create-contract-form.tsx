@@ -16,6 +16,7 @@ import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes
 import { useScrollToError } from '@/components/shared/hooks/use-scroll-to-error';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
+import { CONTRACT_STATUS } from '@tms/shared';
 import { useContractClients } from '../hooks/use-contracts';
 import { useVehicles } from '../../vehicles/hooks/use-vehicles';
 import { useDrivers } from '../../drivers/hooks/use-drivers';
@@ -216,10 +217,11 @@ export function CreateContractForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
-              <option value="DRAFT">{t('common_statuses.draft')}</option>
-              <option value="ACTIVE">{t('common_statuses.active')}</option>
-              <option value="COMPLETED">{t('common_statuses.completed')}</option>
-              <option value="CANCELLED">{t('common_statuses.cancelled')}</option>
+              {Object.values(CONTRACT_STATUS).map((value) => (
+                <option key={value} value={value}>
+                  {t(`common_statuses.${value.toLowerCase()}`)}
+                </option>
+              ))}
             </select>
             <FieldError errors={[errors.status]} />
           </Field>

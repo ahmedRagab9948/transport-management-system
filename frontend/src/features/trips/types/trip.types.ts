@@ -1,4 +1,6 @@
-export type TripStatus = 'DRAFT' | 'PENDING' | 'ASSIGNED' | 'DRIVER_CONFIRMED' | 'LOADING' | 'ON_ROUTE' | 'WAITING' | 'UNLOADING' | 'COMPLETED' | 'CANCELLED';
+import type { TripStatus } from '@tms/shared';
+
+export type { TripStatus };
 
 export interface TripStatusHistory {
   id: string;

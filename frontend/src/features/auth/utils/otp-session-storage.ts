@@ -1,12 +1,11 @@
+import { STORAGE_KEYS } from '@tms/shared';
 import type { OtpSessionState } from '../types/auth.types';
-
-const OTP_SESSION_KEY = 'tms_otp_session';
 
 export const otpSessionStorage = {
   get(): OtpSessionState | null {
     if (typeof window === 'undefined') return null;
 
-    const raw = sessionStorage.getItem(OTP_SESSION_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEYS.OTP_SESSION);
     if (!raw) return null;
 
     try {
@@ -18,11 +17,11 @@ export const otpSessionStorage = {
 
   set(session: OtpSessionState): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.setItem(OTP_SESSION_KEY, JSON.stringify(session));
+    sessionStorage.setItem(STORAGE_KEYS.OTP_SESSION, JSON.stringify(session));
   },
 
   clear(): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.removeItem(OTP_SESSION_KEY);
+    sessionStorage.removeItem(STORAGE_KEYS.OTP_SESSION);
   },
 };

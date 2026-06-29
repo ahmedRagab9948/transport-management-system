@@ -13,6 +13,7 @@ import {
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateClientDto } from '../dto/create-client.dto';
 import { QueryClientsDto } from '../dto/query-clients.dto';
 import { UpdateClientDto } from '../dto/update-client.dto';
@@ -24,7 +25,7 @@ export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Post()
-  @RequirePermissions('CREATE_CLIENT')
+  @RequirePermissions(PERMISSIONS.CREATE_CLIENT)
   create(
     @Body() dto: CreateClientDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -34,25 +35,25 @@ export class ClientsController {
 
   @Get('export')
   @Header('Content-Type', 'text/csv; charset=utf-8')
-  @RequirePermissions('VIEW_CLIENTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CLIENTS)
   exportCsv() {
     return this.clientsService.exportCsv();
   }
 
   @Get()
-  @RequirePermissions('VIEW_CLIENTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CLIENTS)
   findAll(@Query() query: QueryClientsDto) {
     return this.clientsService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_CLIENTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CLIENTS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientsService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_CLIENT')
+  @RequirePermissions(PERMISSIONS.UPDATE_CLIENT)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateClientDto,
@@ -62,7 +63,7 @@ export class ClientsController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('UPDATE_CLIENT')
+  @RequirePermissions(PERMISSIONS.UPDATE_CLIENT)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateClientStatusDto,
@@ -72,7 +73,7 @@ export class ClientsController {
   }
 
   @Delete(':id')
-  @RequirePermissions('DELETE_CLIENT')
+  @RequirePermissions(PERMISSIONS.DELETE_CLIENT)
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: AuthenticatedUser,

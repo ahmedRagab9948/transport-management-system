@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsUUID, Length, Matches } from 'class-validator';
+import { VALIDATION, REGEX } from '@tms/shared';
 
 export class VerifyOtpDto {
   @IsUUID()
@@ -6,7 +7,7 @@ export class VerifyOtpDto {
   otpSessionId!: string;
 
   @IsString()
-  @Length(6, 6)
-  @Matches(/^\d{6}$/, { message: 'code must be a 6-digit number' })
+  @Length(VALIDATION.OTP_LENGTH, VALIDATION.OTP_LENGTH)
+  @Matches(REGEX.OTP, { message: 'code must be a 6-digit number' })
   code!: string;
 }

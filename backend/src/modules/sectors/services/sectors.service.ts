@@ -8,7 +8,9 @@ import { UpdateSectorDto } from '../dto/update-sector.dto';
 import { SectorStatusDto } from '../dto/sector-status.dto';
 import { SECTOR_ERRORS } from '../constants/sector-errors';
 
-const SECTOR_ENTITY_TYPE = 'Sector';
+import { ENTITY_TYPES } from '@tms/shared';
+
+const SECTOR_ENTITY_TYPE = ENTITY_TYPES.SECTOR;
 
 @Injectable()
 export class SectorsService {

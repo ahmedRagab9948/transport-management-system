@@ -2,6 +2,7 @@
 
 import { useMemo, useCallback } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 
 export interface FilterChipDef {
@@ -101,7 +102,7 @@ export function useEntityFilters<T extends Record<string, string | boolean | und
   }, [filters, defaults]);
 
   const queryParams = useMemo(() => {
-    const params: Record<string, any> = { page: 1, limit: 20 };
+    const params: Record<string, any> = { page: DEFAULT_PAGE, limit: DEFAULT_PAGE_SIZE };
     for (const [key, value] of Object.entries(filters)) {
       if (value !== undefined && value !== '' && value !== false) {
         params[key] = value;

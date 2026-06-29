@@ -11,34 +11,35 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { VALIDATION, REGEX } from '@tms/shared';
 import { DriverStatus } from '@prisma/client';
 
 export class CreateDriverDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   driverCode!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   fullName!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
-  @Matches(/^(\+[1-9]\d{1,14}|01[0125]\d{8})$/, { message: 'Invalid phone format' })
+  @MaxLength(VALIDATION.PHONE_MAX_LENGTH)
+  @Matches(REGEX.PHONE, { message: 'Invalid phone format' })
   phone!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
-  @Matches(/^[2-3]\d{13}$/, { message: 'National ID must be 14 digits starting with 2 or 3' })
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
+  @Matches(REGEX.NATIONAL_ID, { message: 'National ID must be 14 digits starting with 2 or 3' })
   nationalId!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   licenseNumber!: string;
 
   @IsDateString()
@@ -50,6 +51,6 @@ export class CreateDriverDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.NOTES_MAX_LENGTH)
   notes?: string;
 }

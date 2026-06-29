@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { DRIVER_STATUS } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
 import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
@@ -159,9 +160,11 @@ export function UpdateDriverForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
-              <option value="ACTIVE">{t('common_statuses.active')}</option>
-              <option value="INACTIVE">{t('common_statuses.inactive')}</option>
-              <option value="SUSPENDED">{t('common_statuses.suspended')}</option>
+              {Object.values(DRIVER_STATUS).filter((s) => s !== 'IN_TRIP').map((value) => (
+                <option key={value} value={value}>
+                  {t(`common_statuses.${value.toLowerCase()}`)}
+                </option>
+              ))}
             </select>
             <FieldError errors={[errors.status]} />
           </Field>

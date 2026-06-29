@@ -706,7 +706,8 @@
     "trailer_plates": "Trailer vehicles require one truck head plate and one trailer unit plate",
     "jumbo_plates": "Jumbo vehicles require one jumbo plate",
     "end_date_after_start": "End date must be after start date",
-    "invalid_tax_number": "Please enter a valid tax number (9-14 digits)"
+    "invalid_tax_number": "Please enter a valid tax number (9-14 digits)",
+    "contract_active_requirements": "Active contracts must have a price and a future end date"
   },
   "filters": {
     "search": "Search",

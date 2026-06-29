@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { FormSection } from '@/components/shared';
 import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
 import { useScrollToError } from '@/components/shared/hooks/use-scroll-to-error';
+import { VEHICLE_STATUS } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
 import type { CreateVehiclePayload, VehiclePlateRole } from '../types/vehicle.types';
@@ -153,9 +154,11 @@ export function CreateVehicleForm({
             aria-invalid={!!form.formState.errors.status}
             {...form.register('status')}
           >
-            <option value="ACTIVE">{t('common_statuses.active')}</option>
-            <option value="IN_MAINTENANCE">{t('common_statuses.in_maintenance')}</option>
-            <option value="OUT_OF_SERVICE">{t('common_statuses.out_of_service')}</option>
+            {Object.values(VEHICLE_STATUS).filter((s) => s !== 'IN_TRIP').map((value) => (
+              <option key={value} value={value}>
+                {t(`common_statuses.${value.toLowerCase()}`)}
+              </option>
+            ))}
           </select>
           <FieldError errors={[form.formState.errors.status]} />
         </Field>

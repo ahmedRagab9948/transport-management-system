@@ -1,16 +1,17 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useQuery } from '@tanstack/react-query';
 import { reportsService } from '../services/reports.service';
 import type { ReportQueryParams } from '../types/report.types';
 
 export const reportsQueryKeys = {
-  all: ['reports'] as const,
-  revenue: (params: ReportQueryParams) => ['reports', 'revenue', params] as const,
-  tripCompletion: (params: ReportQueryParams) => ['reports', 'trip-completion', params] as const,
-  vehicleUtilization: (params: ReportQueryParams) => ['reports', 'vehicle-utilization', params] as const,
-  driverUtilization: (params: ReportQueryParams) => ['reports', 'driver-utilization', params] as const,
-  contractRevenue: (params: ReportQueryParams) => ['reports', 'contract-revenue', params] as const,
-  topClients: (params: ReportQueryParams) => ['reports', 'top-clients', params] as const,
-  monthlyKpis: (params: ReportQueryParams) => ['reports', 'monthly-kpis', params] as const,
+  all: [QUERY_KEYS.REPORTS] as const,
+  revenue: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'revenue', params] as const,
+  tripCompletion: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'trip-completion', params] as const,
+  vehicleUtilization: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'vehicle-utilization', params] as const,
+  driverUtilization: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'driver-utilization', params] as const,
+  contractRevenue: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'contract-revenue', params] as const,
+  topClients: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'top-clients', params] as const,
+  monthlyKpis: (params: ReportQueryParams) => [QUERY_KEYS.REPORTS, 'monthly-kpis', params] as const,
 };
 
 export function useRevenueAnalytics(params: ReportQueryParams = {}) {

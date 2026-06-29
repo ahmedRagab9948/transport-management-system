@@ -6,5 +6,6 @@ export { MobileDispatchView } from './components/mobile-dispatch-view';
 export { AvailableResources } from './components/available-resources';
 export { useDispatchBoardStats, useDispatchBoardTrips, useDispatchBoardTrip, useDispatchResources } from './hooks/use-dispatch-board';
 export { dispatchBoardService } from './services/dispatch-board.service';
-export { COLUMN_GROUPS } from './types/dispatch-board.types';
-export type { DispatchBoardTrip, DispatchBoardStats, DispatchBoardResponse, ColumnGroupId } from './types/dispatch-board.types';
+export { COLUMN_GROUPS } from './constants/column-groups';
+export type { ColumnGroup, ColumnGroupId } from './constants/column-groups';
+export type { DispatchBoardTrip, DispatchBoardStats, DispatchBoardResponse } from './types/dispatch-board.types';

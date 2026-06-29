@@ -1,4 +1,6 @@
-export const CLIENT_ENTITY_TYPE = 'client';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const CLIENT_ENTITY_TYPE = ENTITY_TYPES.CLIENT;
 
 export enum ClientAuditAction {
   CREATE = 'CLIENT.CREATE',

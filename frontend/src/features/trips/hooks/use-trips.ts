@@ -1,3 +1,4 @@
+import { QUERY_KEYS, TRIP_PREFIX } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { tripsService } from '../services/trips.service';
 import type {
@@ -7,7 +8,7 @@ import type {
   UpdateTripPayload,
 } from '../types/trip.types';
 
-const TRIPS_ROOT = ['trips'] as const;
+const TRIPS_ROOT = [QUERY_KEYS.TRIPS] as const;
 
 export const tripsQueryKeys = {
   all: TRIPS_ROOT,
@@ -30,7 +31,7 @@ function mapTrip(trip: any): TripTableRow {
   const shortNum = digits.slice(-6).padStart(6, '0');
   return {
     ...trip,
-    formattedTripNumber: `TRP-${shortNum}`,
+    formattedTripNumber: `${TRIP_PREFIX}${shortNum}`,
     route: `${trip.fromLocation} → ${trip.toLocation}`,
     contractDisplay: trip.contract?.contractNumber ?? '-',
     clientDisplay: trip.client?.companyName ?? '-',
@@ -70,8 +71,8 @@ export function useCreateTrip() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DISPATCH_BOARD] });
     },
     retry: false,
   });
@@ -86,8 +87,8 @@ export function useUpdateTrip(id: string) {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.detail(id) });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DISPATCH_BOARD] });
     },
     retry: false,
   });
@@ -101,8 +102,8 @@ export function useDeleteTrip() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DISPATCH_BOARD] });
     },
     retry: false,
   });
@@ -134,9 +135,9 @@ export function useUpdateTripStatus() {
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.detail(variables.id) });
       await queryClient.invalidateQueries({ queryKey: tripsQueryKeys.summary });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['notifications'] });
-      await queryClient.invalidateQueries({ queryKey: ['dispatch-board'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.NOTIFICATIONS] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DISPATCH_BOARD] });
     },
     retry: false,
   });

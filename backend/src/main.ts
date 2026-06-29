@@ -31,6 +31,13 @@ function validateEnvironment() {
     process.exit(1);
   }
 
+  if (process.env.NODE_ENV === 'production' && process.env.COOKIE_SECURE !== 'true') {
+    console.error(
+      'FATAL: COOKIE_SECURE must be true when NODE_ENV is production',
+    );
+    process.exit(1);
+  }
+
   console.log('Environment validation passed');
 }
 

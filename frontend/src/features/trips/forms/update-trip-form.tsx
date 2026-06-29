@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { TRIP_STATUS } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
 import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
@@ -112,16 +113,11 @@ export function UpdateTripForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
-              <option value="DRAFT">{t('common_statuses.draft')}</option>
-              <option value="PENDING">{t('common_statuses.pending')}</option>
-              <option value="ASSIGNED">{t('common_statuses.assigned')}</option>
-              <option value="DRIVER_CONFIRMED">{t('common_statuses.driver_confirmed')}</option>
-              <option value="LOADING">{t('common_statuses.loading')}</option>
-              <option value="ON_ROUTE">{t('common_statuses.on_route')}</option>
-              <option value="WAITING">{t('common_statuses.waiting')}</option>
-              <option value="UNLOADING">{t('common_statuses.unloading')}</option>
-              <option value="COMPLETED">{t('common_statuses.completed')}</option>
-              <option value="CANCELLED">{t('common_statuses.cancelled')}</option>
+              {Object.values(TRIP_STATUS).map((value) => (
+                <option key={value} value={value}>
+                  {t(`common_statuses.${value.toLowerCase()}`)}
+                </option>
+              ))}
             </select>
             <FieldError errors={[errors.status]} />
           </Field>

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
+import { ENTITY_TYPES, THIRTY_DAYS_MS } from '@tms/shared';
 import { NotificationType } from '@prisma/client';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { NOTIFICATION_EVENTS } from '../events/notification-events';
@@ -25,7 +26,7 @@ export class ContractNotificationListener {
 
   async checkExpiringContracts() {
     const now = new Date();
-    const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysFromNow = new Date(now.getTime() + THIRTY_DAYS_MS);
 
     const expiringContracts = await this.prisma.contract.findMany({
       where: {
@@ -52,7 +53,7 @@ export class ContractNotificationListener {
             title: `Contract "${contract.contractNumber}" expiring soon`,
             message: `Contract "${contract.title}" for ${contract.client?.companyName ?? 'N/A'} expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'} (${contract.endDate!.toISOString().split('T')[0]})`,
             type: NotificationType.CONTRACT_EXPIRING,
-            entityType: 'contract',
+            entityType: ENTITY_TYPES.CONTRACT,
             entityId: contract.id,
           }),
         ),

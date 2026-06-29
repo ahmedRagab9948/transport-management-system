@@ -13,6 +13,7 @@ import {
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateTripDto } from '../dto/create-trip.dto';
 import { QueryTripsDto } from '../dto/query-trips.dto';
 import { UpdateTripStatusDto } from '../dto/update-trip-status.dto';
@@ -24,7 +25,7 @@ export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
   @Post()
-  @RequirePermissions('CREATE_TRIP')
+  @RequirePermissions(PERMISSIONS.CREATE_TRIP)
   create(
     @Body() dto: CreateTripDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -34,25 +35,25 @@ export class TripsController {
 
   @Get('export')
   @Header('Content-Type', 'text/csv; charset=utf-8')
-  @RequirePermissions('VIEW_TRIPS')
+  @RequirePermissions(PERMISSIONS.VIEW_TRIPS)
   exportCsv() {
     return this.tripsService.exportCsv();
   }
 
   @Get()
-  @RequirePermissions('VIEW_TRIPS')
+  @RequirePermissions(PERMISSIONS.VIEW_TRIPS)
   findAll(@Query() query: QueryTripsDto) {
     return this.tripsService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_TRIPS')
+  @RequirePermissions(PERMISSIONS.VIEW_TRIPS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.tripsService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_TRIP')
+  @RequirePermissions(PERMISSIONS.UPDATE_TRIP)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateTripDto,
@@ -62,7 +63,7 @@ export class TripsController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('UPDATE_TRIP')
+  @RequirePermissions(PERMISSIONS.UPDATE_TRIP)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateTripStatusDto,
@@ -72,7 +73,7 @@ export class TripsController {
   }
 
   @Delete(':id')
-  @RequirePermissions('DELETE_TRIP')
+  @RequirePermissions(PERMISSIONS.DELETE_TRIP)
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: AuthenticatedUser,

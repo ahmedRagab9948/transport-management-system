@@ -1,18 +1,18 @@
-const ACCESS_TOKEN_KEY = 'tms_access_token';
+import { STORAGE_KEYS } from '@tms/shared';
 
 export const tokenStorage = {
   get(): string | null {
     if (typeof window === 'undefined') return null;
-    return sessionStorage.getItem(ACCESS_TOKEN_KEY);
+    return sessionStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   },
 
   set(token: string): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+    sessionStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, token);
   },
 
   clear(): void {
     if (typeof window === 'undefined') return;
-    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    sessionStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   },
 };

@@ -1,6 +1,5 @@
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -342,10 +341,6 @@ export class ContractsService {
     id: string,
     user: AuthenticatedUser,
   ): Promise<{ message: string }> {
-    if (user.roleName !== 'admin') {
-      throw new ForbiddenException('Only admins can delete contracts');
-    }
-
     const existing = await this.findOne(id);
     const deletedAt = new Date();
 

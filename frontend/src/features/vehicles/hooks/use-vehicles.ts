@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { vehiclesService } from '../services/vehicles.service';
 import type {
@@ -7,7 +8,7 @@ import type {
 } from '../types/vehicle.types';
 
 export const vehiclesQueryKeys = {
-  all: ['vehicles'] as const,
+  all: [QUERY_KEYS.VEHICLES] as const,
   list: (params: VehiclesQueryParams) => [...vehiclesQueryKeys.all, 'list', params] as const,
   detail: (id: string) => [...vehiclesQueryKeys.all, 'detail', id] as const,
 };
@@ -38,9 +39,9 @@ export function useCreateVehicle() {
     mutationFn: (payload: CreateVehiclePayload) => vehiclesService.createVehicle(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }
@@ -54,9 +55,9 @@ export function useUpdateVehicle(id: string) {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all }),
         queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.detail(id) }),
-        queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
-        queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] }),
-        queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES, 'summary'] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] }),
       ]);
     },
   });
@@ -69,9 +70,9 @@ export function useDeleteVehicle() {
     mutationFn: (id: string) => vehiclesService.deleteVehicle(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }
@@ -84,9 +85,9 @@ export function useUpdateVehicleStatus() {
       vehiclesService.updateVehicleStatus(id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehiclesQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }

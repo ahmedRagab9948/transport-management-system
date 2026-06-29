@@ -1,4 +1,6 @@
-export const DRIVER_ENTITY_TYPE = 'driver';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const DRIVER_ENTITY_TYPE = ENTITY_TYPES.DRIVER;
 
 export enum DriverAuditAction {
   CREATE = 'DRIVER.CREATE',

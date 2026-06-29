@@ -12,7 +12,7 @@ import { useT } from '@/lib/i18n';
 import { getApiErrorMessage } from '@/lib/api/unwrap';
 import { useCreateSector } from '../hooks/use-sectors';
 import type { CreateSectorPayload } from '../types/sector.types';
-import { SectorForm } from './sector-form';
+import { SectorForm } from '../forms/sector-form';
 
 export function CreateSectorPage() {
   const router = useRouter();

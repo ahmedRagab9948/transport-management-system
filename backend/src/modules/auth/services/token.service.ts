@@ -1,3 +1,4 @@
+import { WEEK_MS, DAY_MS } from '@tms/shared';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -66,7 +67,7 @@ export class TokenService {
     const match = /^(\d+)([smhd])$/.exec(value.trim());
 
     if (!match) {
-      return 7 * 24 * 60 * 60 * 1000;
+      return WEEK_MS;
     }
 
     const amount = parseInt(match[1], 10);
@@ -76,7 +77,7 @@ export class TokenService {
       s: 1000,
       m: 60 * 1000,
       h: 60 * 60 * 1000,
-      d: 24 * 60 * 60 * 1000,
+      d: DAY_MS,
     };
 
     return amount * (multipliers[unit] ?? multipliers.d);

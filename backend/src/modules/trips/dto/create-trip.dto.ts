@@ -6,12 +6,13 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 import { TripStatus } from '@prisma/client';
 
 export class CreateTripDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   tripNumber!: string;
 
   @IsOptional()
@@ -32,12 +33,12 @@ export class CreateTripDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.LOCATION_MAX_LENGTH)
   fromLocation!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.LOCATION_MAX_LENGTH)
   toLocation!: string;
 
   @IsOptional()
@@ -46,7 +47,7 @@ export class CreateTripDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.CARGO_DESC_MAX_LENGTH)
   cargoDescription?: string;
 
   @IsOptional()
@@ -59,6 +60,6 @@ export class CreateTripDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.NOTES_MAX_LENGTH)
   notes?: string;
 }

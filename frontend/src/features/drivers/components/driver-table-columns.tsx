@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { EntityActions, StatusBadge } from '@/components/shared';
 import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
+import { DRIVER_STATUS } from '@tms/shared';
 import { DRIVER_STATUS_TONES } from '@/constants/statuses';
 import type { StatusTone } from '@/constants/statuses';
 import { useT } from '@/lib/i18n';
@@ -19,12 +20,12 @@ function DriverActionsCell({ row }: DriverActionsCellProps) {
   const deleteMutation = useDeleteDriver();
   const statusMutation = useUpdateDriverStatus();
 
-  const STATUS_OPTIONS = Object.entries(DRIVER_STATUS_TONES)
-    .filter(([key]) => key !== 'IN_TRIP')
-    .map(([value, tone]) => ({
+  const STATUS_OPTIONS = Object.values(DRIVER_STATUS)
+    .filter((key) => key !== 'IN_TRIP')
+    .map((value) => ({
     value,
     label: t(`common_statuses.${value.toLowerCase().replace(/\s+/g, '_')}`),
-    tone: tone as StatusTone,
+    tone: DRIVER_STATUS_TONES[value] as StatusTone,
   }));
 
   return (

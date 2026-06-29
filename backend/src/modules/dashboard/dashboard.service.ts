@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { THIRTY_DAYS_MS } from '@tms/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TripStatus, VehicleStatus, DriverStatus, ContractStatus } from '@prisma/client';
 
@@ -8,7 +9,7 @@ export class DashboardService {
 
   async getSummary() {
     const currentDate = new Date();
-    const thirtyDaysFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysFromNow = new Date(currentDate.getTime() + THIRTY_DAYS_MS);
 
     const [totalTrips, activeTrips, availableVehicles, activeDrivers, activeContracts, activeClients] =
       await Promise.all([
@@ -162,7 +163,7 @@ export class DashboardService {
 
   async getSystemAlerts() {
     const currentDate = new Date();
-    const thirtyDaysFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysFromNow = new Date(currentDate.getTime() + THIRTY_DAYS_MS);
 
     const [expiringContracts, vehiclesInMaintenance, suspendedDrivers, inactiveDrivers] =
       await Promise.all([

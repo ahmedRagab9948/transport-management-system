@@ -1,4 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 import { VehiclePlateRole } from '@prisma/client';
 
 export class VehiclePlateDto {
@@ -7,6 +8,6 @@ export class VehiclePlateDto {
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(VALIDATION.PLATE_MAX_LENGTH)
   plateNumber!: string;
 }

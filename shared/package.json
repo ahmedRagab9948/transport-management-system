@@ -9,6 +9,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./statuses": {
+      "types": "./dist/statuses.d.ts",
+      "default": "./dist/statuses.js"
     }
   },
   "scripts": {

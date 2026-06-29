@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { AuthShell } from '@/features/auth/components/auth-shell';
-import { OtpForm } from '@/features/auth/components/otp-form';
+import { OtpForm } from '@/features/auth/forms/otp-form';
 import { useT } from '@/lib/i18n';
 
 export default function VerifyOtpPage() {

@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post, Query } from 
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateSectorDto } from '../dto/create-sector.dto';
 import { QuerySectorsDto } from '../dto/query-sectors.dto';
 import { SectorStatusDto } from '../dto/sector-status.dto';
@@ -13,25 +14,25 @@ export class SectorsController {
   constructor(private readonly sectorsService: SectorsService) {}
 
   @Post()
-  @RequirePermissions('CREATE_SECTOR')
+  @RequirePermissions(PERMISSIONS.CREATE_SECTOR)
   create(@Body() dto: CreateSectorDto, @CurrentUser() user: AuthenticatedUser) {
     return this.sectorsService.create(dto, user.id);
   }
 
   @Get()
-  @RequirePermissions('VIEW_SECTORS')
+  @RequirePermissions(PERMISSIONS.VIEW_SECTORS)
   findAll(@Query() query: QuerySectorsDto) {
     return this.sectorsService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_SECTORS')
+  @RequirePermissions(PERMISSIONS.VIEW_SECTORS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.sectorsService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_SECTOR')
+  @RequirePermissions(PERMISSIONS.UPDATE_SECTOR)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateSectorDto,
@@ -41,7 +42,7 @@ export class SectorsController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('DELETE_SECTOR')
+  @RequirePermissions(PERMISSIONS.DELETE_SECTOR)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SectorStatusDto,

@@ -15,6 +15,7 @@ import { useVehicles } from '../hooks/use-vehicles';
 import { vehiclesService } from '../services/vehicles.service';
 import type { VehicleStatus, VehicleType } from '../types/vehicle.types';
 import { useVehicleColumns } from './vehicle-table-columns';
+import { downloadCsv } from '@/lib/csv-export';
 
 const DEFAULT_FILTERS = {
   search: undefined as string | undefined,
@@ -81,17 +82,7 @@ export function VehiclesListPage() {
       v.plates?.[0]?.plateNumber ?? '-',
       v.status,
     ]);
-    const csvContent = [
-      headers.join(','),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
-    ].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `vehicles-export-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadCsv(headers, rows, `vehicles-export-${new Date().toISOString().split('T')[0]}.csv`);
   }
 
   return (

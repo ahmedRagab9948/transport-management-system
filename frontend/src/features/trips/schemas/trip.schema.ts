@@ -1,33 +1,18 @@
 import { z } from 'zod';
+import { TRIP_STATUS, VALIDATION } from '@tms/shared';
+import { optionalTrimmedText } from '@/lib/forms';
 
-export const tripStatusSchema = z.enum([
-  'DRAFT',
-  'PENDING',
-  'ASSIGNED',
-  'DRIVER_CONFIRMED',
-  'LOADING',
-  'ON_ROUTE',
-  'WAITING',
-  'UNLOADING',
-  'COMPLETED',
-  'CANCELLED',
-]);
-
-const optionalTrimmedText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => (value ? value : undefined));
+export const tripStatusSchema = z.nativeEnum(TRIP_STATUS);
 
 export function createTripSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    tripNumber: z.string().trim().min(1, t('validation.required', { field: t('trips.trip_number') })).max(100),
+    tripNumber: z.string().trim().min(1, t('validation.required', { field: t('trips.trip_number') })).max(VALIDATION.CODE_MAX_LENGTH),
     clientId: z.string().min(1, t('validation.required', { field: t('clients.title') })),
     contractId: z.string().min(1, t('validation.required', { field: t('trips.contract') })),
     vehicleId: z.string().min(1, t('validation.required', { field: t('trips.vehicle') })),
     driverId: z.string().min(1, t('validation.required', { field: t('trips.driver') })),
-    fromLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.from_location') })).max(500),
-    toLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.to_location') })).max(500),
+    fromLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.from_location') })).max(VALIDATION.LOCATION_MAX_LENGTH),
+    toLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.to_location') })).max(VALIDATION.LOCATION_MAX_LENGTH),
     status: tripStatusSchema.default('PENDING'),
     cargoDescription: optionalTrimmedText,
     startDate: z.string().optional(),
@@ -44,11 +29,11 @@ export function createTripSchema(t: (key: string, params?: Record<string, string
 
 export function createUpdateTripSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    tripNumber: z.string().trim().min(1, t('validation.required', { field: t('trips.trip_number') })).max(100).optional(),
+    tripNumber: z.string().trim().min(1, t('validation.required', { field: t('trips.trip_number') })).max(VALIDATION.CODE_MAX_LENGTH).optional(),
     vehicleId: z.string().min(1, t('validation.required', { field: t('trips.vehicle') })).optional(),
     driverId: z.string().min(1, t('validation.required', { field: t('trips.driver') })).optional(),
-    fromLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.from_location') })).max(500).optional(),
-    toLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.to_location') })).max(500).optional(),
+    fromLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.from_location') })).max(VALIDATION.LOCATION_MAX_LENGTH).optional(),
+    toLocation: z.string().trim().min(1, t('validation.required', { field: t('trips.to_location') })).max(VALIDATION.LOCATION_MAX_LENGTH).optional(),
     status: tripStatusSchema.optional(),
     cargoDescription: optionalTrimmedText,
     startDate: z.string().optional(),

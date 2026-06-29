@@ -1,24 +1,26 @@
 import { IsDateString, IsOptional, IsString, MaxLength, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE, VALIDATION } from '@tms/shared';
+
 export class QueryAuditLogsDto {
   @Type(() => Number)
   @Min(1)
   @IsOptional()
-  page?: number = 1;
+  page?: number = DEFAULT_PAGE;
 
   @Type(() => Number)
   @Min(1)
   @IsOptional()
-  limit?: number = 20;
+  limit?: number = DEFAULT_PAGE_SIZE;
 
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.ENTITY_TYPE_MAX_LENGTH)
   @IsOptional()
   entityType?: string;
 
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.ACTION_MAX_LENGTH)
   @IsOptional()
   action?: string;
 
@@ -27,7 +29,7 @@ export class QueryAuditLogsDto {
   userId?: string;
 
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.SEARCH_MAX_LENGTH)
   @IsOptional()
   search?: string;
 

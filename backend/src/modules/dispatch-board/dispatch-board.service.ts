@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TripStatus } from '@prisma/client';
+import { TRIP_STATUS } from '@tms/shared';
 import { PrismaService } from '../../prisma/prisma.service';
 
 const TRIP_INCLUDE = {
@@ -17,7 +18,7 @@ export class DispatchBoardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getStats() {
-    const allStatuses: TripStatus[] = ['DRAFT', 'PENDING', 'ASSIGNED', 'DRIVER_CONFIRMED', 'LOADING', 'ON_ROUTE', 'WAITING', 'UNLOADING', 'COMPLETED', 'CANCELLED'];
+    const allStatuses = Object.values(TRIP_STATUS) as TripStatus[];
 
     const counts = await Promise.all(
       allStatuses.map((status) =>
@@ -32,7 +33,7 @@ export class DispatchBoardService {
 
     const waitingOver30 = await this.prisma.trip.count({
       where: {
-        status: 'WAITING',
+        status: TRIP_STATUS.WAITING,
         deletedAt: null,
         waitingStartedAt: { lte: new Date(Date.now() - 30 * 60 * 1000) },
       },
@@ -40,7 +41,7 @@ export class DispatchBoardService {
 
     const waitingOver60 = await this.prisma.trip.count({
       where: {
-        status: 'WAITING',
+        status: TRIP_STATUS.WAITING,
         deletedAt: null,
         waitingStartedAt: { lte: new Date(Date.now() - 60 * 60 * 1000) },
       },
@@ -61,7 +62,7 @@ export class DispatchBoardService {
   }
 
   async getTrips(includeCancelled = false) {
-    const excludeStatuses: TripStatus[] = includeCancelled ? [] : ['CANCELLED'];
+    const excludeStatuses: TripStatus[] = includeCancelled ? [] : [TRIP_STATUS.CANCELLED];
 
     const trips = await this.prisma.trip.findMany({
       where: {
@@ -83,14 +84,14 @@ export class DispatchBoardService {
 
     return {
       groups: {
-        draft: { statuses: ['DRAFT'] as TripStatus[], trips: group(['DRAFT']) },
-        pending: { statuses: ['PENDING'] as TripStatus[], trips: group(['PENDING']) },
-        assigning: { statuses: ['ASSIGNED', 'DRIVER_CONFIRMED'] as TripStatus[], trips: group(['ASSIGNED', 'DRIVER_CONFIRMED']) },
-        loading: { statuses: ['LOADING'] as TripStatus[], trips: group(['LOADING']) },
-        on_route: { statuses: ['ON_ROUTE'] as TripStatus[], trips: group(['ON_ROUTE']) },
-        arrival: { statuses: ['WAITING', 'UNLOADING'] as TripStatus[], trips: group(['WAITING', 'UNLOADING']) },
-        completed: { statuses: ['COMPLETED'] as TripStatus[], trips: group(['COMPLETED']) },
-        ...(includeCancelled ? { cancelled: { statuses: ['CANCELLED'] as TripStatus[], trips: group(['CANCELLED']) } } : {}),
+        draft: { statuses: [TRIP_STATUS.DRAFT] as TripStatus[], trips: group([TRIP_STATUS.DRAFT]) },
+        pending: { statuses: [TRIP_STATUS.PENDING] as TripStatus[], trips: group([TRIP_STATUS.PENDING]) },
+        assigning: { statuses: [TRIP_STATUS.ASSIGNED, TRIP_STATUS.DRIVER_CONFIRMED] as TripStatus[], trips: group([TRIP_STATUS.ASSIGNED, TRIP_STATUS.DRIVER_CONFIRMED]) },
+        loading: { statuses: [TRIP_STATUS.LOADING] as TripStatus[], trips: group([TRIP_STATUS.LOADING]) },
+        on_route: { statuses: [TRIP_STATUS.ON_ROUTE] as TripStatus[], trips: group([TRIP_STATUS.ON_ROUTE]) },
+        arrival: { statuses: [TRIP_STATUS.WAITING, TRIP_STATUS.UNLOADING] as TripStatus[], trips: group([TRIP_STATUS.WAITING, TRIP_STATUS.UNLOADING]) },
+        completed: { statuses: [TRIP_STATUS.COMPLETED] as TripStatus[], trips: group([TRIP_STATUS.COMPLETED]) },
+        ...(includeCancelled ? { cancelled: { statuses: [TRIP_STATUS.CANCELLED] as TripStatus[], trips: group([TRIP_STATUS.CANCELLED]) } } : {}),
       },
     };
   }
@@ -143,7 +144,7 @@ export class DispatchBoardService {
       }),
     ]);
 
-    const activeStatuses: TripStatus[] = ['ASSIGNED', 'DRIVER_CONFIRMED', 'LOADING', 'ON_ROUTE', 'WAITING', 'UNLOADING'];
+    const activeStatuses: TripStatus[] = [TRIP_STATUS.ASSIGNED, TRIP_STATUS.DRIVER_CONFIRMED, TRIP_STATUS.LOADING, TRIP_STATUS.ON_ROUTE, TRIP_STATUS.WAITING, TRIP_STATUS.UNLOADING];
 
     const vehicleIds = vehicles.map((v) => v.id);
     const driverIds = drivers.map((d) => d.id);

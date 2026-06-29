@@ -13,6 +13,7 @@ import {
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateContractDto } from '../dto/create-contract.dto';
 import { QueryContractsDto } from '../dto/query-contracts.dto';
 import { UpdateContractDto } from '../dto/update-contract.dto';
@@ -24,7 +25,7 @@ export class ContractsController {
   constructor(private readonly contractsService: ContractsService) {}
 
   @Post()
-  @RequirePermissions('CREATE_CONTRACT')
+  @RequirePermissions(PERMISSIONS.CREATE_CONTRACT)
   create(
     @Body() dto: CreateContractDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -34,25 +35,25 @@ export class ContractsController {
 
   @Get('export')
   @Header('Content-Type', 'text/csv; charset=utf-8')
-  @RequirePermissions('VIEW_CONTRACTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CONTRACTS)
   exportCsv() {
     return this.contractsService.exportCsv();
   }
 
   @Get()
-  @RequirePermissions('VIEW_CONTRACTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CONTRACTS)
   findAll(@Query() query: QueryContractsDto) {
     return this.contractsService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_CONTRACTS')
+  @RequirePermissions(PERMISSIONS.VIEW_CONTRACTS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.contractsService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_CONTRACT')
+  @RequirePermissions(PERMISSIONS.UPDATE_CONTRACT)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateContractDto,
@@ -62,7 +63,7 @@ export class ContractsController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('UPDATE_CONTRACT')
+  @RequirePermissions(PERMISSIONS.UPDATE_CONTRACT)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateContractStatusDto,
@@ -72,7 +73,7 @@ export class ContractsController {
   }
 
   @Delete(':id')
-  @RequirePermissions('DELETE_CONTRACT')
+  @RequirePermissions(PERMISSIONS.DELETE_CONTRACT)
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: AuthenticatedUser,

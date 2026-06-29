@@ -1,14 +1,16 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Search, Route, Truck, UserCircle, Contact, FileText, Loader2 } from 'lucide-react';
+import { Search, Route, Truck, UserCircle, Contact, FileText } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/services/api-client';
+import { unwrapApiResponse } from '@/lib/api/unwrap';
 import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants/routes';
 import { scaleIn, DURATIONS } from '@/lib/design';
 import { useT } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
 
 interface SearchResult {
   entity: string;
@@ -18,66 +20,69 @@ interface SearchResult {
   href: string;
 }
 
+const SEARCH_ENTITIES = [
+  { entity: 'trips', icon: Route, href: (id: string) => ROUTES.tripsDetail(id), labelKey: 'trips.title', labelField: 'tripNumber' },
+  { entity: 'drivers', icon: UserCircle, href: (id: string) => ROUTES.driversDetail(id), labelKey: 'drivers.title', labelField: 'fullName' },
+  { entity: 'vehicles', icon: Truck, href: (id: string) => ROUTES.vehiclesDetail(id), labelKey: 'vehicles.title', labelField: 'vehicleCode' },
+  { entity: 'clients', icon: Contact, href: (id: string) => ROUTES.clientsDetail(id), labelKey: 'clients.title', labelField: 'companyName' },
+  { entity: 'contracts', icon: FileText, href: (id: string) => ROUTES.contractsDetail(id), labelKey: 'contracts.title', labelField: 'contractNumber' },
+] as const;
+
+function useGlobalSearch(query: string) {
+  const { t } = useT();
+  const enabled = query.length >= 2;
+
+  const { data: results, isFetching } = useQuery({
+    queryKey: ['global-search', query],
+    queryFn: async () => {
+      const params = { search: query, limit: '5' };
+      const combined: SearchResult[] = [];
+
+      const responses = await Promise.allSettled(
+        SEARCH_ENTITIES.map((e) =>
+          apiClient.get(`/${e.entity}`, { params }).then((r) => unwrapApiResponse<{ items: Record<string, unknown>[] }>(r)),
+        ),
+      );
+
+      responses.forEach((resp, idx) => {
+        if (resp.status !== 'fulfilled') return;
+        const entity = SEARCH_ENTITIES[idx];
+        const items = resp.value.items ?? [];
+        for (const item of items.slice(0, 3)) {
+          const label = String(item[entity.labelField] ?? item.id);
+          combined.push({
+            entity: t(entity.labelKey),
+            id: String(item.id),
+            label,
+            icon: entity.icon,
+            href: entity.href(String(item.id)),
+          });
+        }
+      });
+
+      return combined;
+    },
+    enabled,
+    staleTime: 30_000,
+    gcTime: 60_000,
+  });
+
+  return { results: results ?? [], isFetching: enabled && isFetching };
+}
+
 export function GlobalSearch() {
   const { t } = useT();
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const doSearch = useCallback(async (q: string) => {
-    if (!q || q.length < 2) {
-      setResults([]);
-      return;
-    }
-    setIsSearching(true);
-    try {
-      const params = new URLSearchParams({ search: q, limit: '5' });
-      const results: SearchResult[] = [];
-
-      const fetches = [
-        { entity: 'trips', url: `/api/trips?${params}`, icon: Route, href: (id: string) => ROUTES.tripsDetail(id), labelKey: 'trips.title' },
-        { entity: 'drivers', url: `/api/drivers?${params}`, icon: UserCircle, href: (id: string) => ROUTES.driversDetail(id), labelKey: 'drivers.title' },
-        { entity: 'vehicles', url: `/api/vehicles?${params}`, icon: Truck, href: (id: string) => ROUTES.vehiclesDetail(id), labelKey: 'vehicles.title' },
-        { entity: 'clients', url: `/api/clients?${params}`, icon: Contact, href: (id: string) => ROUTES.clientsDetail(id), labelKey: 'clients.title' },
-        { entity: 'contracts', url: `/api/contracts?${params}`, icon: FileText, href: (id: string) => ROUTES.contractsDetail(id), labelKey: 'contracts.title' },
-      ];
-
-      const responses = await Promise.allSettled(
-        fetches.map((f) => fetch(f.url).then((r) => r.json())),
-      );
-
-      responses.forEach((resp, idx) => {
-        if (resp.status === 'fulfilled' && resp.value?.items) {
-          for (const item of resp.value.items.slice(0, 3)) {
-            const f = fetches[idx];
-            const label = item.tripNumber || item.fullName || item.vehicleCode || item.companyName || item.contractNumber || item.id;
-            results.push({
-              entity: t(f.labelKey),
-              id: item.id,
-              label: String(label),
-              icon: f.icon,
-              href: f.href(item.id),
-            });
-          }
-        }
-      });
-
-      setResults(results);
-    } catch {
-      setResults([]);
-    } finally {
-      setIsSearching(false);
-    }
-  }, [t]);
+  const { results, isFetching } = useGlobalSearch(query);
 
   function handleSelect(result: SearchResult) {
     setIsOpen(false);
     setQuery('');
-    setResults([]);
     router.push(result.href);
   }
 
@@ -86,7 +91,7 @@ export function GlobalSearch() {
   }
 
   function handleFocus() {
-    if (results.length > 0 || (query.length >= 2 && !isSearching)) {
+    if (results.length > 0 || (query.length >= 2)) {
       setIsOpen(true);
     }
   }
@@ -100,7 +105,6 @@ export function GlobalSearch() {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
-            doSearch(e.target.value);
             setIsOpen(true);
           }}
           onFocus={handleFocus}
@@ -109,8 +113,10 @@ export function GlobalSearch() {
           className="h-9 ps-8 pe-8 text-sm bg-muted/20 border-border/80 transition-all duration-200 focus-visible:bg-background focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
           aria-label={t('common.search')}
         />
-        {isSearching && (
-          <Loader2 className="absolute end-2.5 top-1/2 size-4 -translate-y-1/2 animate-spin text-muted-foreground/60" />
+          {isFetching && (
+          <div className="absolute end-2.5 top-1/2 size-4 -translate-y-1/2">
+            <div className="size-4 animate-spin rounded-full border-2 border-muted-foreground/60 border-t-transparent" />
+          </div>
         )}
       </div>
       <AnimatePresence>

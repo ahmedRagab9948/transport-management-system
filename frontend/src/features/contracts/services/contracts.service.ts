@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE } from '@tms/shared';
 import { apiClient } from '@/services/api-client';
 import { unwrapApiResponse } from '@/lib/api/unwrap';
 
@@ -64,7 +65,7 @@ export const contractsService = {
 
   async getClients(): Promise<Array<{ id: string; companyName: string }>> {
     const response = await apiClient.get('/clients', {
-      params: { page: 1, limit: 99999 },
+      params: { page: DEFAULT_PAGE, limit: 99999 },
     });
     const data = unwrapApiResponse<{ items: Array<{ id: string; companyName: string }> }>(response);
     return data.items;

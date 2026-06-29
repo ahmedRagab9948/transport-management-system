@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { EntityActions, StatusBadge } from '@/components/shared';
 import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
+import { VEHICLE_STATUS } from '@tms/shared';
 import { VEHICLE_STATUS_TONES } from '@/constants/statuses';
 import type { StatusTone } from '@/constants/statuses';
 import { useT } from '@/lib/i18n';
@@ -19,12 +20,12 @@ function VehicleActionsCell({ row }: VehicleActionsCellProps) {
   const deleteMutation = useDeleteVehicle();
   const statusMutation = useUpdateVehicleStatus();
 
-  const STATUS_OPTIONS = Object.entries(VEHICLE_STATUS_TONES)
-    .filter(([key]) => key !== 'AVAILABLE' && key !== 'BUSY' && key !== 'MAINTENANCE' && key !== 'IN_TRIP')
-    .map(([value, tone]) => ({
+  const STATUS_OPTIONS = Object.values(VEHICLE_STATUS)
+    .filter((key) => key !== 'IN_TRIP')
+    .map((value) => ({
       value,
       label: t(`common_statuses.${value.toLowerCase().replace(/\s+/g, '_')}`),
-      tone: tone as StatusTone,
+      tone: VEHICLE_STATUS_TONES[value] as StatusTone,
     }));
 
   return (

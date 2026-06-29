@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestj
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { AssignVehicleDto } from '../dto/assign-vehicle.dto';
 import { TransferVehicleDto } from '../dto/transfer-vehicle.dto';
 import { UnassignVehicleDto } from '../dto/unassign-vehicle.dto';
@@ -12,13 +13,13 @@ export class VehicleAssignmentsController {
   constructor(private readonly vehicleAssignmentsService: VehicleAssignmentsService) {}
 
   @Get(':vehicleId/assignment')
-  @RequirePermissions('VIEW_VEHICLE_ASSIGNMENTS')
+  @RequirePermissions(PERMISSIONS.VIEW_VEHICLE_ASSIGNMENTS)
   getAssignment(@Param('vehicleId', ParseUUIDPipe) vehicleId: string) {
     return this.vehicleAssignmentsService.getAssignment(vehicleId);
   }
 
   @Post(':vehicleId/assign')
-  @RequirePermissions('ASSIGN_VEHICLE')
+  @RequirePermissions(PERMISSIONS.ASSIGN_VEHICLE)
   assign(
     @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
     @Body() dto: AssignVehicleDto,
@@ -28,7 +29,7 @@ export class VehicleAssignmentsController {
   }
 
   @Patch(':vehicleId/transfer')
-  @RequirePermissions('TRANSFER_VEHICLE')
+  @RequirePermissions(PERMISSIONS.TRANSFER_VEHICLE)
   transfer(
     @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
     @Body() dto: TransferVehicleDto,
@@ -38,7 +39,7 @@ export class VehicleAssignmentsController {
   }
 
   @Post(':vehicleId/unassign')
-  @RequirePermissions('UNASSIGN_VEHICLE')
+  @RequirePermissions(PERMISSIONS.UNASSIGN_VEHICLE)
   unassign(
     @Param('vehicleId', ParseUUIDPipe) vehicleId: string,
     @Body() dto: UnassignVehicleDto,

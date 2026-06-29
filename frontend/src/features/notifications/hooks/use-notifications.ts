@@ -1,12 +1,13 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { notificationsService } from '../services/notifications.service';
 import type { PaginatedNotificationsResponse } from '../types/notification.types';
 
 export const notificationsQueryKeys = {
-  all: ['notifications'] as const,
-  list: (params?: Record<string, unknown>) => ['notifications', 'list', params] as const,
-  unreadCount: ['notifications', 'unread-count'] as const,
+  all: [QUERY_KEYS.NOTIFICATIONS] as const,
+  list: (params?: Record<string, unknown>) => [QUERY_KEYS.NOTIFICATIONS, 'list', params] as const,
+  unreadCount: [QUERY_KEYS.NOTIFICATIONS, 'unread-count'] as const,
 };
 
 function usePollingInterval(baseInterval: number): number | false {

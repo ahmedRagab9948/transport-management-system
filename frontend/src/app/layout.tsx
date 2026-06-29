@@ -40,6 +40,7 @@ export default async function RootLayout({
               (function(){
                 var t;
                 try { t = localStorage.getItem('tms_theme') || localStorage.getItem('theme'); } catch(e) {}
+                /* note: STORAGE_KEYS from @tms/shared not used here — this runs before module loading */
                 var d = 'dark';
                 if (t === 'light' || (!t && window.matchMedia && !window.matchMedia('(prefers-color-scheme:dark)').matches)) d = 'light';
                 document.documentElement.classList.add(d);

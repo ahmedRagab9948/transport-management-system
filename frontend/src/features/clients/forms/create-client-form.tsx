@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { FormSection } from '@/components/shared';
 import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
 import { useScrollToError } from '@/components/shared/hooks/use-scroll-to-error';
+import { CLIENT_STATUS } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
 import type { CreateClientPayload } from '../types/client.types';
@@ -157,8 +158,11 @@ export function CreateClientForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
-              <option value="ACTIVE">{t('common_statuses.active')}</option>
-              <option value="INACTIVE">{t('common_statuses.inactive')}</option>
+              {Object.values(CLIENT_STATUS).map((value) => (
+                <option key={value} value={value}>
+                  {t(`common_statuses.${value.toLowerCase()}`)}
+                </option>
+              ))}
             </select>
             <FieldError errors={[errors.status]} />
           </Field>

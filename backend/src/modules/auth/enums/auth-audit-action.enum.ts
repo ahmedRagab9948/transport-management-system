@@ -10,4 +10,6 @@ export enum AuthAuditAction {
   TOKEN_REUSE_DETECTED = 'AUTH_TOKEN_REUSE_DETECTED',
 }
 
-export const AUTH_ENTITY_TYPE = 'auth';
+import { ENTITY_TYPES } from '@tms/shared';
+
+export const AUTH_ENTITY_TYPE = ENTITY_TYPES.AUTH;

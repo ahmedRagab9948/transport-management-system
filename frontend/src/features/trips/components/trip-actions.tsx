@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import dynamic from 'next/dynamic';
 import { ConfirmDialog, DeleteEntityDialog } from '@/components/shared';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { PERMISSIONS } from '@/constants/permissions';
@@ -18,12 +19,17 @@ import { useDeleteTrip, useUpdateTripStatus } from '../hooks/use-trips';
 import type { TripStatus } from '../types/trip.types';
 import { getAvailableActions, LIFECYCLE_ACTIONS } from '../constants/trip-lifecycle';
 import type { TripActionType } from '../constants/trip-lifecycle';
-import { AssignTripDialog } from './assign-trip-dialog';
-import { StartTripDialog } from './start-trip-dialog';
-import { CompleteTripDialog } from './complete-trip-dialog';
-import { CancelTripDialog } from './cancel-trip-dialog';
-import { ConflictWarningDialog } from './conflict-warning-dialog';
-import * as Icons from 'lucide-react';
+import { UserCheck, Play, Clock, CheckCircle2, XCircle } from 'lucide-react';
+
+const AssignTripDialog = dynamic(() => import('./assign-trip-dialog').then(m => m.AssignTripDialog), { ssr: false, loading: () => null });
+const StartTripDialog = dynamic(() => import('./start-trip-dialog').then(m => m.StartTripDialog), { ssr: false, loading: () => null });
+const CompleteTripDialog = dynamic(() => import('./complete-trip-dialog').then(m => m.CompleteTripDialog), { ssr: false, loading: () => null });
+const CancelTripDialog = dynamic(() => import('./cancel-trip-dialog').then(m => m.CancelTripDialog), { ssr: false, loading: () => null });
+const ConflictWarningDialog = dynamic(() => import('./conflict-warning-dialog').then(m => m.ConflictWarningDialog), { ssr: false, loading: () => null });
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  UserCheck, Play, Clock, CheckCircle2, XCircle,
+};
 
 interface TripActionsProps {
   trip: {
@@ -118,7 +124,7 @@ export function TripActions({ trip }: TripActionsProps) {
   function actionIcon(actionType: TripActionType): React.ReactNode {
     const def = LIFECYCLE_ACTIONS.find((a) => a.type === actionType);
     if (!def) return null;
-    const IconComp = (Icons as any)[def.icon];
+    const IconComp = ICON_MAP[def.icon];
     return IconComp ? <IconComp className="size-4" /> : null;
   }
 

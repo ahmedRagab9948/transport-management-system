@@ -6,12 +6,13 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 import { ContractStatus, ContractType } from '@prisma/client';
 
 export class UpdateContractDto {
   @IsOptional()
   @IsString()
-  @MaxLength(100)
+  @MaxLength(VALIDATION.CODE_MAX_LENGTH)
   contractNumber?: string;
 
   @IsOptional()
@@ -20,7 +21,7 @@ export class UpdateContractDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   title?: string;
 
   @IsOptional()
@@ -29,12 +30,12 @@ export class UpdateContractDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.LOCATION_MAX_LENGTH)
   fromLocation?: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(500)
+  @MaxLength(VALIDATION.LOCATION_MAX_LENGTH)
   toLocation?: string;
 
   @IsOptional()
@@ -43,7 +44,7 @@ export class UpdateContractDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(10)
+  @MaxLength(VALIDATION.CURRENCY_MAX_LENGTH)
   currency?: string;
 
   @IsOptional()

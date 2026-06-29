@@ -1,3 +1,4 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { driversService } from '../services/drivers.service';
 import type {
@@ -7,7 +8,7 @@ import type {
 } from '../types/driver.types';
 
 export const driversQueryKeys = {
-  all: ['drivers'] as const,
+  all: [QUERY_KEYS.DRIVERS] as const,
   list: (params: DriversQueryParams) => [...driversQueryKeys.all, 'list', params] as const,
   detail: (id: string) => [...driversQueryKeys.all, 'detail', id] as const,
 };
@@ -38,9 +39,9 @@ export function useCreateDriver() {
     mutationFn: (payload: CreateDriverPayload) => driversService.createDriver(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DRIVERS, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.DRIVERS] });
     },
   });
 }
@@ -54,9 +55,9 @@ export function useUpdateDriver(id: string) {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: driversQueryKeys.all }),
         queryClient.invalidateQueries({ queryKey: driversQueryKeys.detail(id) }),
-        queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
-        queryClient.invalidateQueries({ queryKey: ['drivers-summary'] }),
-        queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DRIVERS, 'summary'] }),
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.DRIVERS] }),
       ]);
     },
   });
@@ -69,9 +70,9 @@ export function useDeleteDriver() {
     mutationFn: (id: string) => driversService.deleteDriver(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DRIVERS, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.DRIVERS] });
     },
   });
 }
@@ -84,9 +85,9 @@ export function useUpdateDriverStatus() {
       driversService.updateDriverStatus(id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: driversQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-      await queryClient.invalidateQueries({ queryKey: ['drivers-summary'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'drivers'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DRIVERS, 'summary'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.DRIVERS] });
     },
   });
 }

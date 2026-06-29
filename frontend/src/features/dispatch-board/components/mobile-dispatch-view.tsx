@@ -6,10 +6,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { ChevronDown, ChevronUp, Maximize2, Minimize2 } from 'lucide-react';
+import { ChevronDown, Maximize2, Minimize2 } from 'lucide-react';
 import { TripCard } from './trip-card';
-import { COLUMN_GROUPS } from '../types/dispatch-board.types';
-import type { DispatchBoardTrip, ColumnGroupId } from '../types/dispatch-board.types';
+import { COLUMN_GROUPS } from '../constants/column-groups';
+import type { DispatchBoardTrip } from '../types/dispatch-board.types';
+import type { ColumnGroupId } from '../constants/column-groups';
 
 interface Props {
   groups: Record<ColumnGroupId, { statuses: string[]; trips: DispatchBoardTrip[] }>;

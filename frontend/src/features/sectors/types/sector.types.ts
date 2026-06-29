@@ -1,4 +1,6 @@
-export type SectorStatus = 'ACTIVE' | 'INACTIVE';
+import type { RecordStatus as SectorStatus } from '@tms/shared';
+
+export type { SectorStatus };
 
 export type AssignmentReason = 'ASSIGNMENT' | 'TRANSFER' | 'UNASSIGNMENT';
 

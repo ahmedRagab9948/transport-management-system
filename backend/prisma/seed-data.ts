@@ -35,6 +35,7 @@ export const AUTH_PERMISSIONS = [
   { key: 'VIEW_PERMISSIONS', description: 'View permission catalog' },
   { key: 'VIEW_AUDIT_LOGS', description: 'View system audit logs' },
   { key: 'VIEW_NOTIFICATIONS', description: 'View in-app notifications' },
+  { key: 'VIEW_DASHBOARD', description: 'View dashboard and analytics overview' },
 ] as const;
 
 /**
@@ -90,6 +91,7 @@ export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS, ...S
 export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
   [ROLES.ADMIN.name]: ALL_PERMISSIONS.map((p) => p.key),
   [ROLES.DISPATCHER.name]: [
+    'VIEW_DASHBOARD',
     'VIEW_TRIPS',
     'CREATE_TRIP',
     'UPDATE_TRIP',
@@ -121,6 +123,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'UNASSIGN_VEHICLE',
   ],
   [ROLES.MANAGER.name]: [
+    'VIEW_DASHBOARD',
     'VIEW_TRIPS',
     'VIEW_VEHICLES',
     'CREATE_VEHICLE',
@@ -144,6 +147,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'VIEW_VEHICLE_ASSIGNMENTS',
   ],
   [ROLES.VIEWER.name]: [
+    'VIEW_DASHBOARD',
     'VIEW_TRIPS',
     'VIEW_VEHICLES',
     'VIEW_DRIVERS',

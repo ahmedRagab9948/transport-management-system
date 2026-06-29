@@ -4,6 +4,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { EntityActions, StatusBadge } from '@/components/shared';
 import { PERMISSIONS } from '@/constants/permissions';
 import { ROUTES } from '@/constants/routes';
+import { CLIENT_STATUS } from '@tms/shared';
 import { CLIENT_STATUS_TONES } from '@/constants/statuses';
 import type { StatusTone } from '@/constants/statuses';
 import { useT } from '@/lib/i18n';
@@ -19,10 +20,10 @@ function ClientActionsCell({ row }: ClientActionsCellProps) {
   const deleteMutation = useDeleteClient();
   const statusMutation = useUpdateClientStatus();
 
-  const STATUS_OPTIONS = Object.entries(CLIENT_STATUS_TONES).map(([value, tone]) => ({
+  const STATUS_OPTIONS = Object.values(CLIENT_STATUS).map((value) => ({
     value,
     label: t(`common_statuses.${value.toLowerCase().replace(/\s+/g, '_')}`),
-    tone: tone as StatusTone,
+    tone: CLIENT_STATUS_TONES[value] as StatusTone,
   }));
 
   return (

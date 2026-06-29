@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { VEHICLE_STATUS } from '@tms/shared';
 import { useT } from '@/lib/i18n';
 import { useFormAutoFocus } from '@/lib/forms';
 import { useUnsavedChanges } from '@/components/shared/hooks/use-unsaved-changes';
@@ -31,9 +32,9 @@ interface UpdateVehicleFormProps {
 }
 
 const plateRoleLabels: Record<VehiclePlateRole, string> = {
-  TRUCK_HEAD: 'Truck Head',
-  TRAILER_UNIT: 'Trailer Unit',
-  JUMBO: 'Jumbo',
+  TRUCK_HEAD: 'vehicles.truck_head',
+  TRAILER_UNIT: 'vehicles.trailer_unit',
+  JUMBO: 'vehicles.jumbo',
 };
 
 function buildPlates(type: UpdateVehicleSubmitValues['type'], vehicle: Vehicle) {
@@ -160,9 +161,11 @@ export function UpdateVehicleForm({
               aria-invalid={!!errors.status}
               {...form.register('status')}
             >
-              <option value="ACTIVE">{t('common_statuses.active')}</option>
-              <option value="IN_MAINTENANCE">{t('common_statuses.in_maintenance')}</option>
-              <option value="OUT_OF_SERVICE">{t('common_statuses.out_of_service')}</option>
+              {Object.values(VEHICLE_STATUS).filter((s) => s !== 'IN_TRIP').map((value) => (
+                <option key={value} value={value}>
+                  {t(`common_statuses.${value.toLowerCase()}`)}
+                </option>
+              ))}
             </select>
             <FieldError errors={[errors.status]} />
           </Field>
@@ -230,7 +233,7 @@ export function UpdateVehicleForm({
               data-invalid={!!errors.plates?.[index]?.plateNumber}
             >
               <FieldLabel htmlFor={`plates.${index}.plateNumber`}>
-                {plateRoleLabels[plate.role]}
+                {t(plateRoleLabels[plate.role])}
               </FieldLabel>
               <input type="hidden" {...form.register(`plates.${index}.role`)} />
               <Input

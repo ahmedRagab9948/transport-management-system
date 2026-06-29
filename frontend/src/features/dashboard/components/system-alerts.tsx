@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, Car, Clock, UserX, Wrench, X } from 'lucide-react';
+import { AlertTriangle, Car, Clock, UserX, Wrench } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { GlassCard, SectionHeader } from '@/components/shared';
 import { CARD_BODY } from '@/components/shared/design-system/design-tokens';

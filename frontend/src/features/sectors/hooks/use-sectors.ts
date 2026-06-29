@@ -1,6 +1,7 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { sectorsService } from '../services/sectors.service';
-import { sectorKeys } from './sector-query-keys';
+import { sectorKeys } from '../constants/sector-query-keys';
 import type {
   CreateSectorPayload,
   SectorsQueryParams,
@@ -33,7 +34,8 @@ export function useCreateSector() {
     mutationFn: (payload: CreateSectorPayload) => sectorsService.createSector(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.lists() });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SECTORS, 'summary'] });
     },
   });
 }
@@ -46,7 +48,8 @@ export function useUpdateSector(id: string) {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.all });
       await queryClient.invalidateQueries({ queryKey: sectorKeys.detail(id) });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SECTORS, 'summary'] });
     },
   });
 }
@@ -59,7 +62,8 @@ export function useUpdateSectorStatus() {
       sectorsService.updateSectorStatus(id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.SECTORS, 'summary'] });
     },
   });
 }

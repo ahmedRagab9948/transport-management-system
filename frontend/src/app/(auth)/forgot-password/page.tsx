@@ -2,7 +2,7 @@
 
 import { Suspense } from 'react';
 import { AuthShell } from '@/features/auth/components/auth-shell';
-import { ForgotPasswordForm } from '@/features/auth/components/forgot-password-form';
+import { ForgotPasswordForm } from '@/features/auth/forms/forgot-password-form';
 import { useT } from '@/lib/i18n';
 
 export default function ForgotPasswordPage() {

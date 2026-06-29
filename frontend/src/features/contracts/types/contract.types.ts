@@ -1,4 +1,6 @@
-export type ContractStatus = 'DRAFT' | 'ACTIVE' | 'EXPIRED' | 'TERMINATED';
+import type { ContractStatus } from '@tms/shared';
+
+export type { ContractStatus };
 
 export type ContractType = 'PER_TRIP' | 'MONTHLY';
 

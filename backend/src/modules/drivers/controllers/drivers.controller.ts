@@ -13,6 +13,7 @@ import {
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateDriverDto } from '../dto/create-driver.dto';
 import { QueryDriversDto } from '../dto/query-drivers.dto';
 import { UpdateDriverStatusDto } from '../dto/update-driver-status.dto';
@@ -24,7 +25,7 @@ export class DriversController {
   constructor(private readonly driversService: DriversService) {}
 
   @Post()
-  @RequirePermissions('CREATE_DRIVER')
+  @RequirePermissions(PERMISSIONS.CREATE_DRIVER)
   create(
     @Body() dto: CreateDriverDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -34,25 +35,25 @@ export class DriversController {
 
   @Get('export')
   @Header('Content-Type', 'text/csv; charset=utf-8')
-  @RequirePermissions('VIEW_DRIVERS')
+  @RequirePermissions(PERMISSIONS.VIEW_DRIVERS)
   exportCsv() {
     return this.driversService.exportCsv();
   }
 
   @Get()
-  @RequirePermissions('VIEW_DRIVERS')
+  @RequirePermissions(PERMISSIONS.VIEW_DRIVERS)
   findAll(@Query() query: QueryDriversDto) {
     return this.driversService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_DRIVERS')
+  @RequirePermissions(PERMISSIONS.VIEW_DRIVERS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.driversService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_DRIVER')
+  @RequirePermissions(PERMISSIONS.UPDATE_DRIVER)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateDriverDto,
@@ -62,7 +63,7 @@ export class DriversController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('CHANGE_DRIVER_STATUS')
+  @RequirePermissions(PERMISSIONS.CHANGE_DRIVER_STATUS)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateDriverStatusDto,
@@ -72,7 +73,7 @@ export class DriversController {
   }
 
   @Delete(':id')
-  @RequirePermissions('DELETE_DRIVER')
+  @RequirePermissions(PERMISSIONS.DELETE_DRIVER)
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: AuthenticatedUser,

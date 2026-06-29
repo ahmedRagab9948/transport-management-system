@@ -1,6 +1,7 @@
+import { QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { sectorsService } from '../services/sectors.service';
-import { sectorKeys } from './sector-query-keys';
+import { sectorKeys } from '../constants/sector-query-keys';
 import type {
   AssignVehiclePayload,
   TransferVehiclePayload,
@@ -27,8 +28,8 @@ export function useAssignVehicle() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.assignments() });
       await queryClient.invalidateQueries({ queryKey: sectorKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }
@@ -42,8 +43,8 @@ export function useTransferVehicle() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.assignments() });
       await queryClient.invalidateQueries({ queryKey: sectorKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }
@@ -57,8 +58,8 @@ export function useUnassignVehicle() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: sectorKeys.assignments() });
       await queryClient.invalidateQueries({ queryKey: sectorKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['vehicles'] });
-      await queryClient.invalidateQueries({ queryKey: ['trips', 'vehicles'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.VEHICLES] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.TRIPS, QUERY_KEYS.VEHICLES] });
     },
   });
 }

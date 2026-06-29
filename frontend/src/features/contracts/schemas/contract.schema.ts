@@ -1,25 +1,20 @@
 import { z } from 'zod';
+import { CONTRACT_STATUS, VALIDATION } from '@tms/shared';
 
-export const contractStatusSchema = z.enum(['DRAFT', 'ACTIVE', 'EXPIRED', 'TERMINATED']);
+export const contractStatusSchema = z.nativeEnum(CONTRACT_STATUS);
 
 export const contractTypeSchema = z.enum(['PER_TRIP', 'MONTHLY']);
 
-const optionalTrimmedText = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => (value ? value : undefined));
-
 export function createContractSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    contractNumber: z.string().trim().min(1, t('validation.required', { field: t('contracts.contract_number') })).max(100),
+    contractNumber: z.string().trim().min(1, t('validation.required', { field: t('contracts.contract_number') })).max(VALIDATION.CODE_MAX_LENGTH),
     clientId: z.string().min(1, t('validation.required', { field: t('clients.title') })),
-    title: z.string().trim().min(1, t('validation.required', { field: t('contracts.title_field') })).max(255),
-    description: z.string().trim().max(1000).optional().transform((v) => v || undefined),
-    fromLocation: z.string().trim().max(500).optional().transform((v) => v || undefined),
-    toLocation: z.string().trim().max(500).optional().transform((v) => v || undefined),
+    title: z.string().trim().min(1, t('validation.required', { field: t('contracts.title_field') })).max(VALIDATION.NAME_MAX_LENGTH),
+    description: z.string().trim().max(VALIDATION.DESCRIPTION_MAX_LENGTH).optional().transform((v) => v || undefined),
+    fromLocation: z.string().trim().max(VALIDATION.LOCATION_MAX_LENGTH).optional().transform((v) => v || undefined),
+    toLocation: z.string().trim().max(VALIDATION.LOCATION_MAX_LENGTH).optional().transform((v) => v || undefined),
     price: z.coerce.number().positive(t('validation.price_must_be_positive')).optional(),
-    currency: z.string().trim().max(10).default('EGP'),
+    currency: z.string().trim().max(VALIDATION.CURRENCY_MAX_LENGTH).default('EGP'),
     contractType: contractTypeSchema.default('PER_TRIP'),
     assignedVehicleId: z.string().optional(),
     assignedDriverId: z.string().optional(),
@@ -41,14 +36,14 @@ export function createContractSchema(t: (key: string, params?: Record<string, st
 
 export function createUpdateContractSchema(t: (key: string, params?: Record<string, string | number>) => string) {
   return z.object({
-    contractNumber: z.string().trim().min(1, t('validation.required', { field: t('contracts.contract_number') })).max(100).optional(),
+    contractNumber: z.string().trim().min(1, t('validation.required', { field: t('contracts.contract_number') })).max(VALIDATION.CODE_MAX_LENGTH).optional(),
     clientId: z.string().min(1, t('validation.required', { field: t('clients.title') })).optional(),
-    title: z.string().trim().min(1, t('validation.required', { field: t('contracts.title_field') })).max(255).optional(),
-    description: z.string().trim().max(1000).optional().transform((v) => v || undefined),
-    fromLocation: z.string().trim().max(500).optional().transform((v) => v || undefined),
-    toLocation: z.string().trim().max(500).optional().transform((v) => v || undefined),
+    title: z.string().trim().min(1, t('validation.required', { field: t('contracts.title_field') })).max(VALIDATION.NAME_MAX_LENGTH).optional(),
+    description: z.string().trim().max(VALIDATION.DESCRIPTION_MAX_LENGTH).optional().transform((v) => v || undefined),
+    fromLocation: z.string().trim().max(VALIDATION.LOCATION_MAX_LENGTH).optional().transform((v) => v || undefined),
+    toLocation: z.string().trim().max(VALIDATION.LOCATION_MAX_LENGTH).optional().transform((v) => v || undefined),
     price: z.coerce.number().positive(t('validation.price_must_be_positive')).optional(),
-    currency: z.string().trim().max(10).optional(),
+    currency: z.string().trim().max(VALIDATION.CURRENCY_MAX_LENGTH).optional(),
     contractType: contractTypeSchema.optional(),
     assignedVehicleId: z.string().optional(),
     assignedDriverId: z.string().optional(),

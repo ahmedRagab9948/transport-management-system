@@ -8,28 +8,29 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { VALIDATION, REGEX } from '@tms/shared';
 import { ClientStatus } from '@prisma/client';
 
 export class CreateClientDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   companyName!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   contactPerson!: string;
 
   @IsOptional()
   @IsEmail()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.EMAIL_MAX_LENGTH)
   email?: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
-  @Matches(/^(\+[1-9]\d{1,14}|01[0125]\d{8})$/, { message: 'Invalid phone format' })
+  @MaxLength(VALIDATION.PHONE_MAX_LENGTH)
+  @Matches(REGEX.PHONE, { message: 'Invalid phone format' })
   phone?: string;
 
   @IsOptional()
@@ -38,9 +39,9 @@ export class CreateClientDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(9)
-  @MaxLength(14)
-  @Matches(/^\d+$/, { message: 'Tax number must contain only digits' })
+  @MinLength(VALIDATION.TAX_NUMBER_MIN_LENGTH)
+  @MaxLength(VALIDATION.TAX_NUMBER_MAX_LENGTH)
+  @Matches(REGEX.DIGITS_ONLY, { message: 'Tax number must contain only digits' })
   taxNumber?: string;
 
   @IsOptional()

@@ -38,7 +38,6 @@ function _emit() {
 }
 
 function _setLocale(newLocale: Locale) {
-  console.log('[locale] switching to:', newLocale);
   _locale = newLocale;
   localStorage.setItem(LOCALE_STORAGE_KEY, newLocale);
   document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale};path=/;max-age=31536000;SameSite=Lax`;

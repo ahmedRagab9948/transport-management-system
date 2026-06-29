@@ -1,4 +1,5 @@
 import { IsDateString, IsInt, IsOptional, IsString, Max, Min, MaxLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 
 export class DateRangeDto {
   @IsDateString()
@@ -12,7 +13,7 @@ export class DateRangeDto {
 
 export class ReportQueryDto extends DateRangeDto {
   @IsString()
-  @MaxLength(50)
+  @MaxLength(VALIDATION.PERIOD_MAX_LENGTH)
   @IsOptional()
   period?: 'daily' | 'weekly' | 'monthly' | 'yearly';
 }
@@ -20,7 +21,7 @@ export class ReportQueryDto extends DateRangeDto {
 export class TopClientsQueryDto extends DateRangeDto {
   @IsInt()
   @Min(1)
-  @Max(100)
+  @Max(VALIDATION.REPORT_TOP_CLIENTS_MAX)
   @IsOptional()
   limit?: number;
 }

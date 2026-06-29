@@ -13,6 +13,7 @@ import {
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateVehicleDto } from '../dto/create-vehicle.dto';
 import { QueryVehiclesDto } from '../dto/query-vehicles.dto';
 import { UpdateVehicleStatusDto } from '../dto/update-vehicle-status.dto';
@@ -24,7 +25,7 @@ export class VehiclesController {
   constructor(private readonly vehiclesService: VehiclesService) {}
 
   @Post()
-  @RequirePermissions('CREATE_VEHICLE')
+  @RequirePermissions(PERMISSIONS.CREATE_VEHICLE)
   create(
     @Body() dto: CreateVehicleDto,
     @CurrentUser() user: AuthenticatedUser,
@@ -34,25 +35,25 @@ export class VehiclesController {
 
   @Get('export')
   @Header('Content-Type', 'text/csv; charset=utf-8')
-  @RequirePermissions('VIEW_VEHICLES')
+  @RequirePermissions(PERMISSIONS.VIEW_VEHICLES)
   exportCsv() {
     return this.vehiclesService.exportCsv();
   }
 
   @Get()
-  @RequirePermissions('VIEW_VEHICLES')
+  @RequirePermissions(PERMISSIONS.VIEW_VEHICLES)
   findAll(@Query() query: QueryVehiclesDto) {
     return this.vehiclesService.findAll(query);
   }
 
   @Get(':id')
-  @RequirePermissions('VIEW_VEHICLES')
+  @RequirePermissions(PERMISSIONS.VIEW_VEHICLES)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.vehiclesService.findOne(id);
   }
 
   @Patch(':id')
-  @RequirePermissions('UPDATE_VEHICLE')
+  @RequirePermissions(PERMISSIONS.UPDATE_VEHICLE)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateVehicleDto,
@@ -62,7 +63,7 @@ export class VehiclesController {
   }
 
   @Patch(':id/status')
-  @RequirePermissions('CHANGE_VEHICLE_STATUS')
+  @RequirePermissions(PERMISSIONS.CHANGE_VEHICLE_STATUS)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateVehicleStatusDto,
@@ -72,7 +73,7 @@ export class VehiclesController {
   }
 
   @Delete(':id')
-  @RequirePermissions('DELETE_VEHICLE')
+  @RequirePermissions(PERMISSIONS.DELETE_VEHICLE)
   remove(
     @Param('id', ParseUUIDPipe) id: string,
     @CurrentUser() user: AuthenticatedUser,

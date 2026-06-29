@@ -1,4 +1,6 @@
-export type ClientStatus = 'ACTIVE' | 'INACTIVE';
+import type { ClientStatus } from '@tms/shared';
+
+export type { ClientStatus };
 
 export interface Client {
   id: string;

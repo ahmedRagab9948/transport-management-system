@@ -1,6 +1,6 @@
 'use client';
 
-import { DollarSign, TrendingUp, Target, Truck, Users, Briefcase, BarChart3 } from 'lucide-react';
+
 
 import { GlassCard } from '@/components/shared';
 import { cn } from '@/lib/utils';
@@ -14,16 +14,6 @@ interface KpiCardProps {
   trendValue?: string;
   isLoading?: boolean;
 }
-
-const KPI_ICONS = {
-  revenue: <DollarSign className="size-5" />,
-  completion: <Target className="size-5" />,
-  utilization: <TrendingUp className="size-5" />,
-  vehicles: <Truck className="size-5" />,
-  drivers: <Users className="size-5" />,
-  contracts: <Briefcase className="size-5" />,
-  trips: <BarChart3 className="size-5" />,
-} as const;
 
 export function ReportKpiCard({
   title,

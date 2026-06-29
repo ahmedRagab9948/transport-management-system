@@ -1,4 +1,5 @@
 import { IsDateString, IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 import { TripStatus } from '@prisma/client';
 
 export class UpdateTripStatusDto {
@@ -7,7 +8,7 @@ export class UpdateTripStatusDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(VALIDATION.REASON_CODE_MAX_LENGTH)
   reasonCode?: string;
 
   @IsOptional()

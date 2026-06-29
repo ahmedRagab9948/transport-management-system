@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -297,10 +296,6 @@ export class DriversService {
     id: string,
     user: AuthenticatedUser,
   ): Promise<{ message: string }> {
-    if (user.roleName !== 'admin') {
-      throw new ForbiddenException('Only admins can delete drivers');
-    }
-
     const existing = await this.findOne(id);
     const deletedAt = new Date();
 

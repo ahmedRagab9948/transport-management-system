@@ -18,13 +18,19 @@ import type { TripActionType } from '../constants/trip-lifecycle';
 import { useTrip } from '../hooks/use-trips';
 import { useUpdateTripStatus } from '../hooks/use-trips';
 import type { TripStatus } from '../types/trip.types';
+import dynamic from 'next/dynamic';
 import { TripTimeline } from './trip-timeline';
-import { AssignTripDialog } from './assign-trip-dialog';
-import { StartTripDialog } from './start-trip-dialog';
-import { CompleteTripDialog } from './complete-trip-dialog';
-import { CancelTripDialog } from './cancel-trip-dialog';
-import { ConflictWarningDialog } from './conflict-warning-dialog';
-import * as Icons from 'lucide-react';
+import { UserCheck, Play, Clock, CheckCircle2, XCircle } from 'lucide-react';
+
+const AssignTripDialog = dynamic(() => import('./assign-trip-dialog').then(m => m.AssignTripDialog), { ssr: false, loading: () => null });
+const StartTripDialog = dynamic(() => import('./start-trip-dialog').then(m => m.StartTripDialog), { ssr: false, loading: () => null });
+const CompleteTripDialog = dynamic(() => import('./complete-trip-dialog').then(m => m.CompleteTripDialog), { ssr: false, loading: () => null });
+const CancelTripDialog = dynamic(() => import('./cancel-trip-dialog').then(m => m.CancelTripDialog), { ssr: false, loading: () => null });
+const ConflictWarningDialog = dynamic(() => import('./conflict-warning-dialog').then(m => m.ConflictWarningDialog), { ssr: false, loading: () => null });
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  UserCheck, Play, Clock, CheckCircle2, XCircle,
+};
 
 interface TripDetailsPageProps {
   tripId: string;
@@ -125,7 +131,7 @@ export function TripDetailsPage({ tripId }: TripDetailsPageProps) {
   const statusActionButtons = (
     <>
       {availableActions.map((action) => {
-        const IconComp = (Icons as any)[action.icon];
+        const IconComp = ICON_MAP[action.icon];
         const isCancel = action.type === 'cancel';
         return (
           <Tooltip key={action.type}>

@@ -17,7 +17,7 @@ import { DispatchBoardStats } from './dispatch-board-stats';
 import { DispatchKanban } from './dispatch-kanban';
 import { MobileDispatchView } from './mobile-dispatch-view';
 import { AvailableResources } from './available-resources';
-import type { ColumnGroupId } from '../types/dispatch-board.types';
+import type { ColumnGroupId } from '../constants/column-groups';
 
 export function DispatchBoardPage() {
   const { t } = useT();

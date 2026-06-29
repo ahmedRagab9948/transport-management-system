@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, ParseUUIDPipe, Patch, Post } from '@nestj
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { RequirePermissions } from '../../auth/decorators/require-permissions.decorator';
 import { AuthenticatedUser } from '../../auth/interfaces/jwt-payload.interface';
+import { PERMISSIONS } from '@tms/shared';
 import { CreateSubSectorDto } from '../dto/create-sub-sector.dto';
 import { SectorStatusDto } from '../dto/sector-status.dto';
 import { UpdateSubSectorDto } from '../dto/update-sub-sector.dto';
@@ -12,7 +13,7 @@ export class SubSectorsController {
   constructor(private readonly subSectorsService: SubSectorsService) {}
 
   @Post('sectors/:sectorId/sub-sectors')
-  @RequirePermissions('MANAGE_SUB_SECTORS')
+  @RequirePermissions(PERMISSIONS.MANAGE_SUB_SECTORS)
   create(
     @Param('sectorId', ParseUUIDPipe) sectorId: string,
     @Body() dto: CreateSubSectorDto,
@@ -22,19 +23,19 @@ export class SubSectorsController {
   }
 
   @Get('sectors/:sectorId/sub-sectors')
-  @RequirePermissions('VIEW_SECTORS')
+  @RequirePermissions(PERMISSIONS.VIEW_SECTORS)
   findAll(@Param('sectorId', ParseUUIDPipe) sectorId: string) {
     return this.subSectorsService.findAll(sectorId);
   }
 
   @Get('sub-sectors/:id')
-  @RequirePermissions('VIEW_SECTORS')
+  @RequirePermissions(PERMISSIONS.VIEW_SECTORS)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.subSectorsService.findOne(id);
   }
 
   @Patch('sub-sectors/:id')
-  @RequirePermissions('MANAGE_SUB_SECTORS')
+  @RequirePermissions(PERMISSIONS.MANAGE_SUB_SECTORS)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateSubSectorDto,
@@ -44,7 +45,7 @@ export class SubSectorsController {
   }
 
   @Patch('sub-sectors/:id/status')
-  @RequirePermissions('MANAGE_SUB_SECTORS')
+  @RequirePermissions(PERMISSIONS.MANAGE_SUB_SECTORS)
   updateStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: SectorStatusDto,

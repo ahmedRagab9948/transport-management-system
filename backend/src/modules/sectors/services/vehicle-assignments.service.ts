@@ -4,12 +4,13 @@ import { AuditService } from '../../../common/services/audit.service';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { ACTIVE_TRIP_STATUSES } from '../../trips/constants/trip-statuses';
 import { SECTOR_ERRORS } from '../constants/sector-errors';
-import { SECTOR_PERMISSIONS } from '../constants/sector-permissions';
 import { AssignVehicleDto } from '../dto/assign-vehicle.dto';
 import { TransferVehicleDto } from '../dto/transfer-vehicle.dto';
 import { UnassignVehicleDto } from '../dto/unassign-vehicle.dto';
 
-const VEHICLE_ASSIGNMENT_ENTITY = 'VehicleAssignment';
+import { ENTITY_TYPES } from '@tms/shared';
+
+const VEHICLE_ASSIGNMENT_ENTITY = ENTITY_TYPES.VEHICLE_ASSIGNMENT;
 
 @Injectable()
 export class VehicleAssignmentsService {

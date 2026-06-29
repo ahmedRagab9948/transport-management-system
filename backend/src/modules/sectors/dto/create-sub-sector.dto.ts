@@ -1,14 +1,15 @@
 import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 
 export class CreateSubSectorDto {
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(VALIDATION.NAME_MAX_LENGTH)
   name!: string;
 
   @IsString()
   @IsNotEmpty()
-  @MaxLength(50)
+  @MaxLength(VALIDATION.SECTOR_CODE_MAX_LENGTH)
   code!: string;
 
   @IsOptional()

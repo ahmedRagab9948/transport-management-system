@@ -1,4 +1,6 @@
-export type DriverStatus = 'ACTIVE' | 'IN_TRIP' | 'INACTIVE' | 'SUSPENDED';
+import type { DriverStatus } from '@tms/shared';
+
+export type { DriverStatus };
 
 export interface DriverStatusHistory {
   id: string;

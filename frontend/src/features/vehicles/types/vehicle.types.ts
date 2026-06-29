@@ -1,6 +1,8 @@
 export type VehicleType = 'TRAILER' | 'JUMBO';
 
-export type VehicleStatus = 'ACTIVE' | 'IN_TRIP' | 'IN_MAINTENANCE' | 'OUT_OF_SERVICE';
+import type { VehicleStatus } from '@tms/shared';
+
+export type { VehicleStatus };
 
 export type VehiclePlateRole = 'TRUCK_HEAD' | 'TRAILER_UNIT' | 'JUMBO';
 

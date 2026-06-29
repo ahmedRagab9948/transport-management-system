@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE, QUERY_KEYS } from '@tms/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { contractsService } from '../services/contracts.service';
 import type {
@@ -6,7 +7,7 @@ import type {
   UpdateContractPayload,
 } from '../types/contract.types';
 
-const CONTRACTS_ROOT = ['contracts'] as const;
+const CONTRACTS_ROOT = [QUERY_KEYS.CONTRACTS] as const;
 
 export const contractsQueryKeys = {
   all: CONTRACTS_ROOT,
@@ -41,7 +42,7 @@ export function useCreateContract() {
     mutationFn: (payload: CreateContractPayload) => contractsService.createContract(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
@@ -56,7 +57,7 @@ export function useUpdateContract(id: string) {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.detail(id) });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
@@ -70,7 +71,7 @@ export function useDeleteContract() {
     mutationFn: (id: string) => contractsService.deleteContract(id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
@@ -85,7 +86,7 @@ export function useUpdateContractStatus() {
       contractsService.updateContractStatus(id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: contractsQueryKeys.all });
-      await queryClient.invalidateQueries({ queryKey: ['dashboard'] });
+      await queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.DASHBOARD] });
       await queryClient.invalidateQueries({ queryKey: ['contracts-summary'] });
       await queryClient.invalidateQueries({ queryKey: ['contracts', 'clients'] });
     },
@@ -95,7 +96,7 @@ export function useUpdateContractStatus() {
 export function useClientContracts(clientId: string) {
   return useQuery({
     queryKey: [...CONTRACTS_ROOT, 'by-client', clientId] as const,
-    queryFn: () => contractsService.getContracts({ page: 1, limit: 99999, clientId }),
+    queryFn: () => contractsService.getContracts({ page: DEFAULT_PAGE, limit: 99999, clientId }),
     enabled: !!clientId,
     staleTime: 30 * 1000,
     gcTime: 5 * 60 * 1000,

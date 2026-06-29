@@ -1,16 +1,18 @@
 import { IsArray, IsBoolean, IsOptional, IsString, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from '@tms/shared';
+
 export class QueryNotificationsDto {
   @Type(() => Number)
   @Min(1)
   @IsOptional()
-  page?: number = 1;
+  page?: number = DEFAULT_PAGE;
 
   @Type(() => Number)
   @Min(1)
   @IsOptional()
-  limit?: number = 20;
+  limit?: number = DEFAULT_PAGE_SIZE;
 
   @IsBoolean()
   @IsOptional()

@@ -17,12 +17,14 @@ import {
   useDashboardSummary, useDriverStatusDistribution, useMonthlyTrips,
   useRecentActivity, useSystemAlerts, useTripsStatus, useVehicleUtilization,
 } from '../hooks/use-dashboard';
-import { MonthlyTripsChart } from './monthly-trips-chart';
+import dynamic from 'next/dynamic';
 import { RecentActivity } from './recent-activity';
 import { SystemAlerts } from './system-alerts';
 import { SystemStatsCard } from './system-stats-card';
-import { TripStatusChart } from './trip-status-chart';
-import { VehicleDriverCharts } from './vehicle-driver-charts';
+
+const MonthlyTripsChart = dynamic(() => import('./monthly-trips-chart').then(m => m.MonthlyTripsChart), { ssr: false, loading: () => null });
+const TripStatusChart = dynamic(() => import('./trip-status-chart').then(m => m.TripStatusChart), { ssr: false, loading: () => null });
+const VehicleDriverCharts = dynamic(() => import('./vehicle-driver-charts').then(m => m.VehicleDriverCharts), { ssr: false, loading: () => null });
 
 function OnboardingEmptyState({ summary }: { summary: { totalTrips: number; availableVehicles: number; activeDrivers: number } }) {
   const { t, dir } = useT();

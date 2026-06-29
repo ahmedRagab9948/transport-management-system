@@ -3,8 +3,9 @@
 import { useT } from '@/lib/i18n';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { StatusColumn } from './status-column';
-import { COLUMN_GROUPS } from '../types/dispatch-board.types';
-import type { DispatchBoardTrip, ColumnGroupId } from '../types/dispatch-board.types';
+import { COLUMN_GROUPS } from '../constants/column-groups';
+import type { DispatchBoardTrip } from '../types/dispatch-board.types';
+import type { ColumnGroupId } from '../constants/column-groups';
 
 interface Props {
   groups: Record<ColumnGroupId, { statuses: string[]; trips: DispatchBoardTrip[] }>;

@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { VALIDATION } from '@tms/shared';
 
 export class LoginDto {
   @IsEmail()
@@ -6,6 +7,6 @@ export class LoginDto {
   email!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(VALIDATION.PASSWORD_MIN_LENGTH)
   password!: string;
 }
