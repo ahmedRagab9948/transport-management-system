@@ -8,4 +8,7 @@ export const ENTITY_TYPES = {
   SUB_SECTOR: 'SubSector',
   VEHICLE_ASSIGNMENT: 'VehicleAssignment',
   AUTH: 'auth',
+  USER: 'User',
+  PROFILE: 'Profile',
+  SETTINGS: 'Settings',
 } as const;

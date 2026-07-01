@@ -33,6 +33,9 @@ describe('AuthController', () => {
                 message: 'All sessions revoked successfully',
               }),
             getProfile: jest.fn(),
+            getFullProfile: jest.fn(),
+            updateProfile: jest.fn(),
+            changePassword: jest.fn(),
           },
         },
       ],
@@ -162,7 +165,7 @@ describe('AuthController', () => {
   });
 
   describe('getProfile', () => {
-    it('should call authService.getProfile with user id', async () => {
+    it('should call authService.getFullProfile with user id', async () => {
       const user: AuthenticatedUser = {
         id: 'user-1',
         email: 'test@test.com',
@@ -172,7 +175,7 @@ describe('AuthController', () => {
         permissions: [],
       };
       await controller.getProfile(user);
-      expect(authService.getProfile).toHaveBeenCalledWith('user-1');
+      expect(authService.getFullProfile).toHaveBeenCalledWith('user-1');
     });
   });
 });

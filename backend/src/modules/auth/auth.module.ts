@@ -38,6 +38,6 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PermissionsGuard },
   ],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, RefreshTokenService, JwtModule],
 })
 export class AuthModule {}

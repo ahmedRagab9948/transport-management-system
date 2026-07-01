@@ -85,7 +85,12 @@ export const SECTOR_PERMISSIONS = [
   { key: 'UNASSIGN_VEHICLE', description: 'Unassign vehicles from sub-sectors' },
 ] as const;
 
-export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS, ...SECTOR_PERMISSIONS];
+export const SETTINGS_PERMISSIONS = [
+  { key: 'VIEW_SETTINGS', description: 'View system settings' },
+  { key: 'UPDATE_SETTINGS', description: 'Update system settings' },
+] as const;
+
+export const ALL_PERMISSIONS = [...AUTH_PERMISSIONS, ...DOMAIN_PERMISSIONS, ...SECTOR_PERMISSIONS, ...SETTINGS_PERMISSIONS];
 
 /** Role → permission keys matrix */
 export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
@@ -121,6 +126,8 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'ASSIGN_VEHICLE',
     'TRANSFER_VEHICLE',
     'UNASSIGN_VEHICLE',
+    'VIEW_SETTINGS',
+    'UPDATE_SETTINGS',
   ],
   [ROLES.MANAGER.name]: [
     'VIEW_DASHBOARD',
@@ -145,6 +152,7 @@ export const ROLE_PERMISSION_MATRIX: Record<RoleName, readonly string[]> = {
     'CONFIRM_DRIVER_ON_BEHALF',
     'VIEW_SECTORS',
     'VIEW_VEHICLE_ASSIGNMENTS',
+    'VIEW_SETTINGS',
   ],
   [ROLES.VIEWER.name]: [
     'VIEW_DASHBOARD',

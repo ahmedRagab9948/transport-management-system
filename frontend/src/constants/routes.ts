@@ -30,6 +30,7 @@ export const ROUTES = {
   auditLogs: '/audit-logs',
   users: '/users',
   settings: '/settings',
+  profile: '/profile',
   login: '/login',
   verifyOtp: '/verify-otp',
   forgotPassword: '/forgot-password',

@@ -1,5 +1,5 @@
-import { ModulePlaceholder } from '@/features/layout/components/module-placeholder';
+import { UsersPage } from '@/features/users';
 
-export default function UsersPage() {
-  return <ModulePlaceholder />;
+export default function UsersRoute() {
+  return <UsersPage />;
 }

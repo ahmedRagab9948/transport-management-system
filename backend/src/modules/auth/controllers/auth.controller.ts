@@ -1,12 +1,15 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { Public } from '../../../common/decorators/public.decorator';
 import { CurrentUser } from '../decorators/current-user.decorator';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 import { LoginDto } from '../dto/login.dto';
 import { ResendOtpDto } from '../dto/resend-otp.dto';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { VerifyOtpDto } from '../dto/verify-otp.dto';
 import { RefreshTokenGuard } from '../guards/refresh-token.guard';
 import type { AuthenticatedUser } from '../interfaces/jwt-payload.interface';
+import type { ProfileResponse } from '../interfaces/profile-response.interface';
 import { AuthService } from '../services/auth.service';
 
 @Controller('auth')
@@ -79,8 +82,31 @@ export class AuthController {
     return this.authService.logoutAll(user.id, request, response);
   }
 
+  @Get('profile')
+  getProfile(@CurrentUser() user: AuthenticatedUser): Promise<ProfileResponse> {
+    return this.authService.getFullProfile(user.id);
+  }
+
+  @Patch('profile')
+  updateProfile(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateProfileDto,
+    @Req() request: Request,
+  ): Promise<ProfileResponse> {
+    return this.authService.updateProfile(user.id, dto, request);
+  }
+
+  @Post('change-password')
+  changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.changePassword(user.id, dto, request);
+  }
+
   @Get('me')
-  getProfile(@CurrentUser() user: AuthenticatedUser) {
+  getMe(@CurrentUser() user: AuthenticatedUser) {
     return this.authService.getProfile(user.id);
   }
 }

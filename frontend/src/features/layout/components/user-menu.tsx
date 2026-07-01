@@ -1,10 +1,12 @@
 'use client';
 
 import { LogOut, Shield, User } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup,
   DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { useT } from '@/lib/i18n';
 
@@ -15,6 +17,7 @@ function getInitials(name: string): string {
 export function UserMenu() {
   const { user, logout, logoutAll } = useAuth();
   const { t } = useT();
+  const router = useRouter();
   if (!user) return null;
 
   return (
@@ -39,7 +42,7 @@ export function UserMenu() {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem disabled className="opacity-65"><User className="size-4 text-muted-foreground" /> <span className="font-medium">{t('auth.profile')}</span> <span className="ms-auto text-xs font-bold uppercase tracking-wider bg-muted text-muted-foreground px-1.5 py-0.5 rounded-md">{t('common.soon')}</span></DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push(ROUTES.profile)} className="cursor-pointer"><User className="size-4 text-muted-foreground" /> <span className="font-medium">{t('auth.profile')}</span></DropdownMenuItem>
           <DropdownMenuItem disabled className="opacity-65"><Shield className="size-4 text-muted-foreground" /> <span className="font-medium">{t('auth.permissions_count', { count: user.permissions.length })}</span></DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

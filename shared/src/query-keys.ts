@@ -11,4 +11,7 @@ export const QUERY_KEYS = {
   AUDIT_LOGS: 'audit-logs',
   REPORTS: 'reports',
   VEHICLE_ASSIGNMENTS: 'vehicle-assignments',
+  USERS: 'users',
+  PROFILE: 'profile',
+  SETTINGS: 'settings',
 } as const;

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
@@ -7,11 +7,14 @@ import { AuditService } from '../../../common/services/audit.service';
 import { hashToken } from '../../../common/utils/crypto.util';
 import { getClientIp, getUserAgent } from '../../../common/utils/request.util';
 import { PrismaService } from '../../../prisma/prisma.service';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 import { LoginDto } from '../dto/login.dto';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { VerifyOtpDto } from '../dto/verify-otp.dto';
-import { AUTH_ENTITY_TYPE, AuthAuditAction } from '../enums/auth-audit-action.enum';
+import { AUTH_ENTITY_TYPE, AuthAuditAction, PROFILE_ENTITY_TYPE } from '../enums/auth-audit-action.enum';
 import { LoginResult } from '../interfaces/auth-tokens.interface';
 import { AuthenticatedUser } from '../interfaces/jwt-payload.interface';
+import type { ProfileResponse } from '../interfaces/profile-response.interface';
 import { OtpService } from './otp.service';
 import { RefreshTokenService } from './refresh-token.service';
 import { TokenService } from './token.service';
@@ -203,8 +206,169 @@ export class AuthService {
     return this.toAuthenticatedUser(user);
   }
 
+  async getFullProfile(userId: string): Promise<ProfileResponse> {
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId, deletedAt: null },
+      include: {
+        role: {
+          include: {
+            rolePermissions: {
+              include: { permission: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const flatPermissions = user.role.rolePermissions.map((rp) => rp.permission.key);
+
+    return {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      username: user.email,
+      phone: user.phone,
+      avatar: user.avatar,
+      role: { id: user.roleId, name: user.role.name },
+      isActive: user.isActive,
+      preferredLanguage: user.preferredLanguage,
+      timezone: user.timezone,
+      mfaEnabled: user.mfaEnabled,
+      mfaVerifiedAt: user.mfaVerifiedAt,
+      lastLoginAt: user.lastLoginAt,
+      createdAt: user.createdAt,
+      profileUpdatedAt: user.profileUpdatedAt,
+      passwordChangedAt: user.passwordChangedAt,
+      permissions: this.groupPermissions(flatPermissions),
+    };
+  }
+
+  async updateProfile(userId: string, dto: UpdateProfileDto, request: Request): Promise<ProfileResponse> {
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId, deletedAt: null },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const oldValues: Record<string, unknown> = {};
+
+    if (dto.fullName !== undefined) oldValues.fullName = user.fullName;
+    if (dto.phone !== undefined) oldValues.phone = user.phone;
+    if (dto.avatar !== undefined) oldValues.avatar = user.avatar;
+    if (dto.preferredLanguage !== undefined) oldValues.preferredLanguage = user.preferredLanguage;
+
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(dto.fullName !== undefined && { fullName: dto.fullName }),
+        ...(dto.phone !== undefined && { phone: dto.phone }),
+        ...(dto.avatar !== undefined && { avatar: dto.avatar }),
+        ...(dto.preferredLanguage !== undefined && { preferredLanguage: dto.preferredLanguage }),
+        profileUpdatedAt: new Date(),
+      },
+    });
+
+    await this.auditService.log({
+      userId,
+      action: AuthAuditAction.PROFILE_UPDATE,
+      entityType: PROFILE_ENTITY_TYPE,
+      entityId: userId,
+      oldValues: Object.keys(oldValues).length > 0 ? (oldValues as Prisma.InputJsonValue) : undefined,
+      newValues: dto as unknown as Prisma.InputJsonValue,
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
+    return this.getFullProfile(updated.id);
+  }
+
+  async changePassword(userId: string, dto: ChangePasswordDto, request: Request) {
+    if (dto.newPassword !== dto.confirmPassword) {
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    if (dto.oldPassword === dto.newPassword) {
+      throw new ConflictException('New password must be different from current password');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId, deletedAt: null, isActive: true },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const isValid = await bcrypt.compare(dto.oldPassword, user.passwordHash);
+
+    if (!isValid) {
+      throw new BadRequestException('Current password is incorrect');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.newPassword, this.bcryptRounds);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+        passwordChangedAt: new Date(),
+      },
+    });
+
+    await this.refreshTokenService.revokeAllForUser(userId);
+
+    await this.auditService.log({
+      userId,
+      action: AuthAuditAction.PASSWORD_CHANGE,
+      entityType: PROFILE_ENTITY_TYPE,
+      entityId: userId,
+      ipAddress: getClientIp(request),
+      userAgent: getUserAgent(request),
+    });
+
+    return { message: 'Password changed successfully' };
+  }
+
   async hashPassword(plain: string): Promise<string> {
     return bcrypt.hash(plain, this.bcryptRounds);
+  }
+
+  private groupPermissions(permissions: string[]): Record<string, string[]> {
+    const groups: Record<string, string[]> = {};
+
+    for (const perm of permissions) {
+      const parts = perm.split('_');
+      const rest = parts.slice(1).join('_');
+
+      let module = rest;
+
+      if (rest.includes('SUB_SECTOR') || rest.includes('SECTOR')) {
+        module = 'SECTORS';
+      } else if (rest.includes('VEHICLE') || rest.includes('ASSIGN')) {
+        module = 'VEHICLES';
+      } else if (rest.includes('DISPATCH') || rest.includes('CONFIRM_DRIVER')) {
+        module = 'DISPATCH_BOARD';
+      } else if (rest.includes('DRIVER')) {
+        module = 'DRIVERS';
+      } else if (rest.includes('USER') || rest.includes('ROLE') || rest.includes('PERMISSION')) {
+        module = 'USERS';
+      } else if (rest.includes('AUDIT_LOG')) {
+        module = 'AUDIT_LOGS';
+      } else if (rest.includes('NOTIFICATION')) {
+        module = 'NOTIFICATIONS';
+      }
+
+      groups[module] = groups[module] ?? [];
+      groups[module].push(perm);
+    }
+
+    return groups;
   }
 
   private async issueTokens(
