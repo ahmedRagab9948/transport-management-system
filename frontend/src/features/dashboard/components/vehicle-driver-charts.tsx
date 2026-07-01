@@ -86,16 +86,17 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <div ref={chartRef} className="h-[200px] sm:h-[224px] lg:h-[260px] w-full max-w-[200px] sm:max-w-xs">
             {showChart && <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart role="img" aria-label={title}>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
-                  outerRadius={96}
+                  outerRadius={100}
                   paddingAngle={2}
                   dataKey="value"
                   strokeWidth={0}
+                  cornerRadius={2}
                 >
                   {chartData.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -103,12 +104,12 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    borderRadius: 12,
+                    borderRadius: 8,
                     border: '1px solid hsl(var(--border) / 0.5)',
-                    background: 'hsl(var(--card))',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)',
-                    fontSize: 13,
-                    padding: '12px',
+                    background: 'hsl(var(--popover))',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                    fontSize: 12,
+                    padding: '8px 12px',
                   }}
                   wrapperStyle={{ backdropFilter: 'blur(8px)' }}
                 />
@@ -119,7 +120,7 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
               {chartData.map((entry) => (
                 <div key={entry.name} className="flex items-center gap-2">
                   <span
-                    className="size-3 rounded-full shadow-sm"
+                    className="size-3 rounded-sm shadow-sm"
                     style={{ backgroundColor: entry.color }}
                   />
                   <span className="text-muted-foreground capitalize">{entry.name}</span>

@@ -76,14 +76,18 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
         ) : (
           <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
           {showChart && <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" strokeOpacity={0.5} />
+            <BarChart data={chartData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} role="img" aria-label={t('dashboard.trips_by_status_chart_aria')}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border" strokeOpacity={0.5} horizontal={true} vertical={false} />
               <XAxis
                 dataKey="name"
                 tick={{ fontSize: 12 }}
                 className="text-muted-foreground"
                 axisLine={false}
                 tickLine={false}
+                interval={0}
+                angle={chartData.length > 6 ? -45 : 0}
+                textAnchor={chartData.length > 6 ? 'end' : 'middle'}
+                height={chartData.length > 6 ? 60 : 30}
               />
               <YAxis
                 allowDecimals={false}
@@ -91,25 +95,45 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
                 className="text-muted-foreground"
                 axisLine={false}
                 tickLine={false}
+                width={32}
               />
               <Tooltip
                 contentStyle={{
-                  borderRadius: 12,
+                  borderRadius: 8,
                   border: '1px solid hsl(var(--border) / 0.5)',
-                  background: 'hsl(var(--card))',
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)',
-                  fontSize: 13,
-                  padding: '12px',
+                  background: 'hsl(var(--popover))',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+                  fontSize: 12,
+                  padding: '8px 12px',
                 }}
                 wrapperStyle={{ backdropFilter: 'blur(8px)' }}
               />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={48}>
+              <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={40}>
                 {chartData.map((entry, index) => (
                   <Cell key={index} fill={entry.fill} />
                 ))}
               </Bar>
             </BarChart>
           </ResponsiveContainer>}
+            <details className="mt-2 text-xs text-muted-foreground">
+              <summary className="cursor-pointer font-medium">{t('common.view_data_table')}</summary>
+              <table className="mt-1 w-full border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-border/40">
+                    <th className="py-1 pe-4 font-medium">{t('common.status')}</th>
+                    <th className="py-1 font-medium">{t('common.count')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {chartData.map((row) => (
+                    <tr key={row.name} className="border-b border-border/20">
+                      <td className="py-1 pe-4">{row.name}</td>
+                      <td className="py-1">{row.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
           </div>
         )}
       </div>
