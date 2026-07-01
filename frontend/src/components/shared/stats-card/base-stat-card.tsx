@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRef, type ReactNode } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 import { ArrowDown, ArrowUp } from 'lucide-react';
@@ -18,6 +19,7 @@ export interface BaseStatCardProps {
   value: ReactNode;
   icon?: React.ReactNode;
   accentClass?: string;
+  href?: string;
   trend?: BaseStatCardTrend;
   animate?: boolean;
   variant?: 'default' | 'card';
@@ -89,6 +91,7 @@ function DefaultCard({
   value,
   icon,
   accentClass,
+  href,
   trend,
   className,
   labelClassName,
@@ -105,11 +108,15 @@ function DefaultCard({
   const positiveClasses = trendColors.positive ?? 'bg-emerald-500/10 text-emerald-600 ring-emerald-500/20 dark:bg-emerald-500/15 dark:text-emerald-400 dark:ring-emerald-500/30';
   const negativeClasses = trendColors.negative ?? 'bg-rose-500/10 text-rose-600 ring-rose-500/20 dark:bg-rose-500/15 dark:text-rose-400 dark:ring-rose-500/30';
 
+  const Component = href ? Link : 'div';
+
   return (
-    <div
+    <Component
+      href={href ?? ''}
       className={cn(
         'group relative overflow-hidden rounded-xl border border-border/60 bg-card p-3 sm:p-4 shadow-sm backdrop-blur-sm transition-all duration-300 flex flex-col h-full',
         !disableHoverEffect && 'hover:shadow-xl hover:-translate-y-1.5',
+        href && 'cursor-pointer',
         accentClass,
         className,
       )}
@@ -157,7 +164,7 @@ function DefaultCard({
           </div>
         ) : null}
       </div>
-    </div>
+    </Component>
   );
 }
 
