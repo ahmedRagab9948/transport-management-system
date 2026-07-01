@@ -3,15 +3,12 @@
 import { useMemo, useState } from 'react';
 import { Car, ClipboardList, Database, FileText, Truck, UserCheck, Users, MapPin } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/use-auth';
-import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { AppBreadcrumbs } from '@/features/layout/components/app-breadcrumbs';
 import { EmptyState, FilterDateRange, GlassCard, PageHeader, PageSection, SummaryCards } from '@/components/shared';
 import type { SummaryCard } from '@/components/shared';
 import type { BaseStatCardTrend } from '@/components/shared';
 import Link from 'next/link';
-import { PERMISSIONS } from '@/constants/permissions';
 import { useT } from '@/lib/i18n';
 import { getApiErrorMessage } from '@/lib/api/unwrap';
 import {
@@ -19,10 +16,10 @@ import {
   useRecentActivity, useSystemAlerts, useTripsStatus, useVehicleUtilization,
 } from '../hooks/use-dashboard';
 import dynamic from 'next/dynamic';
+import { DashboardWidgets } from './dashboard-widgets';
 import { QuickActions } from './quick-actions';
 import { RecentActivity } from './recent-activity';
 import { SystemAlerts } from './system-alerts';
-import { SystemStatsCard } from './system-stats-card';
 
 const MonthlyTripsChart = dynamic(() => import('./monthly-trips-chart').then(m => m.MonthlyTripsChart), { ssr: false, loading: () => null });
 const TripStatusChart = dynamic(() => import('./trip-status-chart').then(m => m.TripStatusChart), { ssr: false, loading: () => null });
@@ -76,7 +73,6 @@ function useDefaultDateRange() {
 
 export function DashboardPage() {
   const { user } = useAuth();
-  const { hasPermission } = usePermissions();
   const { t } = useT();
   const defaultRange = useDefaultDateRange();
   const [dateFrom, setDateFrom] = useState(defaultRange.from);
@@ -166,15 +162,11 @@ export function DashboardPage() {
           <MonthlyTripsChart data={monthlyTrips.data} isLoading={monthlyTrips.isLoading} />
           <VehicleDriverCharts vehicleData={vehicleUtilization.data} driverData={driverStatus.data}
             vehicleLoading={vehicleUtilization.isLoading} driverLoading={driverStatus.isLoading} />
+          <DashboardWidgets />
           <PageSection variant="grid2">
             <RecentActivity data={recentActivity.data} isLoading={recentActivity.isLoading} />
             <SystemAlerts data={systemAlerts.data} isLoading={systemAlerts.isLoading} />
           </PageSection>
-          {hasPermission(PERMISSIONS.MANAGE_ROLES) && (
-            <PageSection variant="grid2">
-              <SystemStatsCard />
-            </PageSection>
-          )}
         </>
       )}
     </PageSection>
