@@ -66,7 +66,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed inset-inline-end-4 bottom-4 z-50 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2">
+      <div role="status" aria-live="polite" aria-atomic="false" className="fixed inset-inline-end-4 bottom-4 z-50 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2">
         <AnimatePresence>
           {messages.map((message) => {
             const Icon = icons[message.variant];

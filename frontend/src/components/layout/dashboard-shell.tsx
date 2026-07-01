@@ -20,7 +20,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       collapsed ? 'ms-0 md:ms-16' : 'ms-0 md:ms-56',
     )}>
       <TopNavbar />
-      <main className="flex flex-1 flex-col overflow-auto">{children}</main>
+      <main id="main-content" className="flex flex-1 flex-col overflow-auto">{children}</main>
     </div>
   );
 }
@@ -28,6 +28,12 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 export function DashboardShell({ children }: DashboardShellProps) {
   return (
     <SidebarProvider>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:inline-flex focus:items-center focus:gap-2 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground focus:shadow-lg focus:outline-none"
+      >
+        Skip to content
+      </a>
       <div className="flex min-h-full flex-1">
         <AppSidebar />
         <DashboardContent>{children}</DashboardContent>
