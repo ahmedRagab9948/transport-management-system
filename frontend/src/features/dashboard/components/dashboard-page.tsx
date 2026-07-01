@@ -1,12 +1,13 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import { Car, ClipboardList, Database, FileText, Truck, UserCheck, Users, MapPin } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { usePermissions } from '@/features/auth/hooks/use-permissions';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { AppBreadcrumbs } from '@/features/layout/components/app-breadcrumbs';
-import { EmptyState, GlassCard, PageHeader, PageSection, SummaryCards } from '@/components/shared';
+import { EmptyState, FilterDateRange, GlassCard, PageHeader, PageSection, SummaryCards } from '@/components/shared';
 import type { SummaryCard } from '@/components/shared';
 import type { BaseStatCardTrend } from '@/components/shared';
 import Link from 'next/link';
@@ -27,7 +28,7 @@ const TripStatusChart = dynamic(() => import('./trip-status-chart').then(m => m.
 const VehicleDriverCharts = dynamic(() => import('./vehicle-driver-charts').then(m => m.VehicleDriverCharts), { ssr: false, loading: () => null });
 
 function OnboardingEmptyState({ summary }: { summary: { totalTrips: number; availableVehicles: number; activeDrivers: number } }) {
-  const { t, dir } = useT();
+  const { t } = useT();
   return (
     <GlassCard variant="floating" className="flex flex-1 flex-col items-center justify-center gap-6 px-6 py-16">
       <div className="rounded-lg bg-muted/50 p-4">
@@ -60,10 +61,25 @@ function OnboardingEmptyState({ summary }: { summary: { totalTrips: number; avai
   );
 }
 
+function useDefaultDateRange() {
+  return useMemo(() => {
+    const today = new Date();
+    const thirtyDaysAgo = new Date(today);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    return {
+      from: thirtyDaysAgo.toISOString().slice(0, 10),
+      to: today.toISOString().slice(0, 10),
+    };
+  }, []);
+}
+
 export function DashboardPage() {
   const { user } = useAuth();
   const { hasPermission } = usePermissions();
   const { t } = useT();
+  const defaultRange = useDefaultDateRange();
+  const [dateFrom, setDateFrom] = useState(defaultRange.from);
+  const [dateTo, setDateTo] = useState(defaultRange.to);
   const summary = useDashboardSummary();
   const tripsStatus = useTripsStatus();
   const monthlyTrips = useMonthlyTrips();
@@ -71,6 +87,18 @@ export function DashboardPage() {
   const driverStatus = useDriverStatusDistribution();
   const recentActivity = useRecentActivity();
   const systemAlerts = useSystemAlerts();
+
+  const dateRangeActions = (
+    <FilterDateRange
+      fromValue={dateFrom}
+      toValue={dateTo}
+      onFromChange={setDateFrom}
+      onToChange={setDateTo}
+      fromLabel={t('common.from')}
+      toLabel={t('common.to')}
+      variant="bar"
+    />
+  );
 
   const hasError = summary.error || tripsStatus.error || monthlyTrips.error
     || vehicleUtilization.error || driverStatus.error || recentActivity.error || systemAlerts.error;
@@ -80,10 +108,11 @@ export function DashboardPage() {
       summary.error ?? tripsStatus.error ?? monthlyTrips.error,
       t('dashboard.loading_error'),
     );
+
     return (
       <PageSection variant="wrapper">
         <AppBreadcrumbs />
-        <PageHeader title={t('dashboard.title')} description={t('dashboard.description')} />
+        <PageHeader title={t('dashboard.title')} description={t('dashboard.description')} actions={dateRangeActions} />
         <GlassCard variant="surface" className="p-6">
           <EmptyState icon={Database} title={t('dashboard.loading_error')}
             description={message} actionLabel={t('dashboard.retry')}
@@ -119,7 +148,7 @@ export function DashboardPage() {
     <PageSection variant="wrapper">
       <AppBreadcrumbs />
       <PageHeader title={t('dashboard.title')}
-        description={t('nav.welcome_back', { name: user?.fullName ?? 'User' })} />
+        description={t('nav.welcome_back', { name: user?.fullName ?? 'User' })} actions={dateRangeActions} />
       {isEmpty ? (
         <OnboardingEmptyState summary={summary.data} />
       ) : (
