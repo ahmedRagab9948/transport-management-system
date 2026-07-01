@@ -19,6 +19,7 @@ import {
   useRecentActivity, useSystemAlerts, useTripsStatus, useVehicleUtilization,
 } from '../hooks/use-dashboard';
 import dynamic from 'next/dynamic';
+import { QuickActions } from './quick-actions';
 import { RecentActivity } from './recent-activity';
 import { SystemAlerts } from './system-alerts';
 import { SystemStatsCard } from './system-stats-card';
@@ -154,10 +155,15 @@ export function DashboardPage() {
       ) : (
         <>
           <SummaryCards cards={summaryCards} isLoading={summary.isLoading} />
-          <PageSection variant="grid2">
-            <TripStatusChart data={tripsStatus.data} isLoading={tripsStatus.isLoading} />
-            <MonthlyTripsChart data={monthlyTrips.data} isLoading={monthlyTrips.isLoading} />
-          </PageSection>
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <TripStatusChart data={tripsStatus.data} isLoading={tripsStatus.isLoading} />
+            </div>
+            <div>
+              <QuickActions />
+            </div>
+          </div>
+          <MonthlyTripsChart data={monthlyTrips.data} isLoading={monthlyTrips.isLoading} />
           <VehicleDriverCharts vehicleData={vehicleUtilization.data} driverData={driverStatus.data}
             vehicleLoading={vehicleUtilization.isLoading} driverLoading={driverStatus.isLoading} />
           <PageSection variant="grid2">
