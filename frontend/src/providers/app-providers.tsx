@@ -1,5 +1,6 @@
 'use client';
 
+import { MotionConfig } from 'framer-motion';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ToastProvider } from '@/components/ui/toast';
 import { AuthProvider } from '@/features/auth/components/auth-provider';
@@ -14,7 +15,9 @@ export function AppProviders({ children, initialLocale = 'en' }: { children: Rea
         <TooltipProvider>
           <QueryProvider>
             <ToastProvider>
-              <AuthProvider>{children}</AuthProvider>
+              <MotionConfig reducedMotion="user">
+                <AuthProvider>{children}</AuthProvider>
+              </MotionConfig>
             </ToastProvider>
           </QueryProvider>
         </TooltipProvider>
