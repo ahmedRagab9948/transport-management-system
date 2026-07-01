@@ -1,6 +1,7 @@
 'use client';
 
-import { Activity, MapPin, FileText, Car } from 'lucide-react';
+import { Activity, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
 import { GlassCard, SectionHeader, StatusBadge } from '@/components/shared';
 import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
 import { useT } from '@/lib/i18n';
@@ -12,10 +13,10 @@ interface RecentActivityProps {
   isLoading: boolean;
 }
 
-const DOT_CONFIG: Record<string, { color: string; icon: React.ElementType }> = {
-  trip: { color: 'bg-blue-500', icon: MapPin },
-  contract: { color: 'bg-amber-500', icon: FileText },
-  vehicle: { color: 'bg-emerald-500', icon: Car },
+const DOT_COLORS: Record<string, string> = {
+  trip: 'bg-blue-500',
+  contract: 'bg-indigo-500',
+  vehicle: 'bg-amber-500',
 };
 
 function formatRelativeTime(dateString: string, t: (key: string, params?: Record<string, string | number>) => string) {
@@ -33,7 +34,7 @@ function formatRelativeTime(dateString: string, t: (key: string, params?: Record
 }
 
 export function RecentActivity({ data, isLoading }: RecentActivityProps) {
-  const { t, dir } = useT();
+  const { t } = useT();
   return (
     <GlassCard variant="surface">
       <SectionHeader title={t('dashboard.recent_activity')} icon={Activity} />
@@ -53,17 +54,15 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
           </div>
         ) : (
           <div className="relative space-y-0">
-            <div className="absolute left-[11px] top-2 h-[calc(100%-20px)] w-px bg-border/40" />
+            <div className="absolute left-[7px] top-2 h-[calc(100%-20px)] w-px bg-border/40" aria-hidden="true" />
             {data.recentTrips.map((trip) => (
               <div key={trip.id} className="group relative flex gap-4 pb-5 last:pb-0 hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors duration-200">
-                <span className={cn('relative z-10 mt-2 size-4 shrink-0 rounded-md flex items-center justify-center', DOT_CONFIG.trip.color)}>
-                  <MapPin className="size-2 text-white" />
-                </span>
+                <span className={cn('relative z-10 mt-2 size-2 shrink-0 rounded-full ring-2 ring-background', DOT_COLORS.trip)} />
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-3 text-sm">
                   <div className="min-w-0 flex-1">
                     <span className="font-semibold text-foreground">{trip.tripNumber}</span>
                     <span className="ms-2 text-muted-foreground">
-                      {trip.fromLocation} {dir === 'rtl' ? '←' : '→'} {trip.toLocation}
+                      {trip.fromLocation} → {trip.toLocation}
                     </span>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -77,14 +76,12 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
             ))}
             {data.recentContracts.map((contract) => (
               <div key={contract.id} className="group relative flex gap-4 pb-5 last:pb-0 hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors duration-200">
-                <span className={cn('relative z-10 mt-2 size-4 shrink-0 rounded-md flex items-center justify-center', DOT_CONFIG.contract.color)}>
-                  <FileText className="size-2 text-white" />
-                </span>
+                <span className={cn('relative z-10 mt-2 size-2 shrink-0 rounded-full ring-2 ring-background', DOT_COLORS.contract)} />
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-3 text-sm">
                   <div className="min-w-0 flex-1">
                     <span className="font-semibold text-foreground">{contract.contractNumber}</span>
                     <span className="ms-2 text-muted-foreground">
-                      {contract.title} {dir === 'rtl' ? '←' : '→'} {contract.client.companyName}
+                      {contract.title} — {contract.client.companyName}
                     </span>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
@@ -98,14 +95,12 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
             ))}
             {data.recentVehicleChanges.map((change) => (
               <div key={change.id} className="group relative flex gap-4 pb-5 last:pb-0 hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors duration-200">
-                <span className={cn('relative z-10 mt-2 size-4 shrink-0 rounded-md flex items-center justify-center', DOT_CONFIG.vehicle.color)}>
-                  <Car className="size-2 text-white" />
-                </span>
+                <span className={cn('relative z-10 mt-2 size-2 shrink-0 rounded-full ring-2 ring-background', DOT_COLORS.vehicle)} />
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-3 text-sm">
                   <div className="min-w-0 flex-1">
                     <span className="font-semibold text-foreground">{change.vehicle.vehicleCode}</span>
                     <span className="text-muted-foreground">
-                      {' '}{change.oldStatus ?? '—'} {dir === 'rtl' ? '←' : '→'} {change.newStatus.replace(/_/g, ' ')}
+                      {' '}{change.oldStatus ?? '—'} → {change.newStatus.replace(/_/g, ' ')}
                     </span>
                     {change.changedBy ? (
                       <span className="ms-2 text-xs text-muted-foreground">
@@ -119,6 +114,13 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
                 </div>
               </div>
             ))}
+            <Link
+              href="/audit-logs"
+              className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              {t('common.view_all')}
+              <ExternalLink className="size-3" />
+            </Link>
           </div>
         )}
       </div>
