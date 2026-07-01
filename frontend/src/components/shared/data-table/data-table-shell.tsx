@@ -283,7 +283,7 @@ export function DataTableShell<TData>({
         <FilterChips chips={filterChips} onRemove={onFilterChipRemove} onClearAll={onFilterChipsClear} />
       ) : null}
 
-        <div className="overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm">
+        <div className="overflow-hidden rounded-lg border border-border/60 bg-card shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full caption-bottom text-base">
               <thead className="sticky top-0 z-20 border-b border-border/60 bg-card/95 backdrop-blur-md shadow-[0_1px_2px_0_rgb(0_0_0_/_0.04)] dark:border-border/30 dark:bg-card/95">
