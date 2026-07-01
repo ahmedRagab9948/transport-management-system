@@ -6,7 +6,7 @@ export const CARD = {
 } as const;
 
 export const SECTION = {
-  wrapper: 'flex flex-1 flex-col gap-3 sm:gap-4 lg:gap-6 p-4 sm:px-6 lg:px-8 w-full max-w-7xl mx-auto',
+  wrapper: 'flex flex-1 flex-col gap-4 sm:gap-6 lg:gap-8 p-4 sm:px-6 lg:px-8 w-full max-w-[1440px] mx-auto',
   grid: 'grid gap-4 sm:gap-6',
   grid2: 'grid gap-4 sm:gap-6 lg:grid-cols-2',
 } as const;
