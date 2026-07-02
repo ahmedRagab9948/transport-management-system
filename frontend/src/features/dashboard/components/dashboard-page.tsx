@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Car, ClipboardList, Database, FileText, Truck, UserCheck, Users, MapPin } from 'lucide-react';
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { buttonVariants } from '@/components/ui/button';
@@ -150,6 +151,11 @@ export function DashboardPage() {
         <OnboardingEmptyState summary={summary.data} />
       ) : (
         <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.2 }}
+          >
           <SummaryCards cards={summaryCards} isLoading={summary.isLoading} />
           <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
@@ -167,6 +173,7 @@ export function DashboardPage() {
             <RecentActivity data={recentActivity.data} isLoading={recentActivity.isLoading} />
             <SystemAlerts data={systemAlerts.data} isLoading={systemAlerts.isLoading} />
           </PageSection>
+          </motion.div>
         </>
       )}
     </PageSection>
