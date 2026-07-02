@@ -5,16 +5,16 @@ import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 min-w-fit items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-colors duration-200 outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer",
+  "group/button inline-flex shrink-0 min-w-fit items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-semibold whitespace-nowrap transition-all duration-150 outline-none select-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none disabled:active:scale-100 aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 cursor-pointer active:scale-[0.97] motion-safe:active:scale-[0.97]",
   {
     variants: {
       variant: {
-        primary: "bg-primary text-primary-foreground shadow-sm hover:bg-[var(--primary-hover)] active:bg-[var(--primary-hover)]",
-        secondary: "border border-primary text-primary hover:bg-primary/10 active:bg-primary/15",
+        primary: "bg-primary text-primary-foreground shadow-sm hover:bg-[var(--primary-hover)] hover:shadow-md active:bg-[var(--primary-hover)]",
+        secondary: "border border-primary text-primary hover:bg-primary/10 hover:shadow-sm active:bg-primary/15",
         ghost: "hover:bg-muted hover:text-foreground",
-        danger: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 active:bg-destructive/90",
-        success: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 active:bg-emerald-700",
-        outline: "border border-border bg-background hover:bg-muted hover:text-foreground",
+        danger: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 hover:shadow-md active:bg-destructive/90",
+        success: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 hover:shadow-md active:bg-emerald-700",
+        outline: "border border-border bg-background hover:bg-muted hover:text-foreground hover:shadow-sm",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

@@ -68,15 +68,13 @@ export function AppSidebar() {
           onClick={toggleCollapsed}
           aria-label={collapsed ? t('common.expand_menu') : t('common.collapse_menu')}
         >
-          {collapsed ? (
-            <ExpandIcon className="size-4" />
-          ) : (
-            <>
-              <CollapseIcon className="size-4" />
-              <span className="text-xs font-medium">
-                {t('common.collapse_menu')}
-              </span>
-            </>
+          <span className={cn('flex items-center transition-transform duration-300 ease-out', collapsed && 'rotate-180')}>
+            <CollapseIcon className="size-4" />
+          </span>
+          {!collapsed && (
+            <span className="text-xs font-medium">
+              {t('common.collapse_menu')}
+            </span>
           )}
         </Button>
       </div>

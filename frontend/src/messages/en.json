@@ -546,7 +546,13 @@
     "onboarding_description": "Get started by adding your first vehicles, drivers, and trips. Your operational overview will appear here.",
     "add_vehicle": "Add Vehicle",
     "add_driver": "Add Driver",
-    "create_trip": "Create Trip"
+    "create_trip": "Create Trip",
+    "total_trips_subtitle": "All trips in the selected period",
+    "active_trips_subtitle": "Trips currently in progress",
+    "available_vehicles_subtitle": "Vehicles ready for dispatch",
+    "active_drivers_subtitle": "Drivers currently on duty",
+    "active_contracts_subtitle": "Currently active agreements",
+    "active_clients_subtitle": "Active client accounts"
   },
   "reports": {
     "title": "Reports & Analytics",

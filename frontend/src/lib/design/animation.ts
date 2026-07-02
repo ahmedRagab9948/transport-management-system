@@ -67,3 +67,42 @@ export const cardHover = {
   rest: { scale: 1 },
   hover: { scale: 1.01, transition: { duration: DURATIONS.fast, ease: EASINGS.out } },
 };
+
+export const pressScale: Variants = {
+  rest: { scale: 1 },
+  pressed: { scale: 0.97, transition: { duration: DURATIONS.fast } },
+};
+
+export const slideInRight: Variants = {
+  hidden: { opacity: 0, x: 20 },
+  visible: { opacity: 1, x: 0, transition: defaultTransition },
+};
+
+export const slideOutRight: Variants = {
+  visible: { opacity: 1, x: 0 },
+  hidden: { opacity: 0, x: 20, transition: { duration: DURATIONS.normal, ease: EASINGS.in } },
+};
+
+export const pageTransition: Variants = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0, transition: { duration: DURATIONS.normal, ease: EASINGS.out } },
+  exit: { opacity: 0, y: -8, transition: { duration: DURATIONS.fast, ease: EASINGS.in } },
+};
+
+export const dialogOverlay: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: DURATIONS.fast } },
+  exit: { opacity: 0, transition: { duration: DURATIONS.fast } },
+};
+
+export const dialogContent: Variants = {
+  hidden: { opacity: 0, scale: 0.95, y: 10 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: DURATIONS.normal, ease: [0.16, 1, 0.3, 1] } },
+  exit: { opacity: 0, scale: 0.95, y: 10, transition: { duration: DURATIONS.fast, ease: EASINGS.in } },
+};
+
+export const notificationEnter: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: DURATIONS.medium, ease: [0.16, 1, 0.3, 1] } },
+  exit: { opacity: 0, y: -20, scale: 0.95, transition: { duration: DURATIONS.normal, ease: EASINGS.in } },
+};

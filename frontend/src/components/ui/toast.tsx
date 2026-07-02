@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, CheckCircle2, Info, TriangleAlert, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { notificationEnter } from '@/lib/design/animation';
 import { cn } from '@/lib/utils';
 
 type ToastVariant = 'success' | 'error' | 'warning' | 'info';
@@ -12,6 +13,7 @@ interface ToastInput {
   title: string;
   description?: string;
   variant?: ToastVariant;
+  duration?: number;
 }
 
 interface ToastMessage extends ToastInput {
@@ -32,12 +34,81 @@ const variantStyles: Record<ToastVariant, string> = {
   info: 'border-transparent bg-primary text-white shadow-primary/20',
 };
 
+const variantProgressStyles: Record<ToastVariant, string> = {
+  success: 'bg-white/30',
+  error: 'bg-white/30',
+  warning: 'bg-white/30',
+  info: 'bg-white/30',
+};
+
 const icons = {
   success: CheckCircle2,
   error: AlertCircle,
   warning: TriangleAlert,
   info: Info,
 };
+
+function ToastProgress({ duration, isPaused }: { duration: number; isPaused: boolean }) {
+  return (
+    <span className="absolute inset-x-0 bottom-0 h-1 overflow-hidden rounded-b-lg">
+      <span
+        className={cn(
+          'block h-full rounded-b-lg transition-[width] linear',
+          variantProgressStyles.success,
+          isPaused && '!w-[var(--toast-progress)]',
+        )}
+        style={{
+          animation: `toast-shrink ${duration}ms linear`,
+          animationPlayState: isPaused ? 'paused' : 'running',
+          width: '100%',
+        }}
+      />
+    </span>
+  );
+}
+
+function ToastItem({ message, onDismiss }: { message: ToastMessage; onDismiss: (id: string) => void }) {
+  const Icon = icons[message.variant];
+  const duration = message.duration ?? 4500;
+  const [isPaused, setIsPaused] = useState(false);
+
+  return (
+    <motion.div
+      variants={notificationEnter}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      layout
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      className={cn(
+        'relative overflow-hidden rounded-lg border bg-card p-4 text-sm shadow-md',
+        variantStyles[message.variant],
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <Icon className="mt-0.5 size-5 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <div className="font-semibold text-base">{message.title}</div>
+          {message.description ? (
+            <div className="mt-1 text-sm opacity-85 leading-relaxed">{message.description}</div>
+          ) : null}
+        </div>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => onDismiss(message.id)}
+          aria-label="Dismiss notification"
+          className="-mt-1 -me-1 text-white/80 hover:text-white hover:bg-white/10"
+        >
+          <X className="size-4" />
+        </Button>
+      </div>
+      <ToastProgress duration={duration} isPaused={isPaused} />
+    </motion.div>
+  );
+}
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<ToastMessage[]>([]);
@@ -56,7 +127,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       };
 
       setMessages((current) => [...current, message].slice(-3));
-      window.setTimeout(() => dismiss(id), 4500);
+      window.setTimeout(() => dismiss(id), input.duration ?? 4500);
     },
     [dismiss],
   );
@@ -68,43 +139,9 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div role="status" aria-live="polite" aria-atomic="false" className="fixed inset-inline-end-4 bottom-4 z-50 flex w-[min(24rem,calc(100vw-2rem))] flex-col gap-2">
         <AnimatePresence>
-          {messages.map((message) => {
-            const Icon = icons[message.variant];
-
-            return (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className={cn(
-                  'rounded-lg border bg-card p-4 text-sm shadow-md',
-                  variantStyles[message.variant],
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <Icon className="mt-0.5 size-5 shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <div className="font-semibold text-base">{message.title}</div>
-                    {message.description ? (
-                      <div className="mt-1 text-sm opacity-85 leading-relaxed">{message.description}</div>
-                    ) : null}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon-sm"
-                    onClick={() => dismiss(message.id)}
-                    aria-label="Dismiss notification"
-                    className="-mt-1 -me-1 text-white/80 hover:text-white hover:bg-white/10"
-                  >
-                    <X className="size-4" />
-                  </Button>
-                </div>
-              </motion.div>
-            );
-          })}
+          {messages.map((message) => (
+            <ToastItem key={message.id} message={message} onDismiss={dismiss} />
+          ))}
         </AnimatePresence>
       </div>
     </ToastContext.Provider>

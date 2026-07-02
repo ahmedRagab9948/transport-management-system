@@ -1,8 +1,10 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { SidebarProvider, useSidebar } from '@/features/layout/context/sidebar-context';
 import { AppSidebar } from '@/features/layout/components/app-sidebar';
 import { TopNavbar } from '@/features/layout/components/top-navbar';
+import { pageTransition } from '@/lib/design/animation';
 import { useT } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 
@@ -20,7 +22,11 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       collapsed ? 'ms-0 md:ms-16' : 'ms-0 md:ms-56',
     )}>
       <TopNavbar />
-      <main id="main-content" className="flex flex-1 flex-col overflow-auto">{children}</main>
+      <main id="main-content" className="flex flex-1 flex-col overflow-auto">
+        <motion.div variants={pageTransition} initial="hidden" animate="visible" className="flex flex-1 flex-col">
+          {children}
+        </motion.div>
+      </main>
     </div>
   );
 }

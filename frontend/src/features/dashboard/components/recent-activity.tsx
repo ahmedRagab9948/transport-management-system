@@ -54,10 +54,10 @@ export function RecentActivity({ data, isLoading }: RecentActivityProps) {
           </div>
         ) : (
           <div className="relative space-y-0">
-            <div className="absolute left-[7px] top-2 h-[calc(100%-20px)] w-px bg-border/40" aria-hidden="true" />
+            <div className="absolute inset-inline-start-[7px] top-2 h-[calc(100%-20px)] w-px bg-border/40" aria-hidden="true" />
             {data.recentTrips.map((trip) => (
               <div key={trip.id} className="group relative flex gap-4 pb-5 last:pb-0 hover:bg-muted/30 rounded-lg -mx-2 px-2 py-2 transition-colors duration-200">
-                <span className={cn('relative z-10 mt-2 size-2 shrink-0 rounded-full ring-2 ring-background', DOT_COLORS.trip)} />
+                <span className={cn('relative z-10 mt-2 size-2 shrink-0 rounded-full ring-2 ring-background inset-inline-start-[7px]', DOT_COLORS.trip)} />
                 <div className="flex min-w-0 flex-1 items-center justify-between gap-3 text-sm">
                   <div className="min-w-0 flex-1">
                     <span className="font-semibold text-foreground">{trip.tripNumber}</span>

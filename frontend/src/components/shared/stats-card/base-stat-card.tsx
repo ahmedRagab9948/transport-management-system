@@ -1,12 +1,34 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, type ReactNode } from 'react';
+import { useId, useRef, type ReactNode } from 'react';
 import { motion, useSpring, useMotionValue, useTransform } from 'framer-motion';
 import { ArrowDown, ArrowUp } from 'lucide-react';
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { Card, CardContent } from '@/components/ui/card';
 import { DURATIONS } from '@/lib/design';
 import { cn } from '@/lib/utils';
+
+function Sparkline({ data, color }: { data: number[]; color?: string }) {
+  if (!data || data.length < 2) return null;
+  const chartData = data.map((v, i) => ({ i, v }));
+  const id = useId();
+  return (
+    <div className="h-8 sm:h-10 w-full" role="img" aria-label="Trend sparkline">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData} margin={{ top: 2, right: 2, bottom: 2, left: 2 }}>
+          <defs>
+            <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={color || 'var(--color-chart-1, #6366f1)'} stopOpacity={0.35} />
+              <stop offset="100%" stopColor={color || 'var(--color-chart-1, #6366f1)'} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Line type="monotone" dataKey="v" stroke={color || 'var(--color-chart-1, #6366f1)'} strokeWidth={2} dot={false} fill={`url(#spark-${id})`} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
 
 export interface BaseStatCardTrend {
   value: number;
@@ -20,6 +42,8 @@ export interface BaseStatCardProps {
   icon?: React.ReactNode;
   accentClass?: string;
   href?: string;
+  subtitle?: string;
+  sparklineData?: number[];
   trend?: BaseStatCardTrend;
   animate?: boolean;
   variant?: 'default' | 'card';
@@ -93,6 +117,8 @@ function DefaultCard({
   accentClass,
   href,
   trend,
+  subtitle,
+  sparklineData,
   className,
   labelClassName,
   valueClassName,
@@ -122,9 +148,14 @@ function DefaultCard({
       )}
     >
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent opacity-70" />
-      <div className={cn('relative flex flex-col gap-2.5 sm:gap-3 flex-1 justify-between', contentClassName)}>
+      <div className={cn('relative flex flex-col gap-2 sm:gap-2.5 flex-1', contentClassName)}>
         <div className="flex items-center justify-between">
-          <p className={cn('truncate text-xs sm:text-sm font-semibold text-muted-foreground', labelClassName)}>{label}</p>
+          <div className="flex flex-col gap-0.5 min-w-0">
+            <p className={cn('truncate text-xs sm:text-sm font-semibold text-muted-foreground', labelClassName)}>{label}</p>
+            {subtitle ? (
+              <p className="truncate text-[11px] sm:text-xs text-muted-foreground/60">{subtitle}</p>
+            ) : null}
+          </div>
           {icon ? (
             <div
               className={cn(
@@ -137,8 +168,13 @@ function DefaultCard({
             </div>
           ) : null}
         </div>
-        <div>
+        <div className="flex items-center gap-3">
           <p className={cn('text-2xl sm:text-3xl font-extrabold leading-none tabular-nums tracking-tight text-foreground truncate', valueClassName)}>{renderedValue}</p>
+          {sparklineData ? (
+            <div className="flex-1 min-w-0 max-w-[120px]">
+              <Sparkline data={sparklineData} />
+            </div>
+          ) : null}
         </div>
         {trend ? (
           <div className="flex items-center justify-between">
@@ -186,9 +222,14 @@ export function BaseStatCard(props: BaseStatCardProps) {
     return (
       <Card className={cn('group overflow-hidden rounded-xl flex flex-col h-full', className)}>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.04] via-transparent to-transparent opacity-60" />
-        <CardContent className="relative flex flex-col gap-2.5 sm:gap-3 p-3 sm:p-4 flex-1 justify-between">
+        <CardContent className="relative flex flex-col gap-2 sm:gap-2.5 p-3 sm:p-4 flex-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate pe-2">{props.label}</span>
+            <div className="flex flex-col gap-0.5 min-w-0">
+              <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate pe-2">{props.label}</span>
+              {props.subtitle ? (
+                <span className="truncate text-[11px] sm:text-xs text-muted-foreground/60">{props.subtitle}</span>
+              ) : null}
+            </div>
             {props.icon ? (
               <div
                 className="flex size-8 sm:size-10 items-center justify-center rounded-xl shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:shadow-md shrink-0"
@@ -198,10 +239,15 @@ export function BaseStatCard(props: BaseStatCardProps) {
               </div>
             ) : null}
           </div>
-          <div>
+          <div className="flex items-center gap-3">
             <div className="flex items-baseline gap-2">
               <span className="text-lg sm:text-xl font-semibold tabular-nums text-foreground truncate">{renderedValue}</span>
             </div>
+            {props.sparklineData ? (
+              <div className="flex-1 min-w-0 max-w-[100px]">
+                <Sparkline data={props.sparklineData} />
+              </div>
+            ) : null}
           </div>
           {props.trend ? (
             <div className="flex items-center justify-between">

@@ -546,7 +546,13 @@
     "onboarding_description": "ابدأ بإضافة مركباتك وسائقيك ورحلاتك الأولى. ستظهر نظرة العمليات العامة الخاصة بك هنا.",
     "add_vehicle": "إضافة مركبة",
     "add_driver": "إضافة سائق",
-    "create_trip": "إنشاء رحلة"
+    "create_trip": "إنشاء رحلة",
+    "total_trips_subtitle": "جميع الرحلات في الفترة المحددة",
+    "active_trips_subtitle": "الرحلات الجاري تنفيذها حالياً",
+    "available_vehicles_subtitle": "المركبات الجاهزة للتوزيع",
+    "active_drivers_subtitle": "السائقين المناوبين حالياً",
+    "active_contracts_subtitle": "الاتفاقيات النشطة حالياً",
+    "active_clients_subtitle": "حسابات العملاء النشطة"
   },
   "reports": {
     "title": "التقارير والتحليلات",

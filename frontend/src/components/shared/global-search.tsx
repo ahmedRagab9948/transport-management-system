@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Search, Route, Truck, UserCircle, Contact, FileText } from 'lucide-react';
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { ROUTES } from '@/constants/routes';
 import { scaleIn, DURATIONS } from '@/lib/design';
 import { useT } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
 
 interface SearchResult {
   entity: string;
@@ -27,6 +28,17 @@ const SEARCH_ENTITIES = [
   { entity: 'clients', icon: Contact, href: (id: string) => ROUTES.clientsDetail(id), labelKey: 'clients.title', labelField: 'companyName' },
   { entity: 'contracts', icon: FileText, href: (id: string) => ROUTES.contractsDetail(id), labelKey: 'contracts.title', labelField: 'contractNumber' },
 ] as const;
+
+function highlightMatch(text: string, query: string) {
+  if (!query.trim()) return text;
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const parts = text.split(new RegExp(`(${escaped})`, 'gi'));
+  return parts.map((part, i) =>
+    part.toLowerCase() === query.toLowerCase()
+      ? <mark key={i} className="rounded-sm bg-primary/20 text-foreground px-0.5">{part}</mark>
+      : part,
+  );
+}
 
 function useGlobalSearch(query: string) {
   const { t } = useT();
@@ -75,14 +87,17 @@ export function GlobalSearch() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   const { results, isFetching } = useGlobalSearch(query);
 
   function handleSelect(result: SearchResult) {
     setIsOpen(false);
     setQuery('');
+    setActiveIndex(-1);
     router.push(result.href);
   }
 
@@ -96,6 +111,31 @@ export function GlobalSearch() {
     }
   }
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!isOpen) return;
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex((prev) => Math.min(prev + 1, results.length - 1));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (activeIndex >= 0 && activeIndex < results.length) {
+          handleSelect(results[activeIndex]);
+        }
+        break;
+      case 'Escape':
+        setIsOpen(false);
+        setActiveIndex(-1);
+        inputRef.current?.blur();
+        break;
+    }
+  }, [isOpen, results, activeIndex]);
+
   return (
     <div className="relative w-full max-w-sm" ref={dropdownRef}>
       <div className="relative group">
@@ -105,13 +145,19 @@ export function GlobalSearch() {
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);
+            setActiveIndex(-1);
             setIsOpen(true);
           }}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           placeholder={t('common.search_global')}
           className="h-9 ps-8 pe-8 text-sm bg-muted/20 border-border/80 transition-all duration-200 focus-visible:bg-background focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary"
           aria-label={t('common.search')}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls="global-search-results"
+          autoComplete="off"
         />
           {isFetching && (
           <div className="absolute end-2.5 top-1/2 size-4 -translate-y-1/2">
@@ -131,24 +177,29 @@ export function GlobalSearch() {
           <div className="px-2.5 py-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground/50 border-b border-border/40 mb-1">
             {t('common.search')}
           </div>
-          <div className="flex flex-col gap-0.5">
-            {results.map((result) => {
+          <div className="flex flex-col gap-0.5" id="global-search-results" role="listbox">
+            {results.map((result, index) => {
               const Icon = result.icon;
               return (
                 <button
                   key={`${result.entity}-${result.id}`}
+                  ref={(el) => { itemRefs.current[index] = el; }}
                   type="button"
-                  className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm text-start transition-all duration-150 hover:bg-accent/80 hover:text-accent-foreground focus-visible:outline-none focus-visible:bg-accent/80 focus-visible:text-accent-foreground active:scale-[0.99]"
+                  className={cn(
+                    'flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-sm text-start transition-all duration-150 hover:bg-accent/80 hover:text-accent-foreground focus-visible:outline-none active:scale-[0.99]',
+                    activeIndex === index ? 'bg-accent/80 text-accent-foreground' : '',
+                  )}
                   onClick={() => handleSelect(result)}
                   onMouseDown={(e) => e.preventDefault()}
                   role="option"
+                  aria-selected={activeIndex === index}
                   aria-label={t('search.result_label', { entity: result.entity, label: result.label })}
                 >
                   <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted/60 text-muted-foreground group-hover/search-item:bg-primary/10 group-hover/search-item:text-primary">
                     <Icon className="size-4 shrink-0" aria-hidden />
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col">
-                    <span className="truncate font-semibold tracking-tight text-foreground">{result.label}</span>
+                    <span className="truncate font-semibold tracking-tight text-foreground">{highlightMatch(result.label, query)}</span>
                     <span className="truncate text-xs font-medium text-muted-foreground/75 uppercase tracking-wide mt-0.5">{result.entity}</span>
                   </div>
                 </button>

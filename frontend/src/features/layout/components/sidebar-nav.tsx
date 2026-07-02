@@ -66,9 +66,9 @@ function NavLink({
   );
 
   const className = cn(
-    'group relative flex h-10 w-full items-center gap-2 rounded-md px-2 text-sm transition-colors duration-200 cursor-pointer',
+    'group relative flex h-10 w-full items-center gap-2 rounded-md px-2 text-sm transition-all duration-150 cursor-pointer',
     active
-      ? 'bg-primary/10 text-primary font-bold before:absolute before:inset-y-0.5 before:-start-2 before:w-1 before:rounded-e-md before:bg-primary'
+      ? 'bg-primary/10 text-primary font-bold before:absolute before:inset-y-0.5 before:-start-2 before:w-1 before:rounded-e-md before:bg-primary before:transition-all before:duration-200'
       : 'text-sidebar-foreground/80 font-medium hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
     item.comingSoon && 'opacity-65 cursor-not-allowed',
     collapsed && 'justify-center px-0',

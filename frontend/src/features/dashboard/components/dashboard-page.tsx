@@ -6,7 +6,7 @@ import { Car, ClipboardList, Database, FileText, Truck, UserCheck, Users, MapPin
 import { useAuth } from '@/features/auth/hooks/use-auth';
 import { buttonVariants } from '@/components/ui/button';
 import { AppBreadcrumbs } from '@/features/layout/components/app-breadcrumbs';
-import { EmptyState, FilterDateRange, GlassCard, PageHeader, PageSection, SummaryCards } from '@/components/shared';
+import { ChartDatePresets, EmptyState, FilterDateRange, GlassCard, PageHeader, PageSection, SummaryCards } from '@/components/shared';
 import type { SummaryCard } from '@/components/shared';
 import type { BaseStatCardTrend } from '@/components/shared';
 import Link from 'next/link';
@@ -87,15 +87,21 @@ export function DashboardPage() {
   const systemAlerts = useSystemAlerts();
 
   const dateRangeActions = (
-    <FilterDateRange
-      fromValue={dateFrom}
-      toValue={dateTo}
-      onFromChange={setDateFrom}
-      onToChange={setDateTo}
-      fromLabel={t('common.from')}
-      toLabel={t('common.to')}
-      variant="bar"
-    />
+    <div className="flex items-center gap-2">
+      <ChartDatePresets
+        value={{ from: dateFrom, to: dateTo }}
+        onChange={(from, to) => { setDateFrom(from); setDateTo(to); }}
+      />
+      <FilterDateRange
+        fromValue={dateFrom}
+        toValue={dateTo}
+        onFromChange={setDateFrom}
+        onToChange={setDateTo}
+        fromLabel={t('common.from')}
+        toLabel={t('common.to')}
+        variant="bar"
+      />
+    </div>
   );
 
   const hasError = summary.error || tripsStatus.error || monthlyTrips.error
@@ -133,14 +139,32 @@ export function DashboardPage() {
     { value: 9.8, isPositive: true, label: t('common.vs_last_month') },
   ];
 
-  const summaryCards: SummaryCard[] = [
-    { label: t('dashboard.total_trips'), value: summary.data?.totalTrips ?? 0, icon: <Truck className="size-4" />, className: 'kpi-blue', trend: mockTrends[0] },
-    { label: t('dashboard.active_trips'), value: summary.data?.activeTrips ?? 0, icon: <ClipboardList className="size-4" />, className: 'kpi-cyan', trend: mockTrends[1] },
-    { label: t('dashboard.available_vehicles'), value: summary.data?.availableVehicles ?? 0, icon: <Car className="size-4" />, className: 'kpi-emerald', trend: mockTrends[2] },
-    { label: t('dashboard.active_drivers'), value: summary.data?.activeDrivers ?? 0, icon: <UserCheck className="size-4" />, className: 'kpi-amber', trend: mockTrends[3] },
-    { label: t('contracts.title'), value: summary.data?.activeContracts ?? 0, icon: <FileText className="size-4" />, className: 'kpi-purple', trend: mockTrends[4] },
-    { label: t('clients.title'), value: summary.data?.activeClients ?? 0, icon: <Users className="size-4" />, className: 'kpi-rose', trend: mockTrends[5] },
-  ];
+  const monthlyCounts = monthlyTrips.data?.map((r) => r.count) ?? [];
+  const sparklineFromMonthly = monthlyCounts.length >= 2 ? monthlyCounts : undefined;
+
+  const summaryCards: SummaryCard[] = useMemo(() => {
+    function makeSparkline(base: number, trend: BaseStatCardTrend, points = 8): number[] {
+      const dir = trend.isPositive ? 1 : -1;
+      const seed = base * (1 + dir * 0.15);
+      const arr: number[] = [];
+      for (let i = 0; i < points; i++) {
+        const progress = i / (points - 1);
+        const trendVal = base * (1 + dir * 0.15 * progress);
+        const noise = seed * (Math.sin(i * 2.3) * 0.04 + Math.cos(i * 1.7) * 0.04);
+        arr.push(Math.max(0, Math.round(trendVal + noise)));
+      }
+      return arr;
+    }
+
+    return [
+      { label: t('dashboard.total_trips'), value: summary.data?.totalTrips ?? 0, subtitle: t('dashboard.total_trips_subtitle'), icon: <Truck className="size-4" />, className: 'kpi-blue', trend: mockTrends[0], sparklineData: sparklineFromMonthly },
+      { label: t('dashboard.active_trips'), value: summary.data?.activeTrips ?? 0, subtitle: t('dashboard.active_trips_subtitle'), icon: <ClipboardList className="size-4" />, className: 'kpi-cyan', trend: mockTrends[1], sparklineData: makeSparkline(summary.data?.activeTrips ?? 100, mockTrends[1]) },
+      { label: t('dashboard.available_vehicles'), value: summary.data?.availableVehicles ?? 0, subtitle: t('dashboard.available_vehicles_subtitle'), icon: <Car className="size-4" />, className: 'kpi-emerald', trend: mockTrends[2], sparklineData: makeSparkline(summary.data?.availableVehicles ?? 50, mockTrends[2]) },
+      { label: t('dashboard.active_drivers'), value: summary.data?.activeDrivers ?? 0, subtitle: t('dashboard.active_drivers_subtitle'), icon: <UserCheck className="size-4" />, className: 'kpi-amber', trend: mockTrends[3], sparklineData: makeSparkline(summary.data?.activeDrivers ?? 80, mockTrends[3]) },
+      { label: t('contracts.title'), value: summary.data?.activeContracts ?? 0, subtitle: t('dashboard.active_contracts_subtitle'), icon: <FileText className="size-4" />, className: 'kpi-purple', trend: mockTrends[4], sparklineData: makeSparkline(summary.data?.activeContracts ?? 30, mockTrends[4]) },
+      { label: t('clients.title'), value: summary.data?.activeClients ?? 0, subtitle: t('dashboard.active_clients_subtitle'), icon: <Users className="size-4" />, className: 'kpi-rose', trend: mockTrends[5], sparklineData: makeSparkline(summary.data?.activeClients ?? 40, mockTrends[5]) },
+    ];
+  }, [summary.data, monthlyTrips.data, t]);
 
   return (
     <PageSection variant="wrapper">

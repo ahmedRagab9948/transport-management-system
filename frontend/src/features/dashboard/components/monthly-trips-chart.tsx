@@ -1,7 +1,6 @@
 'use client';
 
-import { Activity } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import {
   Area,
   AreaChart,
@@ -11,8 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { GlassCard, SectionHeader } from '@/components/shared';
-import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
+import { ChartCard, ChartState, ChartTooltip } from '@/components/shared';
 import { useT } from '@/lib/i18n';
 import type { MonthlyTripCount } from '../types/dashboard.types';
 
@@ -21,7 +19,7 @@ interface MonthlyTripsChartProps {
   isLoading: boolean;
 }
 
-export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
+export const MonthlyTripsChart = memo(function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
   const { t } = useT();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showChart, setShowChart] = useState(false);
@@ -36,91 +34,71 @@ export function MonthlyTripsChart({ data, isLoading }: MonthlyTripsChartProps) {
   }, [data]);
 
   return (
-    <GlassCard variant="surface">
-      <SectionHeader title={t('dashboard.monthly_trips')} />
-      <div className={CARD_BODY}>
-        {isLoading ? (
-          <div className="flex h-52 sm:h-64 items-center justify-center">
-            <div className="h-36 sm:h-48 w-full animate-pulse rounded bg-muted" />
-          </div>
-        ) : !data || data.length === 0 ? (
-          <div className="flex h-52 sm:h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/40 bg-muted/20">
-            <div className="flex size-12 items-center justify-center rounded-lg bg-muted/50">
-              <Activity className="size-5 text-muted-foreground" />
-            </div>
-            <p className="text-sm font-medium text-muted-foreground">{t('dashboard.no_monthly_data')}</p>
-          </div>
-        ) : (
-          <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
-          {showChart && <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} role="img" aria-label={t('dashboard.monthly_trips_chart_aria')}>
-              <defs>
-                <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" strokeOpacity={0.5} horizontal={true} vertical={false} />
-              <XAxis
-                dataKey="month"
-                tick={{ fontSize: 12 }}
-                className="text-muted-foreground"
-                axisLine={false}
-                tickLine={false}
-                interval="preserveStartEnd"
-              />
-              <YAxis
-                allowDecimals={false}
-                tick={{ fontSize: 12 }}
-                className="text-muted-foreground"
-                axisLine={false}
-                tickLine={false}
-                width={32}
-              />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: 8,
-                  border: '1px solid hsl(var(--border) / 0.5)',
-                  background: 'hsl(var(--popover))',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                  fontSize: 12,
-                  padding: '8px 12px',
-                }}
-                wrapperStyle={{ backdropFilter: 'blur(8px)' }}
-              />
-              <Area
-                type="monotone"
-                dataKey="count"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                fill="url(#monthlyGradient)"
-                dot={{ r: 3, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
-                activeDot={{ r: 6, fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
-              />
-            </AreaChart>
-          </ResponsiveContainer>}
-            <details className="mt-2 text-xs text-muted-foreground">
-              <summary className="cursor-pointer font-medium">{t('common.view_data_table')}</summary>
-              <table className="mt-1 w-full border-collapse text-left">
-                <thead>
-                  <tr className="border-b border-border/40">
-                    <th className="py-1 pe-4 font-medium">{t('common.month')}</th>
-                    <th className="py-1 font-medium">{t('common.count')}</th>
+    <ChartCard title={t('dashboard.monthly_trips')}>
+      {isLoading ? (
+        <ChartState variant="loading" />
+      ) : !data || data.length === 0 ? (
+        <ChartState variant="empty" message={t('dashboard.no_monthly_data')} />
+      ) : (
+        <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
+        {showChart && <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 4, right: 4, left: -16, bottom: 0 }} role="img" aria-label={t('dashboard.monthly_trips_chart_aria')}>
+            <defs>
+              <linearGradient id="monthlyGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.25} />
+                <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.02} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" className="stroke-border" strokeOpacity={0.5} horizontal={true} vertical={false} />
+            <XAxis
+              dataKey="month"
+              tick={{ fontSize: 12 }}
+              className="text-muted-foreground"
+              axisLine={false}
+              tickLine={false}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              allowDecimals={false}
+              tick={{ fontSize: 12 }}
+              className="text-muted-foreground"
+              axisLine={false}
+              tickLine={false}
+              width={32}
+            />
+            <Tooltip content={<ChartTooltip />} />
+            <Area
+              type="monotone"
+              dataKey="count"
+              stroke="hsl(var(--primary))"
+              strokeWidth={2}
+              fill="url(#monthlyGradient)"
+              dot={{ r: 3, fill: 'hsl(var(--primary))', strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: 'hsl(var(--background))', stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>}
+          <details className="mt-2 text-xs text-muted-foreground">
+            <summary className="cursor-pointer font-medium">{t('common.view_data_table')}</summary>
+            <table className="mt-1 w-full border-collapse text-left">
+              <thead>
+                <tr className="border-b border-border/40">
+                  <th className="py-1 pe-4 font-medium">{t('common.month')}</th>
+                  <th className="py-1 font-medium">{t('common.count')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row) => (
+                  <tr key={row.month} className="border-b border-border/20">
+                    <td className="py-1 pe-4">{row.month}</td>
+                    <td className="py-1">{row.count}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {data.map((row) => (
-                    <tr key={row.month} className="border-b border-border/20">
-                      <td className="py-1 pe-4">{row.month}</td>
-                      <td className="py-1">{row.count}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </details>
-          </div>
-        )}
-      </div>
-    </GlassCard>
+                ))}
+              </tbody>
+            </table>
+          </details>
+        </div>
+      )}
+    </ChartCard>
   );
-}
+});

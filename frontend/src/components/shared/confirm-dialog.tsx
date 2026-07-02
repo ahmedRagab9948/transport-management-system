@@ -13,6 +13,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useT } from '@/lib/i18n';
+import { DURATIONS, dialogContent } from '@/lib/design/animation';
+import { cn } from '@/lib/utils';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -44,10 +46,10 @@ export function ConfirmDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          variants={dialogContent}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
         >
           <DialogHeader>
             <div className="flex items-start gap-3">

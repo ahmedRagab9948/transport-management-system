@@ -90,7 +90,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 onClick={() => setShowOld(!showOld)}
                 aria-label={showOld ? t('common.hide_password') : t('common.show_password')}
               >
@@ -111,7 +111,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
               />
               <button
                 type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 onClick={() => setShowNew(!showNew)}
                 aria-label={showNew ? t('common.hide_password') : t('common.show_password')}
               >

@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { BarChart2 } from 'lucide-react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { GlassCard, SectionHeader } from '@/components/shared';
-import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
+import { ChartCard, ChartState, ChartTooltip } from '@/components/shared';
 import { useT } from '@/lib/i18n';
 import type { StatusCount } from '../types/dashboard.types';
 
@@ -39,15 +37,15 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'common_statuses.cancelled',
 };
 
-export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
+export const TripStatusChart = memo(function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
   const { t } = useT();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showChart, setShowChart] = useState(false);
-  const chartData = (data ?? []).map((d) => ({
+  const chartData = useMemo(() => (data ?? []).map((d) => ({
     name: t(STATUS_LABELS[d.status] ?? d.status),
     count: d.count,
     fill: STATUS_BAR_COLORS[d.status] ?? 'hsl(var(--primary))',
-  }));
+  })), [data, t]);
 
   useEffect(() => {
     if (chartData.length > 0 && chartRef.current) {
@@ -59,20 +57,11 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
   }, [chartData]);
 
   return (
-    <GlassCard variant="surface">
-      <SectionHeader title={t('dashboard.trips_by_status')} />
-      <div className={CARD_BODY}>
+    <ChartCard title={t('dashboard.trips_by_status')}>
         {isLoading ? (
-          <div className="flex h-52 sm:h-64 items-center justify-center">
-            <div className="h-36 sm:h-48 w-full animate-pulse rounded bg-muted" />
-          </div>
+          <ChartState variant="loading" />
         ) : chartData.length === 0 ? (
-          <div className="flex h-52 sm:h-64 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/40 bg-muted/20">
-            <div className="flex size-12 items-center justify-center rounded-lg bg-muted/50">
-              <BarChart2 className="size-5 text-muted-foreground" />
-            </div>
-            <p className="text-sm font-medium text-muted-foreground">{t('dashboard.no_trip_data')}</p>
-          </div>
+          <ChartState variant="empty" message={t('dashboard.no_trip_data')} />
         ) : (
           <div ref={chartRef} className="h-[200px] sm:h-[256px] lg:h-[320px]">
           {showChart && <ResponsiveContainer width="100%" height="100%">
@@ -97,17 +86,7 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
                 tickLine={false}
                 width={32}
               />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: 8,
-                  border: '1px solid hsl(var(--border) / 0.5)',
-                  background: 'hsl(var(--popover))',
-                  boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                  fontSize: 12,
-                  padding: '8px 12px',
-                }}
-                wrapperStyle={{ backdropFilter: 'blur(8px)' }}
-              />
+              <Tooltip content={<ChartTooltip />} />
               <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={40}>
                 {chartData.map((entry, index) => (
                   <Cell key={index} fill={entry.fill} />
@@ -136,7 +115,6 @@ export function TripStatusChart({ data, isLoading }: TripStatusChartProps) {
             </details>
           </div>
         )}
-      </div>
-    </GlassCard>
+    </ChartCard>
   );
-}
+});

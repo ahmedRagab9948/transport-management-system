@@ -1,10 +1,8 @@
 'use client';
 
-import { PieChart as PieChartIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import { GlassCard, SectionHeader } from '@/components/shared';
-import { CARD_BODY } from '@/components/shared/design-system/design-tokens';
+import { ChartCard, ChartState, ChartTooltip } from '@/components/shared';
 import { useT } from '@/lib/i18n';
 import type { StatusCount } from '../types/dashboard.types';
 
@@ -48,15 +46,15 @@ interface DonutChartProps {
   emptyLabel: string;
 }
 
-function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
+const DonutChart = memo(function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
   const { t } = useT();
   const chartRef = useRef<HTMLDivElement>(null);
   const [showChart, setShowChart] = useState(false);
-  const chartData = (data ?? []).map((d) => ({
+  const chartData = useMemo(() => (data ?? []).map((d) => ({
     name: t(getStatusTranslationKey(d.status)),
     value: d.count,
     color: getColor(d.status),
-  }));
+  })), [data, t]);
 
   useEffect(() => {
     if (chartData.length > 0 && chartRef.current) {
@@ -68,20 +66,11 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
   }, [chartData]);
 
   return (
-    <GlassCard variant="surface" className="flex-1">
-      <SectionHeader title={title} />
-      <div className={CARD_BODY}>
+    <ChartCard title={title} className="flex-1">
         {isLoading ? (
-          <div className="flex h-48 sm:h-56 items-center justify-center">
-            <div className="size-32 sm:size-40 animate-pulse rounded-lg bg-muted" />
-          </div>
+          <ChartState variant="loading" />
         ) : chartData.length === 0 ? (
-          <div className="flex h-48 sm:h-56 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/40 bg-muted/20">
-            <div className="flex size-12 items-center justify-center rounded-lg bg-muted/50">
-              <PieChartIcon className="size-5 text-muted-foreground" />
-            </div>
-            <p className="text-sm font-medium text-muted-foreground">{emptyLabel}</p>
-          </div>
+          <ChartState variant="empty" message={emptyLabel} />
         ) : (
           <div className="flex flex-col items-center gap-4 sm:flex-row">
             <div ref={chartRef} className="h-[200px] sm:h-[224px] lg:h-[260px] w-full max-w-[200px] sm:max-w-xs">
@@ -102,38 +91,35 @@ function DonutChart({ data, isLoading, title, emptyLabel }: DonutChartProps) {
                     <Cell key={index} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{
-                    borderRadius: 8,
-                    border: '1px solid hsl(var(--border) / 0.5)',
-                    background: 'hsl(var(--popover))',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-                    fontSize: 12,
-                    padding: '8px 12px',
-                  }}
-                  wrapperStyle={{ backdropFilter: 'blur(8px)' }}
-                />
+                <Tooltip content={<ChartTooltip />} />
               </PieChart>
             </ResponsiveContainer>}
             </div>
             <div className="flex flex-col gap-1.5 text-sm">
-              {chartData.map((entry) => (
-                <div key={entry.name} className="flex items-center gap-2">
-                  <span
-                    className="size-3 rounded-sm shadow-sm"
-                    style={{ backgroundColor: entry.color }}
-                  />
-                  <span className="text-muted-foreground capitalize">{entry.name}</span>
-                  <span className="ms-auto font-medium tabular-nums">{entry.value}</span>
-                </div>
-              ))}
+              {(() => {
+                const total = chartData.reduce((s, d) => s + d.value, 0);
+                return chartData.map((entry) => (
+                  <div key={entry.name} className="flex items-center gap-2">
+                    <span
+                      className="size-3 rounded-sm shadow-sm"
+                      style={{ backgroundColor: entry.color }}
+                    />
+                    <span className="text-muted-foreground capitalize">{entry.name}</span>
+                    <span className="ms-auto font-medium tabular-nums">
+                      {entry.value}
+                      <span className="ms-1.5 text-xs text-muted-foreground/60">
+                        ({total > 0 ? Math.round((entry.value / total) * 100) : 0}%)
+                      </span>
+                    </span>
+                  </div>
+                ));
+              })()}
             </div>
           </div>
         )}
-      </div>
-    </GlassCard>
+    </ChartCard>
   );
-}
+});
 
 export function VehicleDriverCharts({
   vehicleData,

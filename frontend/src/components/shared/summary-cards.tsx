@@ -11,6 +11,8 @@ export interface SummaryCard {
   icon: React.ReactNode;
   className?: string;
   trend?: BaseStatCardTrend;
+  subtitle?: string;
+  sparklineData?: number[];
 }
 
 interface SummaryCardsProps {
@@ -51,6 +53,8 @@ export function SummaryCards({ cards, className, isLoading }: SummaryCardsProps)
         icon: card.icon,
         accentClass: card.className,
         trend: card.trend,
+        subtitle: card.subtitle,
+        sparklineData: card.sparklineData,
       }))}
       columns={colCount as 1 | 2 | 3 | 4 | 5 | 6}
       className={className}

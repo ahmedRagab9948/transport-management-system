@@ -295,7 +295,7 @@ export function DataTableShell<TData>({
                       className={cn(
                         'group h-11 px-4 align-middle text-center text-xs font-semibold whitespace-nowrap md:whitespace-nowrap text-muted-foreground tracking-wide uppercase',
                         header.column.getCanSort() && 'cursor-pointer select-none transition-colors hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30',
-                        header.id === 'actions' && 'sticky ltr:right-0 rtl:left-0 z-30 bg-card shadow-sm',
+                        header.id === 'actions' && 'sticky end-0 z-30 bg-card shadow-sm',
                       )}
                       onClick={
                         header.column.getCanSort()
@@ -358,10 +358,10 @@ export function DataTableShell<TData>({
                       initial="hidden"
                       animate="visible"
                       transition={{ duration: DURATIONS.normal, delay: rowIndex * DURATIONS.staggerSm }}
-                      className="h-11 border-b border-border/40 even:bg-muted/20 dark:border-border/30 dark:even:bg-muted/10"
+                      className="h-11 border-b border-border/40 even:bg-muted/20 transition-colors duration-150 hover:bg-muted/40 dark:border-border/30 dark:even:bg-muted/10 dark:hover:bg-muted/30"
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className={cn(TABLE_CELL_CLASS, cell.column.id === 'actions' && 'sticky ltr:right-0 rtl:left-0 z-10 bg-card shadow-sm')}>
+                        <td key={cell.id} className={cn(TABLE_CELL_CLASS, cell.column.id === 'actions' && 'sticky end-0 z-10 bg-card shadow-sm')}>
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </td>
                       ))}
